@@ -1,0 +1,15 @@
+# android
+build/
+.gradle/
+*.iml
+.idea/
+local.properties
+*.log
+libs/
+
+# ios
+.DS_Store
+.build/
+
+# rust
+target/
