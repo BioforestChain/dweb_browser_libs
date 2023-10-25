@@ -5,7 +5,6 @@ build/
 .idea/
 local.properties
 *.log
-libs/
 
 # ios
 .DS_Store
