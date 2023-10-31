@@ -3,10 +3,7 @@ plugins {
   alias(libs.plugins.androidLibrary)
 }
 
-@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-  targetHierarchy.default()
-
   androidTarget {
     compilations.all {
       kotlinOptions {
@@ -33,41 +30,21 @@ kotlin {
     }
   }
 
-  sourceSets {
-    all {
-      languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
-    }
+  applyDefaultHierarchyTemplate()
 
-    val commonMain by getting {
-      dependencies {
-        //put your multiplatform dependencies here
-        api(libs.kotlinx.atomicfu)
-        implementation(libs.squareup.okio)
-        implementation(libs.kotlinx.datetime)
-      }
-    }
-    val commonTest by getting {
-      dependencies {
-        kotlin("test")
-      }
-    }
-
-    val androidMain by getting {
-      dependsOn(commonMain)
-      dependencies {
-        implementation(libs.java.jna)
-      }
-    }
-
-    val iosX64Main by getting
-    val iosArm64Main by getting
-    val iosSimulatorArm64Main by getting
-    val iosMain by getting {
-      dependsOn(commonMain)
-      iosX64Main.dependsOn(this)
-      iosArm64Main.dependsOn(this)
-      iosSimulatorArm64Main.dependsOn(this)
-    }
+  sourceSets.all {
+    languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+  }
+  sourceSets.commonMain.dependencies {
+    api(libs.kotlinx.atomicfu)
+    implementation(libs.squareup.okio)
+    implementation(libs.kotlinx.datetime)
+  }
+  sourceSets.commonTest.dependencies {
+    kotlin("test")
+  }
+  sourceSets.androidMain.dependencies {
+    implementation(libs.java.jna)
   }
 }
 
