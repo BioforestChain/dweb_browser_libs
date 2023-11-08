@@ -16,4 +16,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "rust-library"
 include(":ziplib")
-include(":httpsproxy")
