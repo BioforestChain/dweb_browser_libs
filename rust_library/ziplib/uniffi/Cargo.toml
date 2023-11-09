@@ -19,3 +19,7 @@ uniffi = { version = "0.23.0", features = ["build"] }
 uniffi_bindgen = "0.23.0"
 uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings", rev = "bf48c5fcb153856e3055025a3cbfa56fbf213188" }
 camino = "1.1.1"
+
+[profile.release]
+opt-level = 3
+lto = true

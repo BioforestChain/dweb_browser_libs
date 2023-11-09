@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "rust-library"
 include(":ziplib")
+include(":reverse_proxy")
