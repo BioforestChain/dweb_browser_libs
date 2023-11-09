@@ -3,20 +3,20 @@ package ziplib
 internal inline fun <U, E : Exception> rustCallWithError(
     errorHandler: CallStatusErrorHandler<E>,
     crossinline callback: (RustCallStatus) -> U
-): U = withRustCallStatus {
-    val returnValue = callback(it)
-    if (it.isSuccess()) {
+): U = withRustCallStatus { status ->
+    val returnValue = callback(status)
+    if (status.isSuccess()) {
         returnValue
-    } else if (it.isError()) {
-        throw errorHandler.lift(it.errorBuffer)
-    } else if (it.isPanic()) {
-        if (it.errorBuffer.dataSize > 0) {
-            throw InternalException(FfiConverterString.lift(it.errorBuffer))
+    } else if (status.isError()) {
+        throw errorHandler.lift(status.errorBuffer)
+    } else if (status.isPanic()) {
+        if (status.errorBuffer.dataSize > 0) {
+            throw InternalException(FfiConverterString.lift(status.errorBuffer))
         } else {
             throw InternalException("Rust panic")
         }
     } else {
-        throw InternalException("Unknown rust call status: $it.code")
+        throw InternalException("Unknown rust call status: $status.code")
     }
 }
 
