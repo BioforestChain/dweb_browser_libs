@@ -31,6 +31,6 @@ cp -r ./target/bindings/nativeMain/ ../src/iosMain
 mkdir -p ../src/libs/iosArm64/
 cp ./target/aarch64-apple-ios/release/libziplib.a ../src/libs/iosArm64/
 mkdir -p ../src/libs/iosSimulatorArm64/
-cp ./target/x86_64-apple-ios/release/libziplib.a ../src/libs/iosSimulatorArm64/
+cp ./target/aarch64-apple-ios-sim/release/libziplib.a ../src/libs/iosSimulatorArm64/
 mkdir -p ../src/libs/iosX64/
-cp ./target/aarch64-apple-ios-sim/release/libziplib.a ../src/libs/iosX64/
+cp ./target/x86_64-apple-ios/release/libziplib.a ../src/libs/iosX64/

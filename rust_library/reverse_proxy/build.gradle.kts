@@ -50,9 +50,9 @@ kotlin {
 
 android {
   namespace = "org.dweb_browser.reverse_proxy"
-  compileSdk = 34
+  compileSdk = libs.versions.compileSdkVersion.get().toInt()
   defaultConfig {
-    minSdk = 29
+    minSdk = libs.versions.minSdkVersion.get().toInt()
     consumerProguardFiles("consumer-rules.pro")
   }
 }

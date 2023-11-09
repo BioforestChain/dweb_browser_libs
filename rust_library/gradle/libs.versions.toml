@@ -7,6 +7,10 @@ compose-material3 = "1.1.2"
 androidx-activityCompose = "1.8.0"
 jvmTarget = "17"
 javaVersion = "VERSION_17" # JavaVersion.VERSION_17
+compileSdkVersion = "34" # Int
+buildToolsVersion = "29.0.2"
+minSdkVersion = "28" # Int
+targetSdkVersion = "34" # Int
 
 kotlinx-atomicfu-version = "0.22.0"
 okio-version = "3.6.0"
