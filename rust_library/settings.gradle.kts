@@ -1,17 +1,27 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
+  repositories {
+    google {
+      mavenContent {
+        includeGroupByRegex(".*google.*")
+        includeGroupByRegex(".*android.*")
+      }
     }
+    gradlePluginPortal()
+    mavenCentral()
+  }
 }
 
 dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
+  repositories {
+    google {
+      mavenContent {
+        includeGroupByRegex(".*google.*")
+        includeGroupByRegex(".*android.*")
+      }
     }
+    mavenCentral()
+  }
 }
 
 rootProject.name = "rust-library"
