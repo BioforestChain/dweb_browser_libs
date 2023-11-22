@@ -1,6 +1,6 @@
 [package]
 name = "reverse_proxy"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # [[bin]]
@@ -23,7 +23,7 @@ uniffi_macros = "0.23.0"
 
 # lib deps
 http = "0.2"
-hyper = { version = "0.14", features = [
+hyper = { version = "0.14.27", features = [
     "http1",
     "client",
     "server",
@@ -40,6 +40,7 @@ tokio-rustls = { version = "0.24.0", default-features = false }
 webpki-roots = { version = "0.25", optional = true }
 futures-util = { version = "0.3", default-features = false }
 rustls-pemfile = "1.0.3"
+rand = "0.8.5"
 
 [build-dependencies]
 uniffi = { version = "0.23", features = ["build"] }

@@ -18,36 +18,37 @@ private fun findLibraryName(): String {
 actual object UniFFILib : Library {
     init {
         Native.register(UniFFILib::class.java, findLibraryName())
+        FfiConverterTypeVoidCallback.register(this)
         
     }
 
-    @JvmName("reverse_proxy_2e6f_start")
-    actual external fun reverse_proxy_2e6f_start(`proxyPort`: UShort,`frontendPort`: UShort,`frontendCertsPath`: RustBuffer,`frontendKeyPath`: RustBuffer,`backendPort`: UShort,
+    @JvmName("ffi_reverse_proxy_e96d_VoidCallback_init_callback")
+    actual external fun ffi_reverse_proxy_e96d_VoidCallback_init_callback(`callbackStub`: ForeignCallback,
     _uniffi_out_err: RustCallStatus
     ): Unit
 
-    @JvmName("reverse_proxy_2e6f_add")
-    actual external fun reverse_proxy_2e6f_add(`a`: Int,`b`: Int,
-    _uniffi_out_err: RustCallStatus
-    ): Int
-
-    @JvmName("ffi_reverse_proxy_2e6f_rustbuffer_alloc")
-    actual external fun ffi_reverse_proxy_2e6f_rustbuffer_alloc(`size`: Int,
-    _uniffi_out_err: RustCallStatus
-    ): RustBuffer
-
-    @JvmName("ffi_reverse_proxy_2e6f_rustbuffer_from_bytes")
-    actual external fun ffi_reverse_proxy_2e6f_rustbuffer_from_bytes(`bytes`: ForeignBytes,
-    _uniffi_out_err: RustCallStatus
-    ): RustBuffer
-
-    @JvmName("ffi_reverse_proxy_2e6f_rustbuffer_free")
-    actual external fun ffi_reverse_proxy_2e6f_rustbuffer_free(`buf`: RustBuffer,
+    @JvmName("reverse_proxy_e96d_start")
+    actual external fun reverse_proxy_e96d_start(`frontendCertsPath`: RustBuffer,`frontendKeyPath`: RustBuffer,`backendPort`: UShort,`onReady`: ULong,
     _uniffi_out_err: RustCallStatus
     ): Unit
 
-    @JvmName("ffi_reverse_proxy_2e6f_rustbuffer_reserve")
-    actual external fun ffi_reverse_proxy_2e6f_rustbuffer_reserve(`buf`: RustBuffer,`additional`: Int,
+    @JvmName("ffi_reverse_proxy_e96d_rustbuffer_alloc")
+    actual external fun ffi_reverse_proxy_e96d_rustbuffer_alloc(`size`: Int,
+    _uniffi_out_err: RustCallStatus
+    ): RustBuffer
+
+    @JvmName("ffi_reverse_proxy_e96d_rustbuffer_from_bytes")
+    actual external fun ffi_reverse_proxy_e96d_rustbuffer_from_bytes(`bytes`: ForeignBytes,
+    _uniffi_out_err: RustCallStatus
+    ): RustBuffer
+
+    @JvmName("ffi_reverse_proxy_e96d_rustbuffer_free")
+    actual external fun ffi_reverse_proxy_e96d_rustbuffer_free(`buf`: RustBuffer,
+    _uniffi_out_err: RustCallStatus
+    ): Unit
+
+    @JvmName("ffi_reverse_proxy_e96d_rustbuffer_reserve")
+    actual external fun ffi_reverse_proxy_e96d_rustbuffer_reserve(`buf`: RustBuffer,`additional`: Int,
     _uniffi_out_err: RustCallStatus
     ): RustBuffer
 
