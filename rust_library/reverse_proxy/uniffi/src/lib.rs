@@ -1,9 +1,10 @@
 use hyper::client::HttpConnector;
 use rand::{thread_rng, Rng};
+use rcgen::generate_simple_self_signed;
 use std::convert::Infallible;
+use std::io;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, ToSocketAddrs};
 use std::vec::Vec;
-use std::{fs, io};
 use tokio::join;
 use tokio::sync::oneshot;
 
@@ -19,12 +20,7 @@ type HttpClient = Client<HttpConnector>;
 
 // #[uniffi::export]
 #[tokio::main]
-pub async fn start(
-    frontend_certs_path: String,
-    frontend_key_path: String,
-    backend_port: u16,
-    on_ready: Box<dyn VoidCallback>,
-) {
+pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
     let front_addr = gen_addr("0.0.0.0");
 
     let (tx, rx) = oneshot::channel();
@@ -35,12 +31,7 @@ pub async fn start(
 
     join!(
         run_proxy_server(front_addr.port(), tx),
-        run_frontend_server(
-            &front_addr,
-            &frontend_certs_path,
-            &frontend_key_path,
-            backend_port,
-        ),
+        run_frontend_server(&front_addr, backend_port,),
     );
 }
 
@@ -61,22 +52,19 @@ fn gen_addr(host: &str) -> SocketAddr {
     }
 }
 
-async fn run_frontend_server(
-    frontend_addr: &SocketAddr,
-    certs_path: &str,
-    key_path: &str,
-    backend_port: u16,
-) -> u16 {
-    // Load public certificate.
-    let certs = load_certs(certs_path).unwrap();
-    // Load private key.
-    let key = load_private_key(key_path).unwrap();
-    // Build TLS configuration.
+async fn run_frontend_server(frontend_addr: &SocketAddr, backend_port: u16) {
+    let subject_alt_names = vec!["localhost.dweb".to_string()];
+
+    let cert = generate_simple_self_signed(subject_alt_names).unwrap();
+    let cert_der = cert.serialize_der().unwrap();
+    let private_key_der = cert.serialize_private_key_der();
+    let private_key = rustls::PrivateKey(private_key_der);
+    let cert_chain = vec![rustls::Certificate(cert_der)];
 
     // Create a TCP listener via tokio.
     let incoming = AddrIncoming::bind(&frontend_addr).unwrap();
     let acceptor = TlsAcceptor::builder()
-        .with_single_cert(certs, key)
+        .with_single_cert(cert_chain, private_key)
         .map_err(|e| error(format!("{}", e)))
         .unwrap()
         .with_http11_alpn()
@@ -116,51 +104,10 @@ async fn run_frontend_server(
     if let Err(e) = make_server.await {
         eprintln!("start frontend server error: {}", e);
     };
-
-    // let (tx, rx) = oneshot::channel();
-    // tokio::task::spawn(async move {
-    //     tx.send(0).unwrap();
-    //     if let Err(e) = make_server.await {
-    //         eprintln!("start frontend server error: {}", e);
-    //     };
-    // });
-
-    // rx.await.unwrap();
-    frontend_addr.port()
-}
-
-// Load public certificate from file.
-fn load_certs(filename: &str) -> io::Result<Vec<rustls::Certificate>> {
-    // Open certificate file.
-    let certfile = fs::File::open(filename)
-        .map_err(|e| error(format!("failed to open {}: {}", filename, e)))?;
-    let mut reader = io::BufReader::new(certfile);
-
-    // Load and return certificate.
-    let certs = rustls_pemfile::certs(&mut reader)
-        .map_err(|_| error("failed to load certificate".into()))?;
-    Ok(certs.into_iter().map(rustls::Certificate).collect())
-}
-
-// Load private key from file.
-fn load_private_key(filename: &str) -> io::Result<rustls::PrivateKey> {
-    // Open keyfile.
-    let keyfile = fs::File::open(filename)
-        .map_err(|e| error(format!("failed to open {}: {}", filename, e)))?;
-    let mut reader = io::BufReader::new(keyfile);
-
-    // Load and return a single private key.
-    let keys = rustls_pemfile::rsa_private_keys(&mut reader)
-        .map_err(|_| error("failed to load private key".into()))?;
-    if keys.len() != 1 {
-        return Err(error("expected a single private key".into()));
-    }
-
-    Ok(rustls::PrivateKey(keys[0].clone()))
 }
 
 // async fn run_proxy_server(proxy_port: u16, frontend_port: u16) -> bool {
-async fn run_proxy_server(frontend_port: u16, tx: oneshot::Sender<u16>) -> u16 {
+async fn run_proxy_server(frontend_port: u16, tx: oneshot::Sender<u16>) {
     let addr = gen_addr("0.0.0.0");
 
     let client = Client::builder()
@@ -191,7 +138,6 @@ async fn run_proxy_server(frontend_port: u16, tx: oneshot::Sender<u16>) -> u16 {
     if let Err(e) = server.await {
         eprintln!("start proxy server error: {}", e);
     }
-    addr.port()
 }
 
 async fn proxy(

@@ -12,8 +12,6 @@ impl VoidCallback for MyCallback {
 fn main() {
     let callback = MyCallback::default();
     start(
-        "assets/sample.pem".to_owned(),
-        "assets/sample.rsa".to_owned(),
         8000,
         Box::new(callback),
     )

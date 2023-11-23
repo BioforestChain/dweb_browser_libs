@@ -2,8 +2,8 @@ package reverse_proxy
 
 
 
-fun `start`(`frontendCertsPath`: String, `frontendKeyPath`: String, `backendPort`: UShort, `onReady`: VoidCallback) =
+fun `start`(`backendPort`: UShort, `onReady`: VoidCallback) =
     
     rustCall() { _status ->
-    UniFFILib.reverse_proxy_e96d_start(FfiConverterString.lower(`frontendCertsPath`), FfiConverterString.lower(`frontendKeyPath`), FfiConverterUShort.lower(`backendPort`), FfiConverterTypeVoidCallback.lower(`onReady`), _status)
+    UniFFILib.reverse_proxy_6e76_start(FfiConverterUShort.lower(`backendPort`), FfiConverterTypeVoidCallback.lower(`onReady`), _status)
 }

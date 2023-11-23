@@ -1,5 +1,5 @@
 namespace reverse_proxy {
-    void start(string frontend_certs_path, string frontend_key_path, u16 backend_port, VoidCallback on_ready);
+    void start(u16 backend_port, VoidCallback on_ready);
 };
 
 callback interface VoidCallback {
