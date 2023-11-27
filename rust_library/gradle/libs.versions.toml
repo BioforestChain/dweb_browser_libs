@@ -1,10 +1,10 @@
 [versions]
 agp = "8.1.2"
-kotlin = "1.9.20"
+kotlin = "1.9.21"
 compose = "1.5.4"
-compose-compiler = "1.5.3"
+kotlinCompilerExtensionVersion = "1.5.4"
 compose-material3 = "1.1.2"
-androidx-activityCompose = "1.8.0"
+androidx-activityCompose = "1.8.1"
 jvmTarget = "17"
 javaVersion = "VERSION_17" # JavaVersion.VERSION_17
 compileSdkVersion = "34" # Int

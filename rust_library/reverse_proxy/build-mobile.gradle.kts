@@ -45,7 +45,13 @@ kotlin {
     kotlin("test")
   }
   sourceSets.androidMain.dependencies {
-    api("net.java.dev.jna:jna:5.13.0@aar")
+    api(libs.java.jna.map {
+      project.dependencies.create(it, closureOf<ExternalModuleDependency> {
+        artifact {
+          type = "aar"
+        }
+      })
+    })
   }
 }
 
