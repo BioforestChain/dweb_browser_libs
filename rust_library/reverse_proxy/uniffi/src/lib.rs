@@ -166,20 +166,42 @@ async fn proxy(
             tokio::task::spawn(async move {
                 match hyper::upgrade::on(req).await {
                     Ok(upgraded) => {
-                        let tunnel_addr = if addr.contains(".dweb") {
-                            &frontend_addr //"127.0.0.1:13377"
+                        if addr.contains(".dweb") {
+                            println!("proxy: {} -> {}", addr, frontend_addr);
+                            if let Err(e) = tunnel(upgraded, frontend_addr.to_owned()).await {
+                                eprintln!("server io error: {}", e);
+                            };
                         } else {
-                            &addr
-                        };
-                        println!("proxy: {} -> {}", addr, tunnel_addr);
-                        if let Err(e) = tunnel(upgraded, tunnel_addr.to_owned()).await {
-                            eprintln!("server io error: {}", e);
-                        };
+                            println!("direct: {}", addr);
+                            match TcpStream::connect(addr).await {
+                                Ok(target_stream) => {
+                                    let (mut client_reader, mut client_writer) =
+                                        tokio::io::split(upgraded);
+
+                                    // 获取目标服务器流
+                                    let (mut server_reader, mut server_writer) =
+                                        target_stream.into_split();
+
+                                    // 使用Tokio的spawn创建新的任务来处理两个流之间的数据转发
+                                    let client_to_server =
+                                        tokio::io::copy(&mut client_reader, &mut server_writer);
+                                    let server_to_client =
+                                        tokio::io::copy(&mut server_reader, &mut client_writer);
+
+                                    // 使用tokio::try_join!等待两个数据流转发完成
+                                    let _ = tokio::try_join!(client_to_server, server_to_client);
+                                }
+                                Err(e) => {
+                                    eprintln!("Failed to connect to target: {}", e);
+                                }
+                            }
+                        }
                     }
-                    Err(e) => eprintln!("upgrade error: {}", e),
+                    Err(e) => {
+                        eprintln!("upgrade error: {}", e);
+                    }
                 }
             });
-
             Ok(Response::new(Body::empty()))
         } else {
             eprintln!("CONNECT host is not socket addr: {:?}", req.uri());
