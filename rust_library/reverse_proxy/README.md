@@ -23,3 +23,7 @@ cargo install cargo-ndk
    ```shell
    cargo run --bin uniffi-bindgen generate src/reverse_proxy.udl --language kotlin --out-dir out
    ```
+
+## 关于开发
+
+开发的时候需要将 cargo.toml 中的 lib 和 bin 注释掉，然后打开第一个 bin 配置

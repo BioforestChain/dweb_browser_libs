@@ -2,57 +2,47 @@ use hyper::client::HttpConnector;
 use rand::{thread_rng, Rng};
 use rcgen::generate_simple_self_signed;
 use std::convert::Infallible;
-use std::io;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, ToSocketAddrs};
 use std::vec::Vec;
 use tokio::join;
 use tokio::sync::oneshot;
 
-use hyper::server::conn::AddrIncoming;
 use hyper::service::{make_service_fn, service_fn};
 use hyper::upgrade::Upgraded;
 use hyper::{Body, Client, Method, Request, Response, Server};
-use hyper_rustls::TlsAcceptor;
 
 use tokio::net::TcpStream;
 
+use crate::tls_server::TlsServer;
+
 type HttpClient = Client<HttpConnector>;
+
+pub mod tls_server;
 
 // #[uniffi::export]
 #[tokio::main]
 pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
-    let front_addr = gen_addr("0.0.0.0");
+    let frontend_port = random_port();
 
     let (tx, rx) = oneshot::channel();
     tokio::spawn(async move {
         let proxy_port = rx.await.unwrap();
-        on_ready.callback(proxy_port, front_addr.port())
+        on_ready.callback(proxy_port, frontend_port)
     });
 
     join!(
-        run_proxy_server(front_addr.port(), tx),
-        run_frontend_server(&front_addr, backend_port,),
+        run_proxy_server(frontend_port, tx),
+        run_frontend_server(frontend_port, backend_port),
     );
 }
 
-fn error(err: String) -> io::Error {
-    io::Error::new(io::ErrorKind::Other, err)
+fn random_port() -> u16 {
+    let mut rng = thread_rng(); // 创建一个随机数生成器
+    let random_port = rng.gen_range(49152..65535);
+    random_port
 }
 
-fn gen_addr(host: &str) -> SocketAddr {
-    let addr = host.to_socket_addrs();
-
-    match addr {
-        Ok(addrs) => addrs.last().unwrap(),
-        Err(_) => {
-            let mut rng = thread_rng(); // 创建一个随机数生成器
-            let random_port = rng.gen_range(1024..49151);
-            SocketAddr::new(IpAddr::V4(host.parse::<Ipv4Addr>().unwrap()), random_port)
-        }
-    }
-}
-
-async fn run_frontend_server(frontend_addr: &SocketAddr, backend_port: u16) {
+async fn run_frontend_server(frontend_port: u16, backend_port: u16) {
     let subject_alt_names = vec!["localhost.dweb".to_string()];
 
     let cert = generate_simple_self_signed(subject_alt_names).unwrap();
@@ -61,54 +51,20 @@ async fn run_frontend_server(frontend_addr: &SocketAddr, backend_port: u16) {
     let private_key = rustls::PrivateKey(private_key_der);
     let cert_chain = vec![rustls::Certificate(cert_der)];
 
-    // Create a TCP listener via tokio.
-    let incoming = AddrIncoming::bind(&frontend_addr).unwrap();
-    let acceptor = TlsAcceptor::builder()
-        .with_single_cert(cert_chain, private_key)
-        .map_err(|e| error(format!("{}", e)))
-        .unwrap()
-        .with_http11_alpn()
-        .with_incoming(incoming);
-
-    let client_main = Client::new();
-
-    let make_server = Server::builder(acceptor).serve(make_service_fn(move |_| {
-        let client = client_main.clone();
-
-        async move {
-            // This is the `Service` that will handle the connection.
-            // `service_fn` is a helper to convert a function that
-            // returns a Response into a `Service`.
-            Ok::<_, io::Error>(service_fn(move |mut req| {
-                let uri_string = format!(
-                    "http://127.0.0.1:{backend_port}{}",
-                    req.uri()
-                        .path_and_query()
-                        .map(|x| x.as_str())
-                        .unwrap_or("/")
-                );
-                println!("make_server uri_string: {}", uri_string);
-                let uri = uri_string.parse().unwrap();
-                *req.uri_mut() = uri;
-                client.request(req)
-            }))
-        }
-    }));
-
+    // Create a tls forward server.
+    tokio::spawn(async move {
+        TlsServer::forward(frontend_port, backend_port, private_key, cert_chain);
+    });
     // Run the future, keep going until an error occurs.
     println!(
-        "frontend serve listening on https://{} => backend server http://127.0.0.1:{}",
-        frontend_addr, backend_port
+        "frontend serve listening on https://0.0.0.0:{} => backend server http://127.0.0.1:{}",
+        frontend_port, backend_port
     );
-
-    if let Err(e) = make_server.await {
-        eprintln!("start frontend server error: {}", e);
-    };
 }
 
 // async fn run_proxy_server(proxy_port: u16, frontend_port: u16) -> bool {
 async fn run_proxy_server(frontend_port: u16, tx: oneshot::Sender<u16>) {
-    let addr = gen_addr("0.0.0.0");
+    let addr = format!("0.0.0.0:{}", random_port()).parse().unwrap();
 
     let client = Client::builder()
         .http1_title_case_headers(true)
