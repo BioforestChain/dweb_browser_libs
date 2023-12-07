@@ -5,7 +5,7 @@ edition = "2021"
 
 # [[bin]]
 # name = "reverse_proxy_server"
-# path = "src/main.rs"
+# path = "examples/main.rs"
 
 [lib]
 crate-type = ["cdylib", "staticlib"]
@@ -32,7 +32,7 @@ hyper = { version = "0.14.27", features = [
     "stream",
 ] }
 hyper-rustls = { version = "0.24" }
-log = { version = "0.4.4", optional = true }
+log = "*"
 rustls-native-certs = { version = "0.6", optional = true }
 rustls = { version = "0.21.6", default-features = false }
 tokio = { version = "1", features = ["full"] }
@@ -42,6 +42,14 @@ futures-util = { version = "0.3", default-features = false }
 rustls-pemfile = "1.0.3"
 rand = "0.8.5"
 rcgen = "0.11.3"
+mio = "0.8"
+
+[dev-dependencies]
+docopt = "*"
+serde_derive = "*"
+serde = "*"
+rustls-pki-types = "*"
+env_logger = "*"
 
 [build-dependencies]
 uniffi = { version = "0.23", features = ["build"] }
