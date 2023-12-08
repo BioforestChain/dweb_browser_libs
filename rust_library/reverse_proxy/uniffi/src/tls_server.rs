@@ -30,10 +30,8 @@ impl TlsServer {
 
         let suites = rustls::ALL_CIPHER_SUITES.to_vec();
 
-        let versions = rustls::ALL_VERSIONS.to_vec();
+        let versions = &[&rustls::version::TLS13].to_vec();
 
-        // let certs = load_certs(args.flag_certs.as_ref().expect("--certs option missing"));
-        // let privkey = load_private_key(args.flag_key.as_ref().expect("--key option missing"));
         let ocsp = Vec::new();
 
         let mut config = rustls::ServerConfig::builder()
