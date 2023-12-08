@@ -122,15 +122,23 @@ impl TlsServer {
         let mut listener = TcpListener::bind(addr).expect("cannot listen on port");
         let mut poll = mio::Poll::new().unwrap();
         poll.registry()
-            .register(&mut listener, LISTENER, mio::Interest::READABLE)
+            .register(
+                &mut listener,
+                LISTENER,
+                mio::Interest::READABLE | mio::Interest::WRITABLE,
+            )
             .unwrap();
 
         let mut tlsserv = TlsServer::new(listener, forward, config);
 
         let mut events = mio::Events::with_capacity(256);
         loop {
-            poll.poll(&mut events, None).unwrap();
-
+            if let Err(err) = poll.poll(&mut events, None) {
+                if interrupted(&err) {
+                    continue;
+                }
+                break;
+            }
             for event in events.iter() {
                 match event.token() {
                     LISTENER => {
@@ -283,28 +291,34 @@ impl OpenConnection {
         // Try a non-blocking read.
         let mut buf = [0u8; 1024];
         let mut back = &self.back;
-        let rc = try_read(back.read(&mut buf));
+        loop {
+            let rc = try_read(back.read(&mut buf));
 
-        if rc.is_err() {
-            error!("backend read failed: {:?}", rc);
-            self.closing = true;
-            return;
-        }
-
-        let maybe_len = rc.unwrap();
-
-        // If we have a successful but empty read, that's an EOF.
-        // Otherwise, we shove the data into the TLS session.
-        match maybe_len {
-            Some(0) => {
-                debug!("back eof");
+            if rc.is_err() {
+                error!("backend read failed: {:?}", rc);
                 self.closing = true;
+                return;
             }
-            Some(len) => {
-                self.tls_conn.writer().write_all(&buf[..len]).unwrap();
-            }
-            None => {}
-        };
+
+            let maybe_len = rc.unwrap();
+
+            // If we have a successful but empty read, that's an EOF.
+            // Otherwise, we shove the data into the TLS session.
+            match maybe_len {
+                Some(0) => {
+                    debug!("back eof");
+                    self.closing = true;
+                }
+                Some(len) => {
+                    debug!("got {len}");
+                    self.tls_conn.writer().write_all(&buf[..len]).unwrap();
+                }
+                None => {
+                    // WouldBlock
+                    break;
+                }
+            };
+        }
     }
 
     /// Process some amount of received plaintext.
@@ -331,7 +345,11 @@ impl OpenConnection {
             .unwrap();
 
         registry
-            .register(&mut self.back, self.token, mio::Interest::READABLE)
+            .register(
+                &mut self.back,
+                self.token,
+                mio::Interest::READABLE | mio::Interest::WRITABLE,
+            )
             .unwrap();
     }
 
@@ -366,4 +384,8 @@ impl OpenConnection {
     fn is_closed(&self) -> bool {
         self.closed
     }
+}
+
+fn interrupted(err: &io::Error) -> bool {
+    err.kind() == io::ErrorKind::Interrupted
 }

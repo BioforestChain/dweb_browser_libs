@@ -38,8 +38,8 @@ Usage:
   forward (--help | -h)
 
 Options:
-    -p, --port PORT     Listen on PORT [default: 443].
-    -f, --forward PORT  Listen on PORT [default: 9999].
+    -p, --port PORT     Listen on PORT [default: 1443].
+    -f, --forward PORT  Forward on PORT [default: 8000].
     --help, -h          Show this screen.
 ";
 
@@ -60,15 +60,20 @@ fn main() {
 
     let subject_alt_names = vec!["localhost.dweb".to_string()];
     let cert = generate_simple_self_signed(subject_alt_names).unwrap();
+
     let cert_der = cert.serialize_der().unwrap();
     let private_key_der = cert.serialize_private_key_der();
-    let privkey = rustls::PrivateKey(private_key_der);
-    let certs = vec![rustls::Certificate(cert_der)];
+    let private_key = rustls::PrivateKey(private_key_der);
+    let cert_chain = vec![rustls::Certificate(cert_der)];
+
+    env_logger::init();
+
+    println!("args.flag_port={:?}",args.flag_port);
 
     TlsServer::forward(
-        args.flag_port.unwrap_or(443),
-        args.flag_forward.unwrap_or(9999),
-        privkey,
-        certs,
+        args.flag_port.unwrap_or(1443),
+        args.flag_forward.unwrap_or(8000),
+        private_key,
+        cert_chain,
     );
 }

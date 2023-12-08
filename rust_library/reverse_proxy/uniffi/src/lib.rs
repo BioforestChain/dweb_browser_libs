@@ -50,7 +50,7 @@ async fn run_frontend_server(frontend_port: u16, backend_port: u16) {
     let cert_der = cert.serialize_der().unwrap();
     let private_key_der = cert.serialize_private_key_der();
     let private_key = rustls::PrivateKey(private_key_der);
-    let cert_chain = vec![rustls::Certificate(cert_der.into())];
+    let cert_chain = vec![rustls::Certificate(cert_der)];
 
     // Create a tls forward server.
     tokio::spawn(async move {

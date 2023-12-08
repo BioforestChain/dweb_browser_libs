@@ -11,8 +11,6 @@ impl VoidCallback for MyCallback {
 
 fn main() {
     let callback = MyCallback::default();
-    start(
-        8000,
-        Box::new(callback),
-    )
+
+    start(8000, Box::new(callback))
 }
