@@ -49,6 +49,8 @@ impl TlsServer {
 
         config.ticketer = rustls::Ticketer::new().unwrap();
 
+        config.alpn_protocols = ["http/1.1".into()].to_vec();
+
         Arc::new(config)
     }
     pub fn new(server: TcpListener, forward: u16, cfg: Arc<rustls::ServerConfig>) -> Self {
@@ -225,7 +227,11 @@ impl OpenConnection {
     /// Close the backend connection for forwarded sessions.
     fn close_back(&mut self) {
         let back = &self.back;
-        back.shutdown(net::Shutdown::Both).unwrap();
+        fn error(err: std::io::Error) -> () {
+            debug!("close back fail:{}, but ignore this error", err);
+            ()
+        }
+        back.shutdown(net::Shutdown::Both).unwrap_or_else(error);
     }
 
     fn do_tls_read(&mut self) {
