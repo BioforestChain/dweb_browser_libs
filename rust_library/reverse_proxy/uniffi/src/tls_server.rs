@@ -65,6 +65,7 @@ impl TlsServer {
 
     pub fn accept(&mut self, registry: &mio::Registry) -> Result<(), io::Error> {
         loop {
+            debug!("accept start");
             match self.server.accept() {
                 Ok((socket, addr)) => {
                     debug!("Accepting new connection from {:?}", addr);
@@ -79,7 +80,10 @@ impl TlsServer {
                     connection.register(registry);
                     self.connections.insert(token, connection);
                 }
-                Err(ref err) if err.kind() == io::ErrorKind::WouldBlock => return Ok(()),
+                Err(ref err) if err.kind() == io::ErrorKind::WouldBlock => {
+                    debug!("accept done");
+                    return Ok(());
+                }
                 Err(err) => {
                     println!(
                         "encountered error while accepting connection; err={:?}",
@@ -131,7 +135,7 @@ impl TlsServer {
 
         let mut tlsserv = TlsServer::new(listener, forward, config);
 
-        let mut events = mio::Events::with_capacity(256);
+        let mut events = mio::Events::with_capacity(512);
         loop {
             if let Err(err) = poll.poll(&mut events, None) {
                 if interrupted(&err) {
@@ -308,6 +312,7 @@ impl OpenConnection {
                 Some(0) => {
                     debug!("back eof");
                     self.closing = true;
+                    break;
                 }
                 Some(len) => {
                     debug!("got {len}");

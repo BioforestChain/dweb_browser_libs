@@ -26,4 +26,10 @@ cargo install cargo-ndk
 
 ## 关于开发
 
-开发的时候需要将 cargo.toml 中的 lib 和 bin 注释掉，然后打开第一个 bin 配置
+1. 开发的时候需要将 cargo.toml 中的 lib 和 bin 注释掉，然后打开第一个 bin 配置
+1. `cargo run --example forward` 可以启动 tls 转发服务，默认端口是 1443(tls-server) -> 8000(your-server)
+   1. `RUST_LOG=debug` 可以开启调试日子
+1. `deno run -A ./assets/ws.ts` 可以启动一个简易的 http-server，内有 websocket 的支持
+1. `curl --insecure -v http://localhost:8000`
+   1. `-v` 可以看到详细的请求过程，包括 tls 握手
+   1. `--insecure` 可以忽视对于本地自签证书的不信任问题
