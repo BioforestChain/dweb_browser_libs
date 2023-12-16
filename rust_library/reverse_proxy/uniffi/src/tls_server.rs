@@ -5,7 +5,7 @@ use mio::net::{TcpListener, TcpStream};
 use log::{debug, error};
 use rustls::server::NoClientAuth;
 use std::collections::HashMap;
-use std::io;
+use std::io::{self, ErrorKind};
 use std::io::{Read, Write};
 use std::net;
 
@@ -184,7 +184,19 @@ fn try_read(r: io::Result<usize>) -> io::Result<Option<usize>> {
     match r {
         Ok(len) => Ok(Some(len)),
         Err(e) => {
-            if e.kind() == io::ErrorKind::WouldBlock {
+            if e.kind() == ErrorKind::WouldBlock || e.kind() == ErrorKind::Interrupted {
+                Ok(None)
+            } else {
+                Err(e)
+            }
+        }
+    }
+}
+fn try_write(r: io::Result<()>) -> io::Result<Option<()>> {
+    match r {
+        Ok(_) => Ok(Some(())),
+        Err(e) => {
+            if e.kind() == ErrorKind::WouldBlock || e.kind() == ErrorKind::Interrupted {
                 Ok(None)
             } else {
                 Err(e)
@@ -316,7 +328,7 @@ impl OpenConnection {
                 }
                 Some(len) => {
                     debug!("got {len}");
-                    self.tls_conn.writer().write_all(&buf[..len]).unwrap();
+                    try_write(self.tls_conn.writer().write_all(&buf[..len])).unwrap();
                 }
                 None => {
                     // WouldBlock
@@ -328,7 +340,7 @@ impl OpenConnection {
 
     /// Process some amount of received plaintext.
     fn incoming_plaintext(&mut self, buf: &[u8]) {
-        self.back.write_all(buf).unwrap();
+        try_write(self.back.write_all(buf)).unwrap();
     }
 
     fn tls_write(&mut self) -> io::Result<usize> {
