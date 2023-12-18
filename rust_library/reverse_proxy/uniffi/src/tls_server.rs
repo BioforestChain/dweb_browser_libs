@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use futures_util::Future;
 use mio::net::{TcpListener, TcpStream};
 
 use log::{debug, error};
@@ -118,7 +119,15 @@ impl TlsServer {
      *
      * 从而可以为一些没有tls能力的服务提供tls能力
      */
-    pub fn forward(port: u16, forward: u16, privkey: PrivateKey, certs: Vec<Certificate>) {
+    pub async fn forward<F>(
+        port: u16,
+        forward: u16,
+        privkey: PrivateKey,
+        certs: Vec<Certificate>,
+        on_listen: F,
+    ) where
+        F: Future + Send + 'static,
+    {
         let addr: net::SocketAddr = format!("0.0.0.0:{}", port).parse().unwrap();
 
         let config = TlsServer::make_config(privkey, certs);
@@ -134,6 +143,7 @@ impl TlsServer {
             .unwrap();
 
         let mut tlsserv = TlsServer::new(listener, forward, config);
+        on_listen.await;
 
         let mut events = mio::Events::with_capacity(512);
         loop {

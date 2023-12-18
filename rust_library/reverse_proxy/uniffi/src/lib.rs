@@ -1,8 +1,10 @@
+use futures_util::Future;
 use hyper::client::HttpConnector;
 use rand::{thread_rng, Rng};
 use rcgen::generate_simple_self_signed;
 use std::convert::Infallible;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, ToSocketAddrs};
+use std::sync::Arc;
 use std::vec::Vec;
 use tokio::join;
 use tokio::sync::oneshot;
@@ -24,15 +26,19 @@ pub mod tls_server;
 pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
     let frontend_port = random_port();
 
-    let (tx, rx) = oneshot::channel();
+    let (proxy_tx, proxy_rx) = oneshot::channel();
+    let (frontend_tx, frontend_rx) = oneshot::channel::<()>();
     tokio::spawn(async move {
-        let proxy_port = rx.await.unwrap();
+        let proxy_port = proxy_rx.await.unwrap();
+        frontend_rx.await.unwrap();
         on_ready.callback(proxy_port, frontend_port)
     });
 
     join!(
-        run_proxy_server(frontend_port, tx),
-        run_frontend_server(frontend_port, backend_port),
+        run_proxy_server(frontend_port, proxy_tx),
+        run_frontend_server(frontend_port, backend_port, async move {
+            frontend_tx.send(()).unwrap();
+        }),
     );
 }
 
@@ -42,11 +48,14 @@ fn random_port() -> u16 {
     random_port
 }
 
-async fn run_frontend_server(frontend_port: u16, backend_port: u16) {
+async fn run_frontend_server<F>(frontend_port: u16, backend_port: u16, on_listen: F)
+where
+    F: Future + Send + 'static,
+{
     let subject_alt_names = vec!["localhost.dweb".to_string()];
 
     let cert = generate_simple_self_signed(subject_alt_names).unwrap();
-    
+
     let cert_der = cert.serialize_der().unwrap();
     let private_key_der = cert.serialize_private_key_der();
     let private_key = rustls::PrivateKey(private_key_der);
@@ -54,7 +63,14 @@ async fn run_frontend_server(frontend_port: u16, backend_port: u16) {
 
     // Create a tls forward server.
     tokio::spawn(async move {
-        TlsServer::forward(frontend_port, backend_port, private_key, cert_chain);
+        TlsServer::forward(
+            frontend_port,
+            backend_port,
+            private_key,
+            cert_chain,
+            on_listen,
+        )
+        .await;
     });
     // Run the future, keep going until an error occurs.
     println!(
