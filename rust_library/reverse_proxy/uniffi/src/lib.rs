@@ -1,10 +1,12 @@
+#[macro_use]
+extern crate log;
+
 use futures_util::Future;
 use hyper::client::HttpConnector;
+
 use rand::{thread_rng, Rng};
 use rcgen::generate_simple_self_signed;
 use std::convert::Infallible;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr, ToSocketAddrs};
-use std::sync::Arc;
 use std::vec::Vec;
 use tokio::join;
 use tokio::sync::oneshot;
@@ -21,23 +23,48 @@ type HttpClient = Client<HttpConnector>;
 
 pub mod tls_server;
 
+#[cfg(target_os = "android")]
+extern crate android_logger;
+#[cfg(target_os = "android")]
+use android_logger::{Config, FilterBuilder};
+#[cfg(target_os = "android")]
+use log::LevelFilter;
+
+#[cfg(target_os = "android")]
+fn init_log() {
+    android_logger::init_once(
+        Config::default()
+            .with_max_level(LevelFilter::Trace) // limit log level
+            .with_tag("mytag") // logs will show under mytag tag
+            .with_filter(
+                // configure messages for specific crate
+                FilterBuilder::new()
+                    .parse("debug,hello::crate=error")
+                    .build(),
+            ),
+    );
+}
+#[cfg(not(target_os = "android"))]
+fn init_log() {}
+
 // #[uniffi::export]
 #[tokio::main]
 pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
+    init_log();
     let frontend_port = random_port();
 
-    let (proxy_tx, proxy_rx) = oneshot::channel();
-    let (frontend_tx, frontend_rx) = oneshot::channel::<()>();
-    tokio::spawn(async move {
-        let proxy_port = proxy_rx.await.unwrap();
-        frontend_rx.await.unwrap();
-        on_ready.callback(proxy_port, frontend_port)
-    });
+    let (proxy_tx, proxy_rx) = oneshot::channel::<u16>();
+    let (frontend_tx, frontend_rx) = oneshot::channel::<u16>();
 
     join!(
+        async move {
+            let frontend_port = frontend_rx.await.unwrap();
+            let proxy_port = proxy_rx.await.unwrap();
+            on_ready.callback(proxy_port, frontend_port);
+        },
         run_proxy_server(frontend_port, proxy_tx),
         run_frontend_server(frontend_port, backend_port, async move {
-            frontend_tx.send(()).unwrap();
+            frontend_tx.send(frontend_port).unwrap();
         }),
     );
 }
@@ -73,7 +100,7 @@ where
         .await;
     });
     // Run the future, keep going until an error occurs.
-    println!(
+    info!(
         "frontend serve listening on https://0.0.0.0:{} => backend server http://127.0.0.1:{}",
         frontend_port, backend_port
     );
@@ -102,14 +129,19 @@ async fn run_proxy_server(frontend_port: u16, tx: oneshot::Sender<u16>) {
         .http1_title_case_headers(true)
         .serve(make_service);
 
-    println!("proxy server listening on http://{}", addr);
+    let (listen_tx, listen_rx) = oneshot::channel::<()>();
 
-    if let Err(e) = tx.send(server.local_addr().port()) {
-        eprintln!("start proxy server channel sender error: {}", e);
-    }
-
-    if let Err(e) = server.await {
-        eprintln!("start proxy server error: {}", e);
+    if let Err(e) = server
+        .with_graceful_shutdown(async move {
+            tx.send(addr.port()).unwrap();
+            info!("proxy server listening on http://{}", addr);
+            listen_rx.await.unwrap();
+            info!("proxy server closed");
+        })
+        .await
+    {
+        error!("start proxy server error: {}", e);
+        listen_tx.send(()).unwrap();
     }
 }
 
@@ -118,7 +150,7 @@ async fn proxy(
     req: Request<Body>,
     frontend_port: u16,
 ) -> Result<Response<Body>, hyper::Error> {
-    println!("req: {:?}", req);
+    debug!("req: {:?}", req);
     let frontend_addr = format!("127.0.0.1:{}", frontend_port);
 
     if Method::CONNECT == req.method() {
@@ -139,13 +171,13 @@ async fn proxy(
             tokio::task::spawn(async move {
                 match hyper::upgrade::on(req).await {
                     Ok(upgraded) => {
-                        if addr.contains(".dweb") {
-                            println!("proxy: {} -> {}", addr, frontend_addr);
+                        if addr.ends_with(".dweb:443") {
+                            info!("proxy: {} -> {}", addr, frontend_addr);
                             if let Err(e) = tunnel(upgraded, frontend_addr.to_owned()).await {
-                                eprintln!("server io error: {}", e);
+                                error!("server io error: {}", e);
                             };
                         } else {
-                            println!("direct: {}", addr);
+                            info!("direct: {}", addr);
                             match TcpStream::connect(addr).await {
                                 Ok(target_stream) => {
                                     let (mut client_reader, mut client_writer) =
@@ -165,19 +197,19 @@ async fn proxy(
                                     let _ = tokio::try_join!(client_to_server, server_to_client);
                                 }
                                 Err(e) => {
-                                    eprintln!("Failed to connect to target: {}", e);
+                                    error!("Failed to connect to target: {}", e);
                                 }
                             }
                         }
                     }
                     Err(e) => {
-                        eprintln!("upgrade error: {}", e);
+                        error!("upgrade error: {}", e);
                     }
                 }
             });
             Ok(Response::new(Body::empty()))
         } else {
-            eprintln!("CONNECT host is not socket addr: {:?}", req.uri());
+            error!("CONNECT host is not socket addr: {:?}", req.uri());
             let mut resp = Response::new(Body::from("CONNECT must be to a socket address"));
             *resp.status_mut() = http::StatusCode::BAD_REQUEST;
 
@@ -196,16 +228,16 @@ fn host_addr(uri: &http::Uri) -> Option<String> {
 // the upgraded connection
 async fn tunnel(mut upgraded: Upgraded, addr: String) -> std::io::Result<()> {
     // Connect to remote server
-    println!("TcpStream::connect: {}", addr);
+    info!("TcpStream::connect: {}", addr);
     let mut server = TcpStream::connect(addr).await?;
-    println!("tunnel server: {}", server.peer_addr()?);
+    info!("tunnel server: {}", server.peer_addr()?);
 
     // Proxying data
     let (from_client, from_server) =
         tokio::io::copy_bidirectional(&mut upgraded, &mut server).await?;
 
     // Print message when done
-    println!(
+    debug!(
         "client wrote {} bytes and received {} bytes",
         from_client, from_server
     );

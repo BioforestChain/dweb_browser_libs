@@ -86,7 +86,7 @@ impl TlsServer {
                     return Ok(());
                 }
                 Err(err) => {
-                    println!(
+                    debug!(
                         "encountered error while accepting connection; err={:?}",
                         err
                     );
@@ -129,6 +129,7 @@ impl TlsServer {
         F: Future + Send + 'static,
     {
         let addr: net::SocketAddr = format!("0.0.0.0:{}", port).parse().unwrap();
+        debug!("reverse_proxy forward {addr}");
 
         let config = TlsServer::make_config(privkey, certs);
 
