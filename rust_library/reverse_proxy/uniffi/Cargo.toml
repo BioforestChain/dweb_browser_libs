@@ -61,5 +61,5 @@ uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin
 camino = "1.1.1"
 
 [profile.release]
-# opt-level = 3
-# lto = true
+opt-level = 3
+lto = true
