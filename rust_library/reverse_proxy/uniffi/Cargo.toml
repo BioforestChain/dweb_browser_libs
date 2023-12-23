@@ -34,9 +34,9 @@ hyper = { version = "0.14.27", features = [
 hyper-rustls = { version = "0.24" }
 log = "*"
 rustls-native-certs = { version = "0.6", optional = true }
-rustls = { version = "0.21.8", default-features = false, features = [] }
+rustls = { version = "0.21", default-features = false, features = [] }
 tokio = { version = "1", features = ["full"] }
-tokio-rustls = { version = "0.24.0", default-features = false }
+tokio-rustls = { version = "0.24", default-features = false }
 webpki-roots = { version = "0.25", optional = true }
 futures-util = { version = "0.3", default-features = false }
 rustls-pemfile = "1.0.3"
@@ -61,5 +61,5 @@ uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin
 camino = "1.1.1"
 
 [profile.release]
-opt-level = 3
-lto = true
+# opt-level = 3
+# lto = true

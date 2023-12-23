@@ -1,30 +1,16 @@
-use rcgen::Certificate;
-use reverse_proxy::tls_server::{OpenConnection, TlsServer};
-use rustls::PrivateKey;
-use std::sync::Arc;
+use reverse_proxy::tls_server::TlsServer;
 
-use mio::net::{TcpListener, TcpStream};
 use rcgen::generate_simple_self_signed;
 
 #[macro_use]
 extern crate log;
-
-use std::collections::HashMap;
-use std::fs;
-use std::io;
-use std::io::{BufReader, Read, Write};
-use std::net;
 
 #[macro_use]
 extern crate serde_derive;
 
 use docopt::Docopt;
 
-use rustls::server::{
-    AllowAnyAnonymousOrAuthenticatedClient, AllowAnyAuthenticatedClient, NoClientAuth,
-    UnparsedCertRevocationList,
-};
-use rustls::{self, RootCertStore};
+use rustls::{self};
 
 // Token for our listening socket.
 const USAGE: &str = "
@@ -49,7 +35,8 @@ struct Args {
     flag_forward: Option<u16>,
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let version = env!("CARGO_PKG_NAME").to_string() + ", version: " + env!("CARGO_PKG_VERSION");
 
     let args: Args = Docopt::new(USAGE)
@@ -68,12 +55,16 @@ fn main() {
 
     env_logger::init();
 
-    println!("args.flag_port={:?}",args.flag_port);
+    println!("args.flag_port={:?}", args.flag_port);
 
     TlsServer::forward(
         args.flag_port.unwrap_or(1443),
         args.flag_forward.unwrap_or(8000),
         private_key,
         cert_chain,
-    );
+        async {
+            println!("server started okk~");
+        },
+    )
+    .await;
 }
