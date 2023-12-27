@@ -1,7 +1,7 @@
 plugins {
   // id(libs.plugins.kotlinxMultiplatform.get().pluginId)
   // id(libs.plugins.androidLibrary.get().pluginId)
-  id("mobile-target")
+  id("kmp-target")
 }
 
 kotlin {
