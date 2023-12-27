@@ -7,6 +7,7 @@ use hyper::client::HttpConnector;
 use rand::{thread_rng, Rng};
 use rcgen::generate_simple_self_signed;
 use std::convert::Infallible;
+use std::net::TcpListener;
 use std::vec::Vec;
 use tokio::join;
 use tokio::sync::oneshot;
@@ -51,7 +52,7 @@ fn init_log() {}
 #[tokio::main]
 pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
     init_log();
-    let frontend_port = random_port();
+    let frontend_port = find_free_port();
 
     let (proxy_tx, proxy_rx) = oneshot::channel::<u16>();
     let (frontend_tx, frontend_rx) = oneshot::channel::<u16>();
@@ -73,6 +74,29 @@ fn random_port() -> u16 {
     let mut rng = thread_rng(); // 创建一个随机数生成器
     let random_port = rng.gen_range(49152..65535);
     random_port
+}
+
+fn find_free_port() -> u16 {
+    let mut port: u16 = 0;
+    match TcpListener::bind(format!("127.0.0.1:{}", random_port())) {
+        Ok(listener) => {
+            match listener.local_addr() {
+                Ok(addr) => {
+                    port = addr.port();
+                } 
+                Err(_) => {}
+            }
+            drop(listener);
+        }
+        Err(_) => {}
+    }
+
+    if port != 0 {
+        info!("find_free_port: {}", port);
+        port
+    } else {
+        find_free_port()
+    }
 }
 
 async fn run_frontend_server<F>(frontend_port: u16, backend_port: u16, on_listen: F)
@@ -108,7 +132,7 @@ where
 
 // async fn run_proxy_server(proxy_port: u16, frontend_port: u16) -> bool {
 async fn run_proxy_server(frontend_port: u16, tx: oneshot::Sender<u16>) {
-    let addr = format!("0.0.0.0:{}", random_port()).parse().unwrap();
+    let addr = format!("0.0.0.0:{}", find_free_port()).parse().unwrap();
 
     let client = Client::builder()
         .http1_title_case_headers(true)
