@@ -70,33 +70,11 @@ pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
     );
 }
 
-fn random_port() -> u16 {
-    let mut rng = thread_rng(); // 创建一个随机数生成器
-    let random_port = rng.gen_range(49152..65535);
-    random_port
-}
-
 fn find_free_port() -> u16 {
-    let mut port: u16 = 0;
-    match TcpListener::bind(format!("127.0.0.1:{}", random_port())) {
-        Ok(listener) => {
-            match listener.local_addr() {
-                Ok(addr) => {
-                    port = addr.port();
-                } 
-                Err(_) => {}
-            }
-            drop(listener);
-        }
-        Err(_) => {}
-    }
-
-    if port != 0 {
-        info!("find_free_port: {}", port);
-        port
-    } else {
-        find_free_port()
-    }
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let port = listener.local_addr().unwrap().port();
+    drop(listener);
+    port
 }
 
 async fn run_frontend_server<F>(frontend_port: u16, backend_port: u16, on_listen: F)
