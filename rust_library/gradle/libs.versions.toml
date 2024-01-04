@@ -1,10 +1,9 @@
 [versions]
-agp = "8.1.2"
+agp = "8.2.0"
 kotlin = "1.9.21"
 compose = "1.5.4"
-kotlinCompilerExtensionVersion = "1.5.4"
 compose-material3 = "1.1.2"
-androidx-activityCompose = "1.8.1"
+androidx-activityCompose = "1.8.2"
 jvmTarget = "17"
 javaVersion = "VERSION_17" # JavaVersion.VERSION_17
 compileSdkVersion = "34" # Int
@@ -12,9 +11,10 @@ buildToolsVersion = "29.0.2"
 minSdkVersion = "28" # Int
 targetSdkVersion = "34" # Int
 
-kotlinx-atomicfu-version = "0.22.0"
+kotlinx-coroutines = "1.7.3"
+kotlinx-atomicfu-version = "0.23.1"
 okio-version = "3.6.0"
-kotlinx-datetime-version = "0.4.1"
+kotlinx-datetime-version = "0.5.0"
 java-jna-version = "5.13.0"
 
 [libraries]
@@ -29,6 +29,7 @@ kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime-version" }
 squareup-okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio-version" }
 java-jna = { module = "net.java.dev.jna:jna", version.ref = "java-jna-version" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

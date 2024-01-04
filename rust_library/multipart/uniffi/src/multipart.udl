@@ -1,0 +1,17 @@
+namespace multipart {
+    string? get_boundary(record<string, string> headers);
+    void process_multipart_open(
+        string boundary, 
+        MultipartConsumer consumer
+    );
+    void process_multipart_write(i32 id, bytes chunk);
+    void process_multipart_close(i32 id);
+};
+
+callback interface MultipartConsumer {
+    void on_open(i32 id);
+    void on_field_start([ByRef] string? name, [ByRef] string? file_name, [ByRef] string? content_type, i32 field_index);
+    void on_field_chunk(i32 field_index, bytes chunk);
+    void on_field_end(i32 field_index);
+    void on_close(i32 id);
+};

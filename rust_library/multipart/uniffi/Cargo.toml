@@ -1,0 +1,48 @@
+[package]
+name = "multipart"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[features]
+tokio-io = ["tokio-util"]
+
+[dependencies]
+uniffi = { version = "0.25.2", features = ["tokio"] }
+uniffi_macros = "0.25.2"
+uniffi_bindgen = "0.25.2"
+
+# lib deps
+log = "*"
+hyper = { version = "1.1.0", features = [
+    "http1",
+    "server"
+] }
+multer = "3.0.0"
+http-body-util = "0.1"
+tokio = { version = "1", features = ["full"] }
+tokio-stream = "0.1.14"
+tokio-util = { version = "0.7", features = ["io"],  optional = true }
+futures-util = { version = "0.3", default-features = false }
+lazy_static = "1.4.0"
+
+[target.'cfg(target_os = "android")'.dependencies]
+android_logger = "0.13"
+
+[dev-dependencies]
+docopt = "*"
+serde_derive = "*"
+serde = "*"
+env_logger = "*"
+
+[build-dependencies]
+uniffi = { version = "0.25.2", features = ["build"] }
+uniffi_bindgen = "0.25.2"
+uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings", rev = "55d51f3abf9819b32bd81756053dcfc10f8d5522" }
+camino = "1.1.1"
+
+[profile.release]
+opt-level = 3
+lto = true
