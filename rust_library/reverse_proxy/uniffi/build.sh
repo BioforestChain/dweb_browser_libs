@@ -1,3 +1,4 @@
+# android
 rm -rf ../src/androidMain
 
 echo "cargo building aarch64-linux-android..."
@@ -14,6 +15,7 @@ cp -r ./target/bindings/jvmMain/ ../src/androidMain
 rm -rf ../src/commonMain
 cp -r ./target/bindings/commonMain/ ../src/commonMain
 
+# ios
 echo "cargo building aarch64-apple-ios..."
 cargo build --target aarch64-apple-ios --release --quiet
 echo "cargo building x86_64-apple-ios..."
@@ -34,3 +36,25 @@ mkdir -p ../src/libs/iosSimulatorArm64/
 cp ./target/aarch64-apple-ios-sim/release/libreverse_proxy.a ../src/libs/iosSimulatorArm64/
 mkdir -p ../src/libs/iosX64/
 cp ./target/x86_64-apple-ios/release/libreverse_proxy.a ../src/libs/iosX64/
+
+# macos
+echo "cargo building aarch64-apple-darwin..."
+cargo build --target aarch64-apple-darwin --release --quiet
+echo "cargo building x86_64-apple-darwin..."
+cargo build --target x86_64-apple-darwin --release --quiet
+
+mkdir -p ../src/desktopMain/jniLibs/darwinArm64/
+cp -r ./target/aarch64-apple-darwin/release/libreverse_proxy.a ../src/desktopMain/jniLibs/darwinArm64/
+mkdir -p ../src/desktopMain/jniLibs/darwinX64/
+cp -r ./target/x86_64-apple-darwin/release/libreverse_proxy.a ../src/desktopMain/jniLibs/darwinX64/
+
+# windows
+
+echo "cargo building x86_64-pc-windows-gnu..."
+cargo build --target x86_64-pc-windows-gnu --release --quiet
+
+mkdir -p ../src/desktopMain/jniLibs/windowsX64/
+cp -r ./target/x86_64-pc-windows-gnu/release/reverse_proxy.dll ../src/desktopMain/jniLibs/windowsX64/
+
+# jvm
+cp -r ./target/bindings/jvmMain/ ../src/desktopMain

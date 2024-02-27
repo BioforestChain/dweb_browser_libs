@@ -1,3 +1,4 @@
+# android
 rm -rf ../src/androidMain
 
 echo "cargo building aarch64-linux-android..."
@@ -9,11 +10,15 @@ cargo ndk -t i686-linux-android -o ../src/androidMain/jniLibs build --release --
 echo "cargo building x86_64-linux-android..."
 cargo ndk -t x86_64-linux-android -o ../src/androidMain/jniLibs build --release --quiet
 
+# double build，for uniffi_bindgen::generate_external_bindings
+cargo ndk -t x86_64-linux-android -o ../src/androidMain/jniLibs build --release --quiet
+
 cp -r ./target/bindings/jvmMain/ ../src/androidMain
 
 rm -rf ../src/commonMain
 cp -r ./target/bindings/commonMain/ ../src/commonMain
 
+# ios
 echo "cargo building aarch64-apple-ios..."
 cargo build --target aarch64-apple-ios --release --quiet
 echo "cargo building x86_64-apple-ios..."
@@ -34,3 +39,25 @@ mkdir -p ../src/libs/iosSimulatorArm64/
 cp ./target/aarch64-apple-ios-sim/release/libmultipart.a ../src/libs/iosSimulatorArm64/
 mkdir -p ../src/libs/iosX64/
 cp ./target/x86_64-apple-ios/release/libmultipart.a ../src/libs/iosX64/
+
+# macos
+echo "cargo building aarch64-apple-darwin..."
+cargo build --target aarch64-apple-darwin --release --quiet
+echo "cargo building x86_64-apple-darwin..."
+cargo build --target x86_64-apple-darwin --release --quiet
+
+mkdir -p ../src/desktopMain/jniLibs/darwinArm64/
+cp -r ./target/aarch64-apple-darwin/release/libmultipart.a ../src/desktopMain/jniLibs/darwinArm64/
+mkdir -p ../src/desktopMain/jniLibs/darwinX64/
+cp -r ./target/x86_64-apple-darwin/release/libmultipart.a ../src/desktopMain/jniLibs/darwinX64/
+
+# windows
+
+echo "cargo building x86_64-pc-windows-gnu..."
+cargo build --target x86_64-pc-windows-gnu --release --quiet
+
+mkdir -p ../src/desktopMain/jniLibs/windowsX64/
+cp -r ./target/x86_64-pc-windows-gnu/release/multipart.dll ../src/desktopMain/jniLibs/windowsX64/
+
+# jvm
+cp -r ./target/bindings/jvmMain/ ../src/desktopMain

@@ -594,9 +594,7 @@ object FfiConverterTypeMultipartConsumer: FfiConverterCallbackInterface<Multipar
     private val foreignCallback = ForeignCallbackMultipartConsumer.toForeignCallback()
 
     override fun register(lib: UniFFILib) {
-        rustCall() { status ->
-            lib.uniffi_multipart_fn_init_callback_multipartconsumer(foreignCallback, status)
-        }
+        lib.uniffi_multipart_fn_init_callback_multipartconsumer(foreignCallback)
     }
 }
 

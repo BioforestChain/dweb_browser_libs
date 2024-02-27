@@ -1,12 +1,19 @@
 use camino::Utf8Path;
 use std::env;
+use std::path::Path;
+use std::{fs, io::Error, thread, time::Duration};
 use uniffi_kotlin_multiplatform::KotlinBindingGenerator;
 
 fn main() {
     let path = env::current_dir().unwrap();
-    let test_directory = path.parent().unwrap();
-    let test_directory_name = test_directory.file_name().unwrap();
-    let test = test_directory_name.to_str().unwrap();
+    let test = path
+        .parent()
+        .unwrap()
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_string();
 
     let udl_file_path = format!("./src/{}.udl", test);
     let udl_file = Utf8Path::new(&udl_file_path);
@@ -24,16 +31,56 @@ fn main() {
         target,
         mode,
         test,
-        if target.contains("ios") { "a" } else { "so" }
+        if target.contains("ios") || target.contains("darwin") {
+            "a"
+        } else if target.contains("windows") {
+            "dll"
+        } else {
+            "so"
+        }
     );
-    let library_file = Utf8Path::new(&library_file_path);
-    uniffi_bindgen::generate_external_bindings(
-        KotlinBindingGenerator {},
-        udl_file,
-        None::<&Utf8Path>,
-        Some(out_dir),
-        Some(library_file),
-        Some(test),
-    )
-    .unwrap();
+    let library_file_path_clone = library_file_path.clone();
+    // thread::spawn(move || {
+    //     let udl_file = Utf8Path::new(&udl_file_path);
+    //     let library_file = Utf8Path::new(&library_file_path_clone);
+    //     loop {
+    //         thread::sleep(Duration::from_micros(100)); // 等待一段时间，以确保已生成
+    //         println!(
+    //             "library_file={},exists={}",
+    //             library_file,
+    //             library_file.exists()
+    //         );
+    //         if library_file.exists() {
+    //             uniffi_bindgen::generate_external_bindings(
+    //                 KotlinBindingGenerator {},
+    //                 udl_file,
+    //                 None::<&Utf8Path>,
+    //                 Some(out_dir),
+    //                 Some(library_file),
+    //                 Some(&test),
+    //             )
+    //             .unwrap();
+    //             break;
+    //         }
+    //     }
+    // });
+
+    let udl_file = Utf8Path::new(&udl_file_path);
+    let library_file = Utf8Path::new(&library_file_path_clone);
+    println!(
+        "library_file={},exists={}",
+        library_file,
+        library_file.exists()
+    );
+    if library_file.exists() {
+        uniffi_bindgen::generate_external_bindings(
+            KotlinBindingGenerator {},
+            udl_file,
+            None::<&Utf8Path>,
+            Some(out_dir),
+            Some(library_file),
+            Some(&test),
+        )
+        .unwrap();
+    }
 }

@@ -52,6 +52,9 @@ kotlin {
       })
     })
   }
+
+  jvm("desktop")
+  val desktopMain = sourceSets.getByName("desktopMain")
 }
 
 android {
