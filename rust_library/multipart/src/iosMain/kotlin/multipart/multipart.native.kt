@@ -14,7 +14,7 @@ import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.staticCFunction
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("ACTUAL_WITHOUT_EXPECT", "ACTUAL_TYPE_ALIAS_WITH_USE_SITE_VARIANCE")
+@Suppress("ACTUAL_WITHOUT_EXPECT", "ACTUAL_TYPE_ALIAS_WITH_USE_SITE_VARIANCE", "ACTUAL_TYPE_ALIAS_WITH_COMPLEX_SUBSTITUTION")
 actual typealias Pointer = CPointer<out CPointed>
 
 actual fun kotlin.Long.toPointer(): Pointer = requireNotNull(this.toCPointer())

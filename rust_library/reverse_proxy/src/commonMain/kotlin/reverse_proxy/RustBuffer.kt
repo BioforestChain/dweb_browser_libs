@@ -3,10 +3,10 @@ package reverse_proxy
 import okio.Buffer
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class RustBuffer
 
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "ACTUAL_TYPE_ALIAS_WITH_COMPLEX_SUBSTITUTION", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class RustBufferPointer
 
 expect fun RustBuffer.toBuffer(): Buffer

@@ -1,6 +1,6 @@
 package reverse_proxy
 
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class ForeignCallback
 
 typealias Handle = ULong

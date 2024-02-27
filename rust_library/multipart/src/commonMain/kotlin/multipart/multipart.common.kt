@@ -14,7 +14,7 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class Pointer
 
 expect fun kotlin.Long.toPointer(): Pointer
@@ -22,17 +22,17 @@ expect fun kotlin.Long.toPointer(): Pointer
 expect fun Pointer.toLong(): kotlin.Long
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class UBytePointer
 
 expect fun UBytePointer.asSource(len: kotlin.Long): NoCopySource
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class RustBuffer
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class RustBufferPointer
 
 expect fun RustBuffer.asSource(): NoCopySource
@@ -64,7 +64,7 @@ interface NoCopySource {
 // completeness.
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class ForeignBytes
 // The FfiConverter interface handles converter types to and from the FFI
 //
@@ -106,7 +106,7 @@ interface FfiConverterRustBuffer<KotlinType> : FfiConverter<KotlinType, RustBuff
 // Error runtime.
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class RustCallStatus
 
 internal const val RUST_CALL_STATUS_SUCCESS: kotlin.Byte = 0
@@ -123,10 +123,11 @@ expect val RustCallStatus.statusCode: kotlin.Byte
 
 expect val RustCallStatus.errorBuffer: RustBuffer
 
+@Suppress("INCOMPATIBLE_MATCHING", "ACTUAL_TYPE_ALIAS_TO_CLASS_WITH_DECLARATION_SITE_VARIANCE")
 expect fun <T> withRustCallStatus(block: (RustCallStatus) -> T): T
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class RustCallStatusByValue
 
 class InternalException(message: kotlin.String) : Exception(message)
@@ -211,7 +212,7 @@ internal fun resumeContinutation(continuationHandle: kotlin.ULong, pollResult: k
 }
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 internal expect class UniFfiRustFutureContinuationCallbackType
 
 internal expect fun createUniFfiRustFutureContinuationCallback(): UniFfiRustFutureContinuationCallbackType
@@ -402,7 +403,7 @@ internal class ConcurrentHandleMap<T>(
 }
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved
-@Suppress("NO_ACTUAL_FOR_EXPECT")
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_INCOMPATIBILITY")
 expect class ForeignCallback
 
 // Magic number for the Rust proxy to call using the same mechanism as every other method,
