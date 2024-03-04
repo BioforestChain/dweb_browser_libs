@@ -30,7 +30,16 @@ kotlin {
     }
   }
 
-  applyDefaultHierarchyTemplate()
+  @Suppress("OPT_IN_USAGE")
+  applyDefaultHierarchyTemplate {
+    common {
+      group("jvm") {
+        withJvm()
+        withAndroidTarget()
+      }
+      withIos()
+    }
+  }
 
   sourceSets.all {
     languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
@@ -57,6 +66,9 @@ kotlin {
 
   jvm("desktop")
   val desktopMain = sourceSets.getByName("desktopMain")
+  desktopMain.dependencies {
+    api(libs.java.jna)
+  }
 }
 
 android {
