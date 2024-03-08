@@ -43,18 +43,20 @@ cargo build --target aarch64-apple-darwin --release --quiet
 echo "cargo building x86_64-apple-darwin..."
 cargo build --target x86_64-apple-darwin --release --quiet
 
-mkdir -p ../src/desktopMain/jniLibs/darwinArm64/
-cp -r ./target/aarch64-apple-darwin/release/libziplib.a ../src/desktopMain/jniLibs/darwinArm64/
-mkdir -p ../src/desktopMain/jniLibs/darwinX64/
-cp -r ./target/x86_64-apple-darwin/release/libziplib.a ../src/desktopMain/jniLibs/darwinX64/
+mkdir -p ../src/desktopMain/resources/darwin-aarch64/
+cp -r ./target/aarch64-apple-darwin/release/libziplib.a ../src/desktopMain/resources/darwin-aarch64/
+cp -r ./target/aarch64-apple-darwin/release/libziplib.dylib ../src/desktopMain/resources/darwin-aarch64/
+mkdir -p ../src/desktopMain/resources/darwin-x86_64/
+cp -r ./target/x86_64-apple-darwin/release/libziplib.a ../src/desktopMain/resources/darwin-x86_64/
+cp -r ./target/x86_64-apple-darwin/release/libziplib.dylib ../src/desktopMain/resources/darwin-x86_64/
 
 # windows
 
 echo "cargo building x86_64-pc-windows-gnu..."
 cargo build --target x86_64-pc-windows-gnu --release --quiet
 
-mkdir -p ../src/desktopMain/jniLibs/windowsX64/
-cp -r ./target/x86_64-pc-windows-gnu/release/ziplib.dll ../src/desktopMain/jniLibs/windowsX64/
+mkdir -p ../src/desktopMain/resources/windows-x86_64/
+cp -r ./target/x86_64-pc-windows-gnu/release/ziplib.dll ../src/desktopMain/resources/windows-x86_64/
 
 # jvm
 cp -r ./target/bindings/jvmMain/ ../src/desktopMain
