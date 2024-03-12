@@ -1,0 +1,4 @@
+namespace biometrics {
+    i8 check_support_biometrics();
+};
+

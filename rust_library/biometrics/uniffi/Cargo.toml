@@ -1,0 +1,48 @@
+[package]
+name = "biometrics"
+version = "0.1.1"
+edition = "2021"
+
+[lib]
+# crate-type = ["cdylib", "staticlib"]
+
+[[bin]]
+# This can be whatever name makes sense for your project, but the rest of this tutorial assumes uniffi-bindgen.
+name = "uniffi-bindgen"
+path = "uniffi-bindgen.rs"
+
+[dependencies]
+uniffi = { version = "0.23", features = ["cli"] }
+uniffi_macros = "0.23.0"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+biometrics-swift = { path = "./lib-swift" }
+
+[target.'cfg(target_os = "windows")'.dependencies.windows]
+version = '0.54.0'
+features = [
+    'Win32_Foundation',
+    'Win32_Security',
+    # 'Win32_System_Com',
+    # 'Win32_System_Threading',
+    # 'Win32_System_SystemServices',
+    # "Win32_Devices_BiometricFramework"
+]
+
+[dev-dependencies]
+docopt = "*"
+serde_derive = "*"
+serde = "*"
+rustls-pki-types = "*"
+env_logger = "*"
+
+[build-dependencies]
+uniffi = { version = "0.23", features = ["build"] }
+uniffi_bindgen = "0.23.0"
+uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings", rev = "bf48c5fcb153856e3055025a3cbfa56fbf213188" }
+camino = "1.1.1"
+swift-rs = { version = "1.0.6", features = ["build"]}
+
+[profile.release]
+opt-level = 3
+lto = true
