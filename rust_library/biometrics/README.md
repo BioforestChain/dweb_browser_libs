@@ -1,13 +1,12 @@
 ### Prepare Env
+> MacOS编译Windows平台参考：https://gist.github.com/Mefistophell/9787e1b6d2d9441c16d2ac79d6a505e6
 
 ```shell
-rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
-rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
-cargo install cbindgen
-cargo install cargo-ndk
+rustup target add aarch64-apple-darwin x86_64-apple-darwin
+rustup target add x86_64-pc-windows-gnu
 ```
 
-### Android & IOS
+### MacOS & Windows
 
 ```shell
 ./uniffi/build.sh
