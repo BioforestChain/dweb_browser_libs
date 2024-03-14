@@ -7,11 +7,11 @@ mod os;
 mod os;
 
 pub fn check_support_biometrics() -> i8 {
-  os::check_support_biometrics(None)
+  os::check_support_biometrics()
 }
 
-pub fn biometrics_result_content() -> i8 {
-  os::biometrics_result_content(None, "test".to_string())
+pub fn biometrics_result_content(reason: String) -> i8 {
+  os::biometrics_result_content(reason)
 }
 
 uniffi::include_scaffolding!("biometrics");

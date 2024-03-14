@@ -1,8 +1,7 @@
-
 pub fn check_support_biometrics() -> i8 {
-  0
+    biometrics_win::check_support_biometrics()
 }
 
-pub fn biometrics_result_content() -> i8 {
-  0
+pub fn biometrics_result_content(reason: String) -> i8 {
+    biometrics_win::biometrics_result_content(reason)
 }

@@ -98,7 +98,8 @@ dependencies = [
 name = "biometrics"
 version = "0.1.1"
 dependencies = [
- "biometrics-swift",
+ "biometrics-macos",
+ "biometrics-win",
  "camino",
  "docopt",
  "env_logger",
@@ -110,14 +111,20 @@ dependencies = [
  "uniffi-kotlin-multiplatform",
  "uniffi_bindgen",
  "uniffi_macros",
- "windows",
 ]
 
 [[package]]
-name = "biometrics-swift"
+name = "biometrics-macos"
 version = "0.1.0"
 dependencies = [
  "swift-rs",
+]
+
+[[package]]
+name = "biometrics-win"
+version = "0.1.0"
+dependencies = [
+ "windows",
 ]
 
 [[package]]
