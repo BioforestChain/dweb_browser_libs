@@ -38,7 +38,7 @@ pub fn biometrics_result_content(reason: String) -> (bool, String) {
 		// https://learn.microsoft.com/zh-cn/uwp/api/windows.security.credentials.ui.userconsentverificationresult?view=winrt-22621
 		Ok(result) => match result {
 			UserConsentVerificationResult::Verified => (true, "".to_string()),
-			_ => (false, "There is no biometric verifier device available.")
+			_ => (false, "There is no biometric verifier device available.".to_string())
 		}
 		Err(_) => (false, "".to_string())
 	}
