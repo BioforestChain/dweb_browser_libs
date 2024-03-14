@@ -1,0 +1,5 @@
+namespace biometrics {
+    i8 check_support_biometrics();
+    i8 biometrics_result_content(string reason);
+};
+
