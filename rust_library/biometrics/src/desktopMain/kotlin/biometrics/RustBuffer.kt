@@ -37,14 +37,14 @@ actual val RustBuffer.dataSize: Int
 
 actual fun RustBuffer.free() =
     rustCall { status ->
-        UniFFILib.ffi_biometrics_bc7f_rustbuffer_free(this, status)
+        UniFFILib.ffi_biometrics_5a15_rustbuffer_free(this, status)
     }
 
 actual fun allocRustBuffer(buffer: Buffer): RustBuffer =
     rustCall { status ->
         val size = buffer.size
         var readPosition = 0L
-        UniFFILib.ffi_biometrics_bc7f_rustbuffer_alloc(size.toInt(), status).also { rustBuffer: RustBuffer ->
+        UniFFILib.ffi_biometrics_5a15_rustbuffer_alloc(size.toInt(), status).also { rustBuffer: RustBuffer ->
             val data = rustBuffer.data
                 ?: throw RuntimeException("RustBuffer.alloc() returned null data pointer (size=${size})")
             rustBuffer.writeField("len", size.toInt())

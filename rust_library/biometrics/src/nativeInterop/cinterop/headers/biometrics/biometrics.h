@@ -48,27 +48,27 @@ typedef struct RustCallStatus {
 // ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
 #endif // def UNIFFI_SHARED_H
 
-int8_t biometrics_bc7f_check_support_biometrics(
+int8_t biometrics_5a15_check_support_biometrics(
       
     RustCallStatus *_Nonnull out_status
     );
-int8_t biometrics_bc7f_biometrics_result_content(
+RustBuffer biometrics_5a15_biometrics_result_content(
       RustBuffer reason,
     RustCallStatus *_Nonnull out_status
     );
-RustBuffer ffi_biometrics_bc7f_rustbuffer_alloc(
+RustBuffer ffi_biometrics_5a15_rustbuffer_alloc(
       int32_t size,
     RustCallStatus *_Nonnull out_status
     );
-RustBuffer ffi_biometrics_bc7f_rustbuffer_from_bytes(
+RustBuffer ffi_biometrics_5a15_rustbuffer_from_bytes(
       ForeignBytes bytes,
     RustCallStatus *_Nonnull out_status
     );
-void ffi_biometrics_bc7f_rustbuffer_free(
+void ffi_biometrics_5a15_rustbuffer_free(
       RustBuffer buf,
     RustCallStatus *_Nonnull out_status
     );
-RustBuffer ffi_biometrics_bc7f_rustbuffer_reserve(
+RustBuffer ffi_biometrics_5a15_rustbuffer_reserve(
       RustBuffer buf,int32_t additional,
     RustCallStatus *_Nonnull out_status
     );
