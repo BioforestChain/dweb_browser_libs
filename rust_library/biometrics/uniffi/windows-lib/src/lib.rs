@@ -26,7 +26,7 @@ pub fn check_support_biometrics() -> i8 {
 }
 
 // 参考：https://github.com/bitwarden/clients/blob/d28634b06882feee3cf6bb9b2f1e5e5aea91eac8/apps/desktop/desktop_native/src/biometric/windows.rs#L48
-pub fn biometrics_result_content(reason: String) -> i8 {
+pub fn biometrics_result_content(reason: String) -> (bool, String) {
 	let interop = factory::<UserConsentVerifier, IUserConsentVerifierInterop>().unwrap();
 
 	// https://learn.microsoft.com/en-us/uwp/api/windows.security.credentials.ui.userconsentverifier.requestverificationasync?view=winrt-22621
@@ -37,9 +37,9 @@ pub fn biometrics_result_content(reason: String) -> i8 {
 	match operation.get() {
 		// https://learn.microsoft.com/zh-cn/uwp/api/windows.security.credentials.ui.userconsentverificationresult?view=winrt-22621
 		Ok(result) => match result {
-			UserConsentVerificationResult::Verified => 0,
-			_ => -1
+			UserConsentVerificationResult::Verified => (true, "".to_string()),
+			_ => (false, "There is no biometric verifier device available.")
 		}
-		Err(_) => -1
+		Err(_) => (false, "".to_string())
 	}
 }

@@ -26,6 +26,12 @@ pub(crate) struct LAContext {
     interactionNotAllowed: Bool,
 }
 
+#[repr(C)]
+pub(crate) struct BiometricsResult {
+    success: bool,
+    message: String,
+}
+
 /// Init LAContext
 swift!(pub(crate) fn lacontext_new() -> SRObject<LAContext>);
 
@@ -33,7 +39,7 @@ swift!(pub(crate) fn lacontext_new() -> SRObject<LAContext>);
 swift!(pub(crate) fn lacontext_canEvaluatePolicy(context: &SRObject<LAContext>, policy: Int) -> Bool);
 
 /// Evaluates the specified policy.
-swift!(pub(crate) fn lacontext_evaluatePolicy(context: &SRObject<LAContext>, policy: Int, reason: &SRString) -> Bool);
+swift!(pub(crate) fn lacontext_evaluatePolicy(context: &SRObject<LAContext>, policy: Int, reason: &SRString) -> SRObject<BiometricsResult>);
 
 impl From<i8> for LAPolicy {
     fn from(value: i8) -> Self {
@@ -84,14 +90,16 @@ pub fn check_support_biometrics(policy: Option<i8>) -> i8 {
     }
 }
 
-pub fn biometrics_result_content(policy: Option<i8>, reason: String) -> i8 {
+pub fn biometrics_result_content(policy: Option<i8>, reason: String) -> (bool, String) {
     let context = unsafe { lacontext_new() };
     let la_policy = policy.unwrap_or(LAPolicy::DeviceOwnerAuthentication.into());
     let localized_reason: SRString = reason.as_str().into();
+    let result = unsafe { lacontext_evaluatePolicy(&context, la_policy.into(), &localized_reason) };
+    
 
-    if unsafe { lacontext_evaluatePolicy(&context, la_policy.into(), &localized_reason) } {
-        0
+    if result.success {
+        (result.success, "".to_string())
     } else {
-        -1
+        (false, result.message.clone())
     }
 }

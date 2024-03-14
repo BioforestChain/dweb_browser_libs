@@ -6,12 +6,19 @@ mod os;
 #[path = "windows.rs"]
 mod os;
 
+mod consts;
+use consts::BiometricsResult;
+
 pub fn check_support_biometrics() -> i8 {
   os::check_support_biometrics()
 }
 
-pub fn biometrics_result_content(reason: String) -> i8 {
-  os::biometrics_result_content(reason)
+pub fn biometrics_result_content(reason: String) -> BiometricsResult {
+  let (success, message) = os::biometrics_result_content(reason);
+  BiometricsResult {
+    success,
+    message
+  }
 }
 
 uniffi::include_scaffolding!("biometrics");
