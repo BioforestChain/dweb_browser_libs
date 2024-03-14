@@ -1,3 +1,3 @@
 plugins {
-  id("kmp-ffi")
+  id("target-desktop-ffi")
 }
