@@ -58,8 +58,8 @@ cp -r ./target/x86_64-apple-darwin/release/libmultipart.dylib ../src/desktopMain
 echo "cargo building x86_64-pc-windows-gnu..."
 cargo build --target x86_64-pc-windows-gnu --release --quiet
 
-mkdir -p ../src/desktopMain/resources/windows-x86_64/
-cp -r ./target/x86_64-pc-windows-gnu/release/multipart.dll ../src/desktopMain/resources/windows-x86_64/
+mkdir -p ../src/desktopMain/resources/win32-x86-64/
+cp -r ./target/x86_64-pc-windows-gnu/release/multipart.dll ../src/desktopMain/resources/win32-x86-64/
 
 # jvm
 cp -r ./target/bindings/jvmMain/ ../src/desktopMain
