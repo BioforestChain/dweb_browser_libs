@@ -12,6 +12,7 @@ pluginManagement {
   }
 }
 
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
   repositories {
     google {
@@ -25,6 +26,18 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "rust-library"
-include(":ziplib")
-include(":reverse_proxy")
-include(":multipart")
+//include(":ziplib")
+//include(":reverse_proxy")
+//include(":multipart")
+//include(":biometrics")
+rootDir.listFiles { file -> file.isDirectory }
+  ?.forEach { dir ->
+    if (File(dir, "build.gradle.kts").exists()) {
+      include(dir.name)
+      project(":${dir.name}").apply {
+        name = "lib_${dir.name}"
+        projectDir = file(dir)
+        buildFileName = "build.gradle.kts"
+      }
+    }
+  }

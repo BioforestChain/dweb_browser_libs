@@ -12,6 +12,8 @@ kotlin {
     }
   }
 
+  jvm("desktop")
+
   jvmToolchain {
     languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmTarget.get()))
   }
