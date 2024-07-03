@@ -1,0 +1,11 @@
+namespace hardware_info {
+    WinHardwareInfoData get_hardware_info();
+};
+
+dictionary WinHardwareInfoData {
+    string uuid;
+    string? cpu_info;
+    string? disk_info;
+    string? gpu_info;
+    string? memory_info;
+};

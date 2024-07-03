@@ -1,0 +1,29 @@
+[package]
+name = "hardware_info"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[[bin]]
+# This can be whatever name makes sense for your project, but the rest of this tutorial assumes uniffi-bindgen.
+name = "uniffi-bindgen"
+path = "uniffi-bindgen.rs"
+
+[dependencies]
+uniffi = { version = "0.23", features = ["cli"] }
+uniffi_macros = "0.23.0"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+hardware_info-win = { path = "./windows-lib" }
+
+[build-dependencies]
+uniffi = { version = "0.23", features = ["build"] }
+uniffi_bindgen = "0.23.0"
+uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings", rev = "bf48c5fcb153856e3055025a3cbfa56fbf213188" }
+camino = "1.1.1"
+
+[profile.release]
+opt-level = 3
+lto = true
