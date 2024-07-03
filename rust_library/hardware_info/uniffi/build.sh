@@ -1,9 +1,9 @@
-# rm -rf ../src/commonMain
-# cp -r ./target/bindings/commonMain/ ../src/commonMain
+rm -rf ../src/commonMain
+cp -r ./target/bindings/commonMain/ ../src/commonMain
 
-# rm -rf ../src/nativeInterop
-# cp -r ./target/bindings/nativeInterop/ ../src/nativeInterop
-# cp ../hardware_info.def ../src/nativeInterop/cinterop/
+rm -rf ../src/nativeInterop
+cp -r ./target/bindings/nativeInterop/ ../src/nativeInterop
+cp ../hardware_info.def ../src/nativeInterop/cinterop/
 
 # windows
 

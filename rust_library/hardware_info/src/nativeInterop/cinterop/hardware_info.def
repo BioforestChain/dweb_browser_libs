@@ -1,0 +1,3 @@
+staticLibraries = libhardware_info.a
+package = hardware_info.cinterop
+headers = hardware_info.h
