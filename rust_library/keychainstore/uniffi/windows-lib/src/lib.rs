@@ -18,8 +18,6 @@ use windows::Win32::Security::Credentials::{
     CRED_MAX_STRING_LENGTH, CRED_MAX_USERNAME_LENGTH, CRED_PERSIST_ENTERPRISE, CRED_TYPE_GENERIC,
 };
 
-pub struct KeyChainGenericStore {}
-
 /**
  * windows 只对 target_name 做索引
  * 所以在和 apple 兼容时，可以让 apple 中 service + account 的模式，在这里换成 target_name
@@ -27,166 +25,143 @@ pub struct KeyChainGenericStore {}
  * commont
  *
  */
-impl KeyChainGenericStore {
-    pub fn new() -> Self {
-        return Self {};
-    }
-    pub fn cred_write(
-        &self,
-        target_name: &str,
-        password: &mut [u8],
-        target_alias: &str,
-        username: &str,
-        comment: &str,
-    ) -> bool {
-        match self.safe_cred_write(target_name, password, target_alias, username, comment) {
-            Ok(_) => true,
-            Err(_) => false,
-        }
-    }
-    fn safe_cred_write(
-        &self,
-        target_name: &str,
-        password: &mut [u8],
-        target_alias: &str,
-        username: &str,
-        comment: &str,
-    ) -> Result<(), String> {
-        validate_username(username)?;
-        validate_target_alias(target_alias)?;
-        validate_comment(comment)?;
-        let mut username = to_wstr(username);
-        let mut target_name = to_wstr(target_name);
-        let mut target_alias = to_wstr(target_alias);
-        let mut comment = to_wstr(comment);
 
-        let flags = CRED_FLAGS::default();
-        let cred_type = CRED_TYPE_GENERIC;
-        let persist = CRED_PERSIST_ENTERPRISE;
-        // Ignored by CredWriteW
-        let last_written = FILETIME {
-            dwLowDateTime: 0,
-            dwHighDateTime: 0,
-        };
-        let attribute_count = 0;
-        let attributes: *mut CREDENTIAL_ATTRIBUTEW = std::ptr::null_mut();
-        let mut credential = CREDENTIALW {
-            Flags: flags,
-            Type: cred_type,
-            TargetName: PWSTR(target_name.as_mut_ptr()),
-            Comment: PWSTR(comment.as_mut_ptr()),
-            LastWritten: last_written,
-            CredentialBlobSize: password.len() as u32,
-            CredentialBlob: password.as_mut_ptr(),
-            Persist: persist,
-            AttributeCount: attribute_count,
-            Attributes: attributes,
-            TargetAlias: PWSTR(target_alias.as_mut_ptr()),
-            UserName: PWSTR(username.as_mut_ptr()),
-        };
-        // raw pointer to credential, is coerced from &mut
-        let p_credential: *const CREDENTIALW = &mut credential;
-        // Call windows API
-        return match unsafe { CredWriteW(p_credential, 0) } {
-            Err(_) => Err(decode_last_error()),
-            _ => Ok(()),
-        };
+pub fn cred_write(
+    target_name: &str,
+    password: &mut [u8],
+    target_alias: &str,
+    username: &str,
+    comment: &str,
+) -> bool {
+    match safe_cred_write(target_name, password, target_alias, username, comment) {
+        Ok(_) => true,
+        Err(_) => false,
     }
+}
+fn safe_cred_write(
+    target_name: &str,
+    password: &mut [u8],
+    target_alias: &str,
+    username: &str,
+    comment: &str,
+) -> Result<(), String> {
+    validate_username(username)?;
+    validate_target_alias(target_alias)?;
+    validate_comment(comment)?;
+    let mut username = to_wstr(username);
+    let mut target_name = to_wstr(target_name);
+    let mut target_alias = to_wstr(target_alias);
+    let mut comment = to_wstr(comment);
 
-    pub fn cred_has(&self, target_name: &str) -> bool {
-        // at this point, p_credential is just a pointer to nowhere.
-        // The allocation happens in the `CredReadW` call below.
-        let mut p_credential = MaybeUninit::uninit();
-        let result = {
-            let cred_type = CRED_TYPE_GENERIC;
-            let target_name = to_wstr(target_name);
-            unsafe {
-                CredReadW(
-                    PCWSTR::from_raw(target_name.as_ptr()),
-                    cred_type,
-                    0,
-                    p_credential.as_mut_ptr(),
-                )
-            }
-        };
-
-        return match result {
-            // `CredReadW` failed, so no allocation has been done, so no free needs to be done
-            Err(_) => false,
-            _ => {
-                let p_credential = unsafe { p_credential.assume_init() };
-                unsafe { CredFree(p_credential as *mut _) };
-                true
-            }
-        };
-    }
-    pub fn cred_get(&self, target_name: &str) -> Option<CredentialItem> {
-        match validate_target_name(target_name) {
-            Err(_) => return None,
-            _ => {}
-        }
-        // at this point, p_credential is just a pointer to nowhere.
-        // The allocation happens in the `CredReadW` call below.
-        let mut p_credential = MaybeUninit::uninit();
-        let result = {
-            let cred_type = CRED_TYPE_GENERIC;
-            let target_name = to_wstr(target_name);
-            unsafe {
-                CredReadW(
-                    PCWSTR::from_raw(target_name.as_ptr()),
-                    cred_type,
-                    0,
-                    p_credential.as_mut_ptr(),
-                )
-            }
-        };
-
-        return match result {
-            // `CredReadW` failed, so no allocation has been done, so no free needs to be done
-            Err(_) => None,
-            _ => {
-                // `CredReadW` succeeded, so p_credential points at an allocated credential.
-                // To do anything with it, we need to cast it to the right type.  That takes two steps:
-                // first we remove the "uninitialized" guard from around it, then we reinterpret it as a
-                // pointer to the right structure type.
-                let p_credential = unsafe { p_credential.assume_init() };
-                let w_credential: CREDENTIALW = unsafe { *p_credential };
-                let cred_item = CredentialItem::extract_from_credential(&w_credential);
-                unsafe { CredFree(p_credential as *mut _) };
-                Some(cred_item)
-            }
-        };
-    }
-    pub fn cred_delete(&self, target_name: &str) -> bool {
-        match validate_target_name(target_name) {
-            Ok(_) => {}
-            Err(_) => return false,
-        }
-        let target_name = to_wstr(target_name);
-        let cred_type = CRED_TYPE_GENERIC;
-        match unsafe { CredDeleteW(PCWSTR::from_raw(target_name.as_ptr()), cred_type, 0) } {
-            Ok(_) => true,
-            Err(_) => false,
-        }
-    }
-    // pub fn load_item(&self, account: &str) -> Option<Vec<u8>> {
-    //     return unsafe { store_load_item(&self.ns_obj, &account.into()).map(|d| d.to_vec()) };
-    // }
-    // pub fn delete_item(&self, account: &str) -> Bool {
-    //     return unsafe { store_delete_item(&self.ns_obj, &account.into()) };
-    // }
-    // pub fn get_all_accounts(&self) -> Vec<String> {
-    //     return unsafe {
-    //         store_get_all_accounts(&self.ns_obj)
-    //             .data
-    //             .as_slice()
-    //             .into_iter()
-    //             .map(|s| s.to_string())
-    //             .collect()
-    //     };
-    // }
+    let flags = CRED_FLAGS::default();
+    let cred_type = CRED_TYPE_GENERIC;
+    let persist = CRED_PERSIST_ENTERPRISE;
+    // Ignored by CredWriteW
+    let last_written = FILETIME {
+        dwLowDateTime: 0,
+        dwHighDateTime: 0,
+    };
+    let attribute_count = 0;
+    let attributes: *mut CREDENTIAL_ATTRIBUTEW = std::ptr::null_mut();
+    let mut credential = CREDENTIALW {
+        Flags: flags,
+        Type: cred_type,
+        TargetName: PWSTR(target_name.as_mut_ptr()),
+        Comment: PWSTR(comment.as_mut_ptr()),
+        LastWritten: last_written,
+        CredentialBlobSize: password.len() as u32,
+        CredentialBlob: password.as_mut_ptr(),
+        Persist: persist,
+        AttributeCount: attribute_count,
+        Attributes: attributes,
+        TargetAlias: PWSTR(target_alias.as_mut_ptr()),
+        UserName: PWSTR(username.as_mut_ptr()),
+    };
+    // raw pointer to credential, is coerced from &mut
+    let p_credential: *const CREDENTIALW = &mut credential;
+    // Call windows API
+    return match unsafe { CredWriteW(p_credential, 0) } {
+        Err(_) => Err(decode_last_error()),
+        _ => Ok(()),
+    };
 }
 
+pub fn cred_has(target_name: &str) -> bool {
+    // at this point, p_credential is just a pointer to nowhere.
+    // The allocation happens in the `CredReadW` call below.
+    let mut p_credential = MaybeUninit::uninit();
+    let result = {
+        let cred_type = CRED_TYPE_GENERIC;
+        let target_name = to_wstr(target_name);
+        unsafe {
+            CredReadW(
+                PCWSTR::from_raw(target_name.as_ptr()),
+                cred_type,
+                0,
+                p_credential.as_mut_ptr(),
+            )
+        }
+    };
+
+    return match result {
+        // `CredReadW` failed, so no allocation has been done, so no free needs to be done
+        Err(_) => false,
+        _ => {
+            let p_credential = unsafe { p_credential.assume_init() };
+            unsafe { CredFree(p_credential as *mut _) };
+            true
+        }
+    };
+}
+pub fn cred_get(target_name: &str) -> Option<CredentialItem> {
+    match validate_target_name(target_name) {
+        Err(_) => return None,
+        _ => {}
+    }
+    // at this point, p_credential is just a pointer to nowhere.
+    // The allocation happens in the `CredReadW` call below.
+    let mut p_credential = MaybeUninit::uninit();
+    let result = {
+        let cred_type = CRED_TYPE_GENERIC;
+        let target_name = to_wstr(target_name);
+        unsafe {
+            CredReadW(
+                PCWSTR::from_raw(target_name.as_ptr()),
+                cred_type,
+                0,
+                p_credential.as_mut_ptr(),
+            )
+        }
+    };
+
+    return match result {
+        // `CredReadW` failed, so no allocation has been done, so no free needs to be done
+        Err(_) => None,
+        _ => {
+            // `CredReadW` succeeded, so p_credential points at an allocated credential.
+            // To do anything with it, we need to cast it to the right type.  That takes two steps:
+            // first we remove the "uninitialized" guard from around it, then we reinterpret it as a
+            // pointer to the right structure type.
+            let p_credential = unsafe { p_credential.assume_init() };
+            let w_credential: CREDENTIALW = unsafe { *p_credential };
+            let cred_item = CredentialItem::extract_from_credential(&w_credential);
+            unsafe { CredFree(p_credential as *mut _) };
+            Some(cred_item)
+        }
+    };
+}
+pub fn cred_delete(target_name: &str) -> bool {
+    match validate_target_name(target_name) {
+        Ok(_) => {}
+        Err(_) => return false,
+    }
+    let target_name = to_wstr(target_name);
+    let cred_type = CRED_TYPE_GENERIC;
+    match unsafe { CredDeleteW(PCWSTR::from_raw(target_name.as_ptr()), cred_type, 0) } {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
 pub struct CredentialItem {
     pub username: String,
     pub target_name: String,

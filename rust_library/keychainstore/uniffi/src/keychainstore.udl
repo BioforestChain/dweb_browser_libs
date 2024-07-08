@@ -1,0 +1,8 @@
+namespace keychainstore {
+    bytes? get_item(string key);
+    bool set_item(string key, bytes value);
+    bool has_item(string key);
+    bool delte_item(string key);
+    bool support_enum_keys();
+    sequence<string> item_keys();
+};
