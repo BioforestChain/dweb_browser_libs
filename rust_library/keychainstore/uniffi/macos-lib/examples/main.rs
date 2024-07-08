@@ -1,25 +1,24 @@
-use keychainstore_macos::KeyChainGenericStore;
+use keychainstore_macos::*;
 
 fn main() {
-    let store = KeyChainGenericStore::new("qaq.com");
-    store.save_item("qaq", "hi~".as_bytes());
-    store.save_item(&"qaq1212".repeat(100), "hixxxxxxxx333~".as_bytes());
-    store.save_item("qaq22", "hi333~".as_bytes());
+    let service = "qaq.com";
+    save_item(service, "qaq", "hi~".as_bytes());
+    save_item(service, &"qaq1212".repeat(100), "hixxxxxxxx333~".as_bytes());
+    save_item(service, "qaq22", "hi333~".as_bytes());
     println!("数据写入成功");
     println!(
         "数据加载成功:{:?}",
-        String::from_utf8(store.load_item("qaq").unwrap_or_default()).unwrap()
+        String::from_utf8(load_item(service, "qaq").unwrap_or_default()).unwrap()
     );
-    for key in store.get_all_accounts() {
+    for key in get_all_accounts(service) {
         println!("读取数据:{}", key);
         println!(
             "成功:{}",
-            store
-                .load_item(key.as_str())
+            load_item(service, key.as_str())
                 .map(|v| String::from_utf8(v).unwrap())
                 .unwrap()
         );
-        if store.delete_item(key.as_str()) {
+        if delete_item(service, key.as_str()) {
             println!("删除成功:{}", key);
         } else {
             println!("删除失败:{}", key);

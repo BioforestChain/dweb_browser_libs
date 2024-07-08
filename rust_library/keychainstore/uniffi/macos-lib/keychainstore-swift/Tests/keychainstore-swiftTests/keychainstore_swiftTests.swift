@@ -10,24 +10,24 @@ final class keychainstore_swiftTests: XCTestCase {
     // Defining Test Cases and Test Methods
     // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
 
-    let store = KeyChainGenericStore.init(service: "XXX.myapp")
+    let service = "XXX.myapp"
     // 存储数据
     let data = "Hello, Keychain!123".data(using: .utf8)!
-    store.saveItem(account: "myAcco222unt", data: data)
-    store.saveItem(account: "myAccount2", data: data)
-    store.saveItem(account: "myAccount3", data: data)
+    saveItem(service: service, account: "myAcco222unt", data: data)
+    saveItem(service: service, account: "myAccount2", data: data)
+    saveItem(service: service, account: "myAccount3", data: data)
     print("数据写入完成")
-    print(store.getAllAccounts())
-    print(store.hasItem(account: "myAccount"))
-    print(store.hasItem(account: "myAccountxxxx"))
+    print(getAllAccounts(service: service))
+    print(hasItem(service: service, account: "myAccount"))
+    print(hasItem(service: service, account: "myAccountxxxx"))
 
-    for account in store.getAllAccounts() {
+    for account in getAllAccounts(service: service) {
       // 读取数据
-      if let loadedData = store.loadItem(account: account) {
+      if let loadedData = loadItem(service: service, account: account) {
         let loadedString = String(data: loadedData, encoding: .utf8)
         print("读取到的数据：\(loadedString ?? "")")
         // 删除数据
-        if store.deleteItem(account: account) {
+        if deleteItem(service: service, account: account) {
           print("数据删除成功: \(account)")
         } else {
           print("数据删除失败: \(account)")
@@ -36,6 +36,5 @@ final class keychainstore_swiftTests: XCTestCase {
         print("没有读取到的数据：\(account)")
       }
     }
-
   }
 }
