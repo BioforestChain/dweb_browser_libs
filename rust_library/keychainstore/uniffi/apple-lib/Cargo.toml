@@ -1,11 +1,11 @@
 [package]
-name = "keychainstore-macos"
+name = "keychainstore-apple"
 version = "0.1.0"
 edition = "2021"
 
-[target.'cfg(target_os = "macos")'.dependencies]
+[target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 swift-rs = "1.0.6"
 objc2 = "0.5.1"
 
-[target.'cfg(target_os = "macos")'.build-dependencies]
+[target.'cfg(any(target_os = "macos", target_os = "ios"))'.build-dependencies]
 swift-rs = { version = "1.0.6", features = ["build"]}
