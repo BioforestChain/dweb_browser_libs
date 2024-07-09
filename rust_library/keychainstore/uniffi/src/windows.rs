@@ -19,6 +19,6 @@ pub fn delete_item(scope: &str, key: &str) -> bool {
 pub fn support_enum_keys() -> bool {
     return false;
 }
-pub fn item_keys(scope: &str) -> Vec<String> {
+pub fn item_keys(_scope: &str) -> Vec<String> {
     return vec![];
 }

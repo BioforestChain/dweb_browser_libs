@@ -1,7 +1,5 @@
 use camino::Utf8Path;
 use std::env;
-use std::path::Path;
-use std::{fs, io::Error, thread, time::Duration};
 use uniffi_kotlin_multiplatform::KotlinBindingGenerator;
 
 fn main() {

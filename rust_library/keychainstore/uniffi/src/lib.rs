@@ -6,22 +6,22 @@ mod os;
 #[path = "windows.rs"]
 mod os;
 
-pub fn get_item(scope: String, key: String) -> Option<Vec<u8>> {
+pub fn keychain_get_item(scope: String, key: String) -> Option<Vec<u8>> {
     return os::get_item(&scope, &key);
 }
-pub fn set_item(scope: String, key: String, value: Vec<u8>) -> bool {
+pub fn keychain_set_item(scope: String, key: String, value: Vec<u8>) -> bool {
     return os::set_item(&scope, &key, &value);
 }
-pub fn has_item(scope: String, key: String) -> bool {
+pub fn keychain_has_item(scope: String, key: String) -> bool {
     return os::has_item(&scope, &key);
 }
-pub fn delete_item(scope: String, key: String) -> bool {
+pub fn keychain_delete_item(scope: String, key: String) -> bool {
     return os::delete_item(&scope, &key);
 }
-pub fn support_enum_keys() -> bool {
+pub fn keychain_support_enum_keys() -> bool {
     return os::support_enum_keys();
 }
-pub fn item_keys(scope: String) -> Vec<String> {
+pub fn keychain_item_keys(scope: String) -> Vec<String> {
     return os::item_keys(&scope);
 }
 

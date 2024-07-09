@@ -5,19 +5,37 @@ dweb_browser static library reference.
 ### Add Rust Target
 
 ```shell
-#android
+# android
 rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 
-#ios
+# ios
 rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
 
-#macos
+# macos
 rustup target add aarch64-apple-darwin x86_64-apple-darwin
 
-#windows
+# windows on windows
 rustup target add x86_64-pc-windows-msvc aarch64-pc-windows-msvc
-brew install mingw-w64
+# [install winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
+winget install Microsoft.VisualStudio.BuildTools
+
+# windows on macos/linux
+rustup target add x86_64-pc-windows-gnu
+
 ```
+
+### Install toolchains on MacOS
+
+1. 下载并解压 https://github.com/mstorsjo/llvm-mingw/releases/download/20240619/llvm-mingw-20240619-ucrt-macos-universal.tar.xz
+1. 到 `~/.cargo/config.toml` 中修改
+
+   ```toml
+   [target.x86_64-pc-windows-gnu]
+   linker = "x86_64-w64-mingw32-gcc"
+
+   [target.aarch64-pc-windows-gnullvm]
+   linker = "PATH_TO_LLVM_MINGW_UCRT_MACOS_UNIVERSAL/bin/aarch64-w64-mingw32-clang"
+   ```
 
 ### Build Android
 

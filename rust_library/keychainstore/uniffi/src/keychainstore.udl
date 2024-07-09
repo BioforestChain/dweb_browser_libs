@@ -1,8 +1,8 @@
 namespace keychainstore {
-    bytes? get_item(string scope, string key);
-    boolean set_item(string scope, string key, bytes value);
-    boolean has_item(string scope, string key);
-    boolean delete_item(string scope, string key);
-    boolean support_enum_keys();
-    sequence<string> item_keys(string scope);
+    bytes? keychain_get_item(string scope, string key);
+    boolean keychain_set_item(string scope, string key, bytes value);
+    boolean keychain_has_item(string scope, string key);
+    boolean keychain_delete_item(string scope, string key);
+    boolean keychain_support_enum_keys();
+    sequence<string> keychain_item_keys(string scope);
 };
