@@ -657,7 +657,6 @@ dependencies = [
  "futures-util",
  "http-body-util",
  "hyper",
- "lazy_static",
  "log",
  "multer",
  "serde",

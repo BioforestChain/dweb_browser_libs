@@ -1,12 +1,11 @@
 use hyper::body::Bytes;
 use hyper::header::{HeaderName, HeaderValue, CONTENT_TYPE};
 use hyper::HeaderMap;
-use lazy_static::lazy_static;
 use multer::{Constraints, Multipart};
 use std::collections::HashMap;
 use std::convert::Infallible;
 use std::sync::atomic::{AtomicI32, Ordering};
-use std::sync::Mutex;
+use std::sync::{Mutex, MutexGuard, OnceLock};
 use tokio::sync::mpsc::{unbounded_channel, UnboundedSender};
 use tokio_stream::wrappers::UnboundedReceiverStream;
 
@@ -37,10 +36,14 @@ fn init_log() {
 #[cfg(not(target_os = "android"))]
 fn init_log() {}
 
-lazy_static! {
-    static ref MULTIPART_HASHMAP: Mutex<HashMap<i32, UnboundedSender<Result<Bytes, Infallible>>>> =
-        Mutex::new(HashMap::new());
-    static ref ACC_ID: AtomicI32 = AtomicI32::new(0);
+static MULTIPART_HASHMAP: OnceLock<
+    Mutex<HashMap<i32, UnboundedSender<Result<Bytes, Infallible>>>>,
+> = OnceLock::new();
+static ACC_ID: AtomicI32 = AtomicI32::new(0);
+
+fn get_multipart_map_lock(
+) -> MutexGuard<'static, HashMap<i32, UnboundedSender<Result<Bytes, Infallible>>>> {
+    MULTIPART_HASHMAP.get_or_init(<_>::default).lock().unwrap()
 }
 
 fn get_boundary(headers: HashMap<String, String>) -> Option<String> {
@@ -66,10 +69,9 @@ async fn process_multipart_open(boundary: String, consumer: Box<dyn MultipartCon
     let id = ACC_ID.load(Ordering::Relaxed) + 1;
     ACC_ID.store(id, Ordering::Relaxed);
 
-    let receiver_stream = Box::pin(UnboundedReceiverStream::new(rx));
+    let receiver_stream = UnboundedReceiverStream::new(rx);
     {
-        let mut map = MULTIPART_HASHMAP.lock().unwrap();
-        map.insert(id, tx);
+        get_multipart_map_lock().insert(id, tx);
     }
     consumer.on_open(id);
 
@@ -123,14 +125,15 @@ async fn process_multipart_open(boundary: String, consumer: Box<dyn MultipartCon
 }
 
 fn process_multipart_write(id: i32, chunk: Vec<u8>) {
-    let map = MULTIPART_HASHMAP.lock().unwrap();
-    let tx = map.get(&id).unwrap();
-
-    tx.send(Ok(Bytes::copy_from_slice(&chunk))).unwrap();
+    _ = get_multipart_map_lock()
+        .get(&id)
+        .unwrap()
+        .send(Ok(Bytes::copy_from_slice(&chunk)))
+        .unwrap();
 }
 
 fn process_multipart_close(id: i32) {
-    MULTIPART_HASHMAP.lock().unwrap().remove(&id);
+    get_multipart_map_lock().remove(&id);
 }
 
 pub trait MultipartConsumer: Send + Sync + std::fmt::Debug {
