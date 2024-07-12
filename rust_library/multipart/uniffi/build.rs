@@ -1,7 +1,5 @@
 use camino::Utf8Path;
 use std::env;
-use std::path::Path;
-use std::{fs, io::Error, thread, time::Duration};
 use uniffi_kotlin_multiplatform::KotlinBindingGenerator;
 
 fn main() {
@@ -40,31 +38,6 @@ fn main() {
         }
     );
     let library_file_path_clone = library_file_path.clone();
-    // thread::spawn(move || {
-    //     let udl_file = Utf8Path::new(&udl_file_path);
-    //     let library_file = Utf8Path::new(&library_file_path_clone);
-    //     loop {
-    //         thread::sleep(Duration::from_micros(100)); // 等待一段时间，以确保已生成
-    //         println!(
-    //             "library_file={},exists={}",
-    //             library_file,
-    //             library_file.exists()
-    //         );
-    //         if library_file.exists() {
-    //             uniffi_bindgen::generate_external_bindings(
-    //                 KotlinBindingGenerator {},
-    //                 udl_file,
-    //                 None::<&Utf8Path>,
-    //                 Some(out_dir),
-    //                 Some(library_file),
-    //                 Some(&test),
-    //             )
-    //             .unwrap();
-    //             break;
-    //         }
-    //     }
-    // });
-
     let udl_file = Utf8Path::new(&udl_file_path);
     let library_file = Utf8Path::new(&library_file_path_clone);
     println!(
