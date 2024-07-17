@@ -12,8 +12,8 @@ name = "uniffi-bindgen"
 path = "uniffi-bindgen.rs"
 
 [dependencies]
-uniffi = { version = "0.23", features = ["cli"] }
-uniffi_macros = "0.23.0"
+uniffi = { version = "0.25.2", features = ["cli"] }
+uniffi_macros = "0.25.2"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 biometrics-macos = { path = "./macos-lib" }
@@ -29,9 +29,9 @@ rustls-pki-types = "*"
 env_logger = "*"
 
 [build-dependencies]
-uniffi = { version = "0.23", features = ["build"] }
-uniffi_bindgen = "0.23.0"
-uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings", rev = "bf48c5fcb153856e3055025a3cbfa56fbf213188" }
+uniffi = { version = "0.25.2", features = ["build"] }
+uniffi_bindgen = "0.25.2"
+uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings", rev = "55d51f3abf9819b32bd81756053dcfc10f8d5522" }
 camino = "1.1.1"
 
 [profile.release]

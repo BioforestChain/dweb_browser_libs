@@ -1,12 +1,15 @@
+import SwiftRs
 import XCTest
+
 @testable import biometrics_swift
 
 final class biometrics_swiftTests: XCTestCase {
-    func testExample() throws {
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
+  func testExample() throws {
+    let result = evaluatePolicy(
+      policy: .deviceOwnerAuthentication,
+      reason: SRString("qaq\nqaq")
+    )
 
-        // Defining Test Cases and Test Methods
-        // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
-    }
+    print(result.toString())
+  }
 }

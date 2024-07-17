@@ -4,40 +4,28 @@
 import LocalAuthentication
 import SwiftRs
 
-class BiometricsResult: NSObject {
-    var success: Bool
-    var message: String
-
-    init(_ success: Bool, _ message: String) {
-        self.success = success
-        self.message = message
-    }
-}
-
-@_cdecl("lacontext_new")
-func newLAContext() -> LAContext {
-    return LAContext()
-}
-
 @_cdecl("lacontext_canEvaluatePolicy")
-func canEvaluatePolicy(context: LAContext, policy: LAPolicy) -> Bool {
-    return context.canEvaluatePolicy(policy, error: nil)
+func canEvaluatePolicy(policy: LAPolicy) -> Bool {
+  return LAContext().canEvaluatePolicy(policy, error: nil)
 }
 
+/// 目前不能直接返回对象，所以
 @_cdecl("lacontext_evaluatePolicy")
-func evaluatePolicy(context: LAContext, policy: LAPolicy, reason: SRString) -> BiometricsResult {
-    let reason = reason.toString()
+func evaluatePolicy(policy: LAPolicy, reason: SRString) -> SRString {
+  let reason = reason.toString()
 
-    let semaphore = DispatchSemaphore(value: 0)
-    var result = BiometricsResult(false, "")
-    var didEvaluate = false
+  let semaphore = DispatchSemaphore(value: 0)
+  var result = "error:unknown"
 
-    context.evaluatePolicy(policy, localizedReason: reason) { success, error in
-        result.success = success && error == nil
-        result.message = error?.localizedDescription ?? ""
-        semaphore.signal()
+  LAContext().evaluatePolicy(policy, localizedReason: reason) { success, error in
+    if success && error == nil {
+      result = "success"
+    } else {
+      result = "error:\(error?.localizedDescription ?? "")"
     }
+    semaphore.signal()
+  }
 
-    semaphore.wait()
-    return result
+  semaphore.wait()
+  return SRString(result)
 }

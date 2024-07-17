@@ -1,3 +1,5 @@
+use std::borrow::Borrow;
+
 use swift_rs::{swift, Bool, Int, SRObject, SRString};
 
 /// 参考 https://github.com/caoimhebyrne/localauthentication-rs 项目
@@ -27,19 +29,20 @@ pub(crate) struct LAContext {
 }
 
 #[repr(C)]
+#[derive(Debug)]
 pub(crate) struct BiometricsResult {
     success: bool,
     message: String,
 }
 
 /// Init LAContext
-swift!(pub(crate) fn lacontext_new() -> SRObject<LAContext>);
+// swift!(pub(crate) fn lacontext_new() -> SRObject<LAContext>);
 
 /// Assesses whether authentication can proceed for a given policy.
-swift!(pub(crate) fn lacontext_canEvaluatePolicy(context: &SRObject<LAContext>, policy: Int) -> Bool);
+swift!(pub(crate) fn lacontext_canEvaluatePolicy(policy: Int) -> Bool);
 
 /// Evaluates the specified policy.
-swift!(pub(crate) fn lacontext_evaluatePolicy(context: &SRObject<LAContext>, policy: Int, reason: &SRString) -> SRObject<BiometricsResult>);
+swift!(pub(crate) fn lacontext_evaluatePolicy(policy: Int, reason: &SRString) -> SRString);
 
 impl From<i8> for LAPolicy {
     fn from(value: i8) -> Self {
@@ -80,10 +83,9 @@ impl From<LAPolicy> for i8 {
 }
 
 pub fn check_support_biometrics(policy: Option<i8>) -> i8 {
-    let context = unsafe { lacontext_new() };
     let la_policy = policy.unwrap_or(LAPolicy::DeviceOwnerAuthentication.into());
 
-    if unsafe { lacontext_canEvaluatePolicy(&context, la_policy.into()) } {
+    if unsafe { lacontext_canEvaluatePolicy(la_policy.into()) } {
         0
     } else {
         -1
@@ -91,15 +93,16 @@ pub fn check_support_biometrics(policy: Option<i8>) -> i8 {
 }
 
 pub fn biometrics_result_content(policy: Option<i8>, reason: String) -> (bool, String) {
-    let context = unsafe { lacontext_new() };
+    // let context = unsafe { lacontext_new() };
     let la_policy = policy.unwrap_or(LAPolicy::DeviceOwnerAuthentication.into());
     let localized_reason: SRString = reason.as_str().into();
-    let result = unsafe { lacontext_evaluatePolicy(&context, la_policy.into(), &localized_reason) };
-    
-
-    if result.success {
-        (result.success, "".to_string())
-    } else {
-        (false, result.message.clone())
+    let result_rs = unsafe { lacontext_evaluatePolicy(la_policy.into(), &localized_reason) };
+    println!("QAQ");
+    let result = result_rs.as_str();
+    println!("QAQ ${result}");
+    if result == "success" {
+        return (true, "".into());
     }
+    let message = result.replace("error:", "");
+    return (false, message);
 }
