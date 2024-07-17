@@ -52,11 +52,11 @@ cp -r ./target/x86_64-apple-darwin/release/libreverse_proxy.dylib ../src/desktop
 
 # windows
 
-echo "cargo building x86_64-pc-windows-gnu..."
-cargo build --target x86_64-pc-windows-gnu --release --quiet
+echo "cargo building x86_64-pc-windows-msvc..."
+cargo build --target x86_64-pc-windows-msvc --release --quiet
 
 mkdir -p ../src/desktopMain/resources/win32-x86-64/
-cp -r ./target/x86_64-pc-windows-gnu/release/reverse_proxy.dll ../src/desktopMain/resources/win32-x86-64/
+cp -r ./target/x86_64-pc-windows-msvc/release/reverse_proxy.dll ../src/desktopMain/resources/win32-x86-64/
 
 # jvm
 cp -r ./target/bindings/jvmMain/ ../src/desktopMain
