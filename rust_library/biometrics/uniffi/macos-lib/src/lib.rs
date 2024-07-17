@@ -97,9 +97,7 @@ pub fn biometrics_result_content(policy: Option<i8>, reason: String) -> (bool, S
     let la_policy = policy.unwrap_or(LAPolicy::DeviceOwnerAuthentication.into());
     let localized_reason: SRString = reason.as_str().into();
     let result_rs = unsafe { lacontext_evaluatePolicy(la_policy.into(), &localized_reason) };
-    println!("QAQ");
     let result = result_rs.as_str();
-    println!("QAQ ${result}");
     if result == "success" {
         return (true, "".into());
     }
