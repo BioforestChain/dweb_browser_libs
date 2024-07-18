@@ -15,8 +15,8 @@ cp -r ./target/bindings/nativeInterop/ ../src/nativeInterop
 cp ../biometrics.def ../src/nativeInterop/cinterop/
 
 mkdir -p ../src/desktopMain/resources/darwin-aarch64/
-cp -r ./target/aarch64-apple-darwin/release/libbiometrics.a ../src/desktopMain/resources/darwin-aarch64/
-cp -r ./target/aarch64-apple-darwin/release/libbiometrics.dylib ../src/desktopMain/resources/darwin-aarch64/libbiometrics.dylib
+# cp -r ./target/aarch64-apple-darwin/release/libbiometrics.a ../src/desktopMain/resources/darwin-aarch64/
+cp -r ./target/aarch64-apple-darwin/release/libbiometrics.dylib ../src/desktopMain/resources/darwin-aarch64/
 mkdir -p ../src/desktopMain/resources/darwin-x86-64/
-cp -r ./target/x86_64-apple-darwin/release/libbiometrics.a ../src/desktopMain/resources/darwin-x86-64/
+# cp -r ./target/x86_64-apple-darwin/release/libbiometrics.a ../src/desktopMain/resources/darwin-x86-64/
 cp -r ./target/x86_64-apple-darwin/release/libbiometrics.dylib ../src/desktopMain/resources/darwin-x86-64/
