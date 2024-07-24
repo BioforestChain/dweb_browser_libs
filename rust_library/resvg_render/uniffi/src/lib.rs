@@ -32,7 +32,6 @@ pub fn svg_to_png(svg_data: Vec<u8>, options: Option<RenderOptions>) -> Vec<u8> 
                         output_height = pixmap_size.height();
 
                         opt.default_size = new_size;
-                        println!("default size {} x {}", output_width, output_height)
                     }
                     None => {}
                 }
