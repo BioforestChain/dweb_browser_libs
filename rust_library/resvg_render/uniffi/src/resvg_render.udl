@@ -1,0 +1,14 @@
+namespace resvg_render {
+    bytes svg_to_png(bytes svg_data, RenderOptions? box_size);
+};
+
+dictionary RenderOptions {
+    float width;
+    float height;
+    FitMode fit_mode;
+};
+
+enum FitMode {
+    "Fill",
+    "Contain",
+};
