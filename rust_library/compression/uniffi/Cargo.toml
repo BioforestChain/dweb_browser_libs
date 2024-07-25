@@ -1,0 +1,35 @@
+[package]
+name = "compression"
+version = "0.1.1"
+edition = "2021"
+
+[lib]
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[[bin]]
+# This can be whatever name makes sense for your project, but the rest of this tutorial assumes uniffi-bindgen.
+name = "uniffi-bindgen"
+path = "uniffi-bindgen.rs"
+
+[dependencies]
+uniffi = { version = "0.25.2", features = ["cli"] }
+uniffi_macros = "0.25.2"
+zstd = "0.13.2"
+
+[dev-dependencies]
+docopt = "*"
+serde_derive = "*"
+serde = "*"
+rustls-pki-types = "*"
+env_logger = "*"
+rand = "0.8.5"
+
+[build-dependencies]
+uniffi = { version = "0.25.2", features = ["build"] }
+uniffi_bindgen = "0.25.2"
+uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings", rev = "55d51f3abf9819b32bd81756053dcfc10f8d5522" }
+camino = "1.1.1"
+
+[profile.release]
+opt-level = 3
+lto = true

@@ -1,0 +1,4 @@
+namespace compression {
+    bytes zstd_compress(bytes data, i32 level);
+    bytes zstd_decompress(bytes data);
+};
