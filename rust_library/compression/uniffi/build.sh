@@ -13,10 +13,10 @@ cp ../compression.def ../src/nativeInterop/cinterop/
 
 rm -r ../src/desktopMain/resources/darwin-aarch64/
 mkdir -p ../src/desktopMain/resources/darwin-aarch64/
-cp -r ./target/aarch64-apple-darwin/release/libresvg_render.dylib ../src/desktopMain/resources/darwin-aarch64/libresvg_render.dylib
+cp -r ./target/aarch64-apple-darwin/release/libcompression.dylib ../src/desktopMain/resources/darwin-aarch64/libcompression.dylib
 rm -r ../src/desktopMain/resources/darwin-x86-64/
 mkdir -p ../src/desktopMain/resources/darwin-x86-64/
-cp -r ./target/x86_64-apple-darwin/release/libresvg_render.dylib ../src/desktopMain/resources/darwin-x86-64/
+cp -r ./target/x86_64-apple-darwin/release/libcompression.dylib ../src/desktopMain/resources/darwin-x86-64/
 
 # android
 rm -rf ../src/androidMain
@@ -54,11 +54,11 @@ rm -rf ../src/iosMain
 cp -r ./target/bindings/nativeMain/ ../src/iosMain
 
 mkdir -p ../src/libs/iosArm64/
-cp ./target/aarch64-apple-ios/release/libresvg_render.a ../src/libs/iosArm64/
+cp ./target/aarch64-apple-ios/release/libcompression.a ../src/libs/iosArm64/
 mkdir -p ../src/libs/iosSimulatorArm64/
-cp ./target/aarch64-apple-ios-sim/release/libresvg_render.a ../src/libs/iosSimulatorArm64/
+cp ./target/aarch64-apple-ios-sim/release/libcompression.a ../src/libs/iosSimulatorArm64/
 mkdir -p ../src/libs/iosX64/
-cp ./target/x86_64-apple-ios/release/libresvg_render.a ../src/libs/iosX64/
+cp ./target/x86_64-apple-ios/release/libcompression.a ../src/libs/iosX64/
 
 # jvm
 cp -r ./target/bindings/jvmMain/ ../src/desktopMain

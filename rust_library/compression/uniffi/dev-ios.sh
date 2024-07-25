@@ -10,4 +10,4 @@ rm -rf ../src/iosMain
 cp -r ./target/bindings/nativeMain/ ../src/iosMain
 
 mkdir -p ../src/libs/iosArm64/
-cp ./target/aarch64-apple-ios/release/libresvg_render.a ../src/libs/iosArm64/
+cp ./target/aarch64-apple-ios/release/libcompression.a ../src/libs/iosArm64/

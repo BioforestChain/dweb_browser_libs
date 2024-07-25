@@ -10,7 +10,7 @@ cp -r ./target/bindings/nativeInterop/ ../src/nativeInterop
 cp ../compression.def ../src/nativeInterop/cinterop/
 
 mkdir -p ../src/desktopMain/resources/darwin-aarch64/
-cp -r ./target/aarch64-apple-darwin/release/libresvg_render.dylib ../src/desktopMain/resources/darwin-aarch64/libresvg_render.dylib
+cp -r ./target/aarch64-apple-darwin/release/libcompression.dylib ../src/desktopMain/resources/darwin-aarch64/libcompression.dylib
 
 # jvm
 cp -r ./target/bindings/jvmMain/ ../src/desktopMain

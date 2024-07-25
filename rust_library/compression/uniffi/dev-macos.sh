@@ -10,5 +10,5 @@ cp -r ./target/bindings/nativeInterop/ ../src/nativeInterop
 cp ../compression.def ../src/nativeInterop/cinterop/
 
 mkdir -p ../src/desktopMain/resources/darwin-aarch64/
-cp -r ./target/aarch64-apple-darwin/debug/libresvg_render.a ../src/desktopMain/resources/darwin-aarch64/
-cp -r ./target/aarch64-apple-darwin/debug/libresvg_render.dylib ../src/desktopMain/resources/darwin-aarch64/libresvg_render.dylib
+cp -r ./target/aarch64-apple-darwin/debug/libcompression.a ../src/desktopMain/resources/darwin-aarch64/
+cp -r ./target/aarch64-apple-darwin/debug/libcompression.dylib ../src/desktopMain/resources/darwin-aarch64/libcompression.dylib
