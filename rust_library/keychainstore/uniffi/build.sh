@@ -12,10 +12,10 @@ cp -r ./target/bindings/nativeInterop/ ../src/nativeInterop
 cp ../keychainstore.def ../src/nativeInterop/cinterop/
 
 mkdir -p ../src/desktopMain/resources/darwin-aarch64/
-cp -r ./target/aarch64-apple-darwin/release/libkeychainstore.a ../src/desktopMain/resources/darwin-aarch64/
+# cp -r ./target/aarch64-apple-darwin/release/libkeychainstore.a ../src/desktopMain/resources/darwin-aarch64/
 cp -r ./target/aarch64-apple-darwin/release/libkeychainstore.dylib ../src/desktopMain/resources/darwin-aarch64/libkeychainstore.dylib
 mkdir -p ../src/desktopMain/resources/darwin-x86-64/
-cp -r ./target/x86_64-apple-darwin/release/libkeychainstore.a ../src/desktopMain/resources/darwin-x86-64/
+# cp -r ./target/x86_64-apple-darwin/release/libkeychainstore.a ../src/desktopMain/resources/darwin-x86-64/
 cp -r ./target/x86_64-apple-darwin/release/libkeychainstore.dylib ../src/desktopMain/resources/darwin-x86-64/
 
 # ios

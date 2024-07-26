@@ -44,10 +44,10 @@ echo "cargo building x86_64-apple-darwin..."
 cargo build --target x86_64-apple-darwin --release --quiet
 
 mkdir -p ../src/desktopMain/resources/darwin-aarch64/
-cp -r ./target/aarch64-apple-darwin/release/libziplib.a ../src/desktopMain/resources/darwin-aarch64/
+# cp -r ./target/aarch64-apple-darwin/release/libziplib.a ../src/desktopMain/resources/darwin-aarch64/
 cp -r ./target/aarch64-apple-darwin/release/libziplib.dylib ../src/desktopMain/resources/darwin-aarch64/
 mkdir -p ../src/desktopMain/resources/darwin-x86-64/
-cp -r ./target/x86_64-apple-darwin/release/libziplib.a ../src/desktopMain/resources/darwin-x86-64/
+# cp -r ./target/x86_64-apple-darwin/release/libziplib.a ../src/desktopMain/resources/darwin-x86-64/
 cp -r ./target/x86_64-apple-darwin/release/libziplib.dylib ../src/desktopMain/resources/darwin-x86-64/
 
 # windows
