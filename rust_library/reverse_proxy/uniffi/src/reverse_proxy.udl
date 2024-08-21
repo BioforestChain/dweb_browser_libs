@@ -1,5 +1,6 @@
 namespace reverse_proxy {
     void start(u16 backend_port, VoidCallback on_ready);
+    void forward(u16 new_forward_port);
 };
 
 callback interface VoidCallback {

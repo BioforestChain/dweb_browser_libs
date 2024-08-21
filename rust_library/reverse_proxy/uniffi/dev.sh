@@ -18,8 +18,8 @@ cp -r ./target/bindings/nativeMain/ ../src/iosMain
 
 echo "cargo building aarch64-apple-ios..."
 cargo build --target aarch64-apple-ios
-echo "cargo building aarch64-apple-ios-sim..."
-cargo build --target aarch64-apple-ios-sim
+# echo "cargo building aarch64-apple-ios-sim..."
+# cargo build --target aarch64-apple-ios-sim
 
 rm -rf ../src/nativeInterop
 cp -r ./target/bindings/nativeInterop/ ../src/nativeInterop
@@ -30,6 +30,6 @@ cp -r ./target/bindings/nativeMain/ ../src/iosMain
 
 mkdir -p ../src/libs/iosArm64/
 cp ./target/aarch64-apple-ios/debug/libreverse_proxy.a ../src/libs/iosArm64/
-mkdir -p ../src/libs/iosSimulatorArm64/
-cp ./target/aarch64-apple-ios-sim/debug/libreverse_proxy.a ../src/libs/iosSimulatorArm64/
+# mkdir -p ../src/libs/iosSimulatorArm64/
+# cp ./target/aarch64-apple-ios-sim/debug/libreverse_proxy.a ../src/libs/iosSimulatorArm64/
 

@@ -48,27 +48,31 @@ typedef struct RustCallStatus {
 // ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
 #endif // def UNIFFI_SHARED_H
 
-void ffi_reverse_proxy_6e76_VoidCallback_init_callback(
+void ffi_reverse_proxy_60a8_VoidCallback_init_callback(
       ForeignCallback  _Nonnull callback_stub,
     RustCallStatus *_Nonnull out_status
     );
-void reverse_proxy_6e76_start(
+void reverse_proxy_60a8_start(
       uint16_t backend_port,uint64_t on_ready,
     RustCallStatus *_Nonnull out_status
     );
-RustBuffer ffi_reverse_proxy_6e76_rustbuffer_alloc(
+void reverse_proxy_60a8_forward(
+      uint16_t new_forward_port,
+    RustCallStatus *_Nonnull out_status
+    );
+RustBuffer ffi_reverse_proxy_60a8_rustbuffer_alloc(
       int32_t size,
     RustCallStatus *_Nonnull out_status
     );
-RustBuffer ffi_reverse_proxy_6e76_rustbuffer_from_bytes(
+RustBuffer ffi_reverse_proxy_60a8_rustbuffer_from_bytes(
       ForeignBytes bytes,
     RustCallStatus *_Nonnull out_status
     );
-void ffi_reverse_proxy_6e76_rustbuffer_free(
+void ffi_reverse_proxy_60a8_rustbuffer_free(
       RustBuffer buf,
     RustCallStatus *_Nonnull out_status
     );
-RustBuffer ffi_reverse_proxy_6e76_rustbuffer_reserve(
+RustBuffer ffi_reverse_proxy_60a8_rustbuffer_reserve(
       RustBuffer buf,int32_t additional,
     RustCallStatus *_Nonnull out_status
     );

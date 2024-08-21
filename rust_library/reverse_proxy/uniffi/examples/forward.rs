@@ -1,4 +1,6 @@
-use reverse_proxy::tls_server::TlsServer;
+use std::borrow::BorrowMut;
+
+use reverse_proxy::tls_server::{self, TlsServer};
 
 use rcgen::generate_simple_self_signed;
 
@@ -57,7 +59,7 @@ async fn main() {
 
     println!("args.flag_port={:?}", args.flag_port);
 
-    TlsServer::forward(
+    let mut tls_server = TlsServer::new(
         args.flag_port.unwrap_or(1443),
         args.flag_forward.unwrap_or(8000),
         private_key,
@@ -67,4 +69,5 @@ async fn main() {
         },
     )
     .await;
+    tls_server.listen().await;
 }

@@ -60,7 +60,7 @@ object ForeignCallbackTypeVoidCallback {
 object FfiConverterTypeVoidCallback: FfiConverterCallbackInterface<VoidCallback>() {
     override fun register(lib: UniFFILib) {
         rustCall() { status ->
-            lib.ffi_reverse_proxy_6e76_VoidCallback_init_callback(ForeignCallbackTypeVoidCallback.toForeignCallback(), status)
+            lib.ffi_reverse_proxy_60a8_VoidCallback_init_callback(ForeignCallbackTypeVoidCallback.toForeignCallback(), status)
         }
     }
 }

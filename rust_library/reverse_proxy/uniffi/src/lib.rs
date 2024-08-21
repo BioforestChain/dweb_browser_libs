@@ -4,8 +4,8 @@ extern crate log;
 use futures_util::Future;
 use hyper::client::HttpConnector;
 
-use rand::{thread_rng, Rng};
 use rcgen::generate_simple_self_signed;
+use std::cell::UnsafeCell;
 use std::convert::Infallible;
 use std::net::TcpListener;
 use std::vec::Vec;
@@ -22,6 +22,7 @@ use crate::tls_server::TlsServer;
 
 type HttpClient = Client<HttpConnector>;
 
+pub mod open_connection;
 pub mod tls_server;
 
 #[cfg(target_os = "android")]
@@ -48,6 +49,8 @@ fn init_log() {
 #[cfg(not(target_os = "android"))]
 fn init_log() {}
 
+static mut GLOBAL_TLS_SERVER: Option<UnsafeCell<TlsServer>> = None;
+
 // #[uniffi::export]
 #[tokio::main]
 pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
@@ -68,6 +71,16 @@ pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
             frontend_tx.send(frontend_port).unwrap();
         }),
     );
+}
+pub fn forward(new_forward_port: u16) {
+    unsafe {
+        if let Some(global_tls_server) = GLOBAL_TLS_SERVER.as_mut() {
+            global_tls_server.get_mut().forward = new_forward_port;
+            info!("QAQ update_forward success");
+        } else {
+            info!("QAQ update_forward fail, TlsServer no init");
+        }
+    };
 }
 
 fn find_free_port() -> u16 {
@@ -92,7 +105,7 @@ where
 
     // Create a tls forward server.
     tokio::spawn(async move {
-        TlsServer::forward(
+        let mut tls_server = TlsServer::new(
             frontend_port,
             backend_port,
             private_key,
@@ -100,6 +113,37 @@ where
             on_listen,
         )
         .await;
+        unsafe {
+            GLOBAL_TLS_SERVER = Some(UnsafeCell::new(tls_server));
+
+            info!("QAQ GLOBAL_TLS_SERVER initted:{:?}", GLOBAL_TLS_SERVER)
+        }
+        // let mut global_tls_server = GLOBAL_TLS_SERVER.write().await;
+        // *global_tls_server = Some(tls_server);
+        unsafe {
+            let global_tls_server = GLOBAL_TLS_SERVER
+                .as_mut()
+                .expect("TLS server not initialized");
+            global_tls_server.get_mut().listen().await;
+        };
+        // {
+        //     // 克隆 Arc<Mutex<Option<TlsServer>>> 以便在异步任务中使用
+        //     // let tls_server_arc = Arc::clone(&GLOBAL_TLS_SERVER);
+        //     // let tls_server = tls_server_arc.lock().await.unwrap();
+        //     // let global_tls_server = tls_server_arc.lock().await.unwrap();
+        //     // tls_server.listen().await;
+        //     // tls_server.as_ref().listen().await;
+        //     let global_tls_server = GLOBAL_TLS_SERVER.read().await;
+        //     unsafe {
+        //         if let Some(tls_server) = &*global_tls_server {
+        //             let mut listen = tls_server.borrow_mut();
+        //             listen.listen().await
+        //         };
+        //     }
+        // }
+
+        // global_tls_server
+        // tls_server.listen().await;
     });
     // Run the future, keep going until an error occurs.
     info!(

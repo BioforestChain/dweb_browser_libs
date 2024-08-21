@@ -8,7 +8,7 @@ edition = "2021"
 # path = "examples/main.rs"
 
 [lib]
-crate-type = ["cdylib", "staticlib"]
+crate-type = ["cdylib", "staticlib", "lib"]
 
 [[bin]]
 # This can be whatever name makes sense for your project, but the rest of this tutorial assumes uniffi-bindgen.
@@ -43,6 +43,7 @@ rustls-pemfile = "1.0.3"
 rand = "0.8.5"
 rcgen = "0.11.3"
 mio = "0.8"
+lazy_static = "1.5.0"
 
 [target.'cfg(target_os = "android")'.dependencies]
 android_logger = "0.13"
