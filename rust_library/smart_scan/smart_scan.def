@@ -1,0 +1,3 @@
+staticLibraries = libbiometrics.a
+package = biometrics.cinterop
+headers = biometrics.h

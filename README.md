@@ -2,6 +2,26 @@
 
 dweb_browser static library reference.
 
+## 如何创建一个新的绑定
+
+1. 复制`keychainstore`项目重命名为自己需要创建的绑定。
+2. 删除里面的`build`、`src` 文件夹。
+3. 按需修改 `build-mobile.gradle.kts` 和 `build.gradle.kts` 修改成跟自己项目相关的。
+4. `.def` 文件内容是到`ios` 静态链接库的绑定，如果不是给 `ios`创建绑定可以不管。
+5. 按照自己的要求修改`uniffi` 文件夹里的 rust 代码去实现特定的功能。
+6. `uniffi`文件夹内部的`.sh`、`toml`文件内容同步成自己的项目名。
+7. `uniffi/src` 下的`.udl`文件则是暴露给 kotlin 的调用入口，修改成自己实现的`API`就可以。
+8. 如果在`windows` 平台的代码写完了，可以在`windows-lib/examples`先进行测试，每个平台的绑定测试通过了再进行编译。
+9. 运行`build.sh`可以自动化生成 rust 绑定的 kotlin 代码。
+10. 所有的测试通过并且编译完成之后可以运行`Gradle Sync`,同步完就可以在对应目标引入绑定的项目了`implementation(projects.libKeychainstore)`
+
+> 关于更细节的 windows/apple rust 代码的绑定如何实现，可以参考文件夹内其他项目。
+
+> 如果有时候编译不出来，可以修改一下`build.rs`里的内容，让其产生变更在进行编译。
+
+- [uniffi 文档](https://mozilla.github.io/uniffi-rs/latest/)
+- [swift-rs 文档](https://docs.rs/crate/swift-rs)
+
 ### Add Rust Target
 
 ```shell

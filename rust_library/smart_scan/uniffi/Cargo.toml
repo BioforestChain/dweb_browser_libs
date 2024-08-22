@@ -1,0 +1,39 @@
+[package]
+name = "smartscan"
+version = "0.1.1"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[[bin]]
+# This can be whatever name makes sense for your project, but the rest of this tutorial assumes uniffi-bindgen.
+name = "uniffi-bindgen"
+path = "uniffi-bindgen.rs"
+
+[dependencies]
+uniffi = { version = "0.28.0", features = ["cli"] }
+uniffi_macros = "0.28.0"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+smartscan-macos = { path = "./macos-lib" }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+smartscan-win = { path = "./windows-lib" }
+
+[dev-dependencies]
+docopt = "*"
+serde_derive = "*"
+serde = "*"
+rustls-pki-types = "*"
+env_logger = "*"
+
+[build-dependencies]
+uniffi = { version = "0.28.0", features = ["build"] }
+uniffi_bindgen = "0.28.0"
+uniffi-kotlin-multiplatform = { git = "https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings", rev = "55d51f3abf9819b32bd81756053dcfc10f8d5522" }
+camino = "1.1.1"
+
+[profile.release]
+opt-level = 3
+lto = true
