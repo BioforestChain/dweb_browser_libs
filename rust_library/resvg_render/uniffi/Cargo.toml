@@ -16,13 +16,6 @@ resvg = "0.43.0"
 uniffi = { version = "0.25.2", features = ["cli"] }
 uniffi_macros = "0.25.2"
 
-[dev-dependencies]
-docopt = "*"
-serde_derive = "*"
-serde = "*"
-rustls-pki-types = "*"
-env_logger = "*"
-
 [build-dependencies]
 uniffi = { version = "0.25.2", features = ["build"] }
 uniffi_bindgen = "0.25.2"

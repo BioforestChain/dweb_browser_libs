@@ -17,11 +17,6 @@ uniffi_macros = "0.25.2"
 zstd = "0.13.2"
 
 [dev-dependencies]
-docopt = "*"
-serde_derive = "*"
-serde = "*"
-rustls-pki-types = "*"
-env_logger = "*"
 rand = "0.8.5"
 
 [build-dependencies]
