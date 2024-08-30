@@ -4,7 +4,7 @@ extern crate log;
 use futures_util::Future;
 use hyper::client::HttpConnector;
 
-use rcgen::generate_simple_self_signed;
+use rcgen::{generate_simple_self_signed, Certificate, CertificateParams, KeyPair};
 use std::cell::UnsafeCell;
 use std::convert::Infallible;
 use std::net::TcpListener;
@@ -53,7 +53,7 @@ static mut GLOBAL_TLS_SERVER: Option<UnsafeCell<TlsServer>> = None;
 
 // #[uniffi::export]
 #[tokio::main]
-pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
+pub async fn start(frontend_ssl_pem: String, backend_port: u16, on_ready: Box<dyn VoidCallback>) {
     init_log();
     let frontend_port = find_free_port();
 
@@ -67,7 +67,7 @@ pub async fn start(backend_port: u16, on_ready: Box<dyn VoidCallback>) {
             on_ready.callback(proxy_port, frontend_port);
         },
         run_proxy_server(frontend_port, proxy_tx),
-        run_frontend_server(frontend_port, backend_port, async move {
+        run_frontend_server(frontend_ssl_pem, frontend_port, backend_port, async move {
             frontend_tx.send(frontend_port).unwrap();
         }),
     );
@@ -90,13 +90,19 @@ fn find_free_port() -> u16 {
     port
 }
 
-async fn run_frontend_server<F>(frontend_port: u16, backend_port: u16, on_listen: F)
-where
+async fn run_frontend_server<F>(
+    frontend_ssl_pem: String,
+    frontend_port: u16,
+    backend_port: u16,
+    on_listen: F,
+) where
     F: Future + Send + 'static,
 {
     let subject_alt_names = vec!["localhost.dweb".to_string()];
-
-    let cert = generate_simple_self_signed(subject_alt_names).unwrap();
+    let key_pair = KeyPair::from_pem(&frontend_ssl_pem).unwrap();
+    let mut params = CertificateParams::new(subject_alt_names);
+    params.key_pair = Some(key_pair);
+    let cert = Certificate::from_params(params).unwrap();
 
     let cert_der = cert.serialize_der().unwrap();
     let private_key_der = cert.serialize_private_key_der();

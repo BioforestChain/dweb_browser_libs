@@ -22,38 +22,38 @@ actual object UniFFILib : Library {
         
     }
 
-    @JvmName("ffi_reverse_proxy_60a8_VoidCallback_init_callback")
-    actual external fun ffi_reverse_proxy_60a8_VoidCallback_init_callback(`callbackStub`: ForeignCallback,
+    @JvmName("ffi_reverse_proxy_54a6_VoidCallback_init_callback")
+    actual external fun ffi_reverse_proxy_54a6_VoidCallback_init_callback(`callbackStub`: ForeignCallback,
     _uniffi_out_err: RustCallStatus
     ): Unit
 
-    @JvmName("reverse_proxy_60a8_start")
-    actual external fun reverse_proxy_60a8_start(`backendPort`: UShort,`onReady`: ULong,
+    @JvmName("reverse_proxy_54a6_start")
+    actual external fun reverse_proxy_54a6_start(`frontendSslPem`: RustBuffer,`backendPort`: UShort,`onReady`: ULong,
     _uniffi_out_err: RustCallStatus
     ): Unit
 
-    @JvmName("reverse_proxy_60a8_forward")
-    actual external fun reverse_proxy_60a8_forward(`newForwardPort`: UShort,
+    @JvmName("reverse_proxy_54a6_forward")
+    actual external fun reverse_proxy_54a6_forward(`newForwardPort`: UShort,
     _uniffi_out_err: RustCallStatus
     ): Unit
 
-    @JvmName("ffi_reverse_proxy_60a8_rustbuffer_alloc")
-    actual external fun ffi_reverse_proxy_60a8_rustbuffer_alloc(`size`: Int,
+    @JvmName("ffi_reverse_proxy_54a6_rustbuffer_alloc")
+    actual external fun ffi_reverse_proxy_54a6_rustbuffer_alloc(`size`: Int,
     _uniffi_out_err: RustCallStatus
     ): RustBuffer
 
-    @JvmName("ffi_reverse_proxy_60a8_rustbuffer_from_bytes")
-    actual external fun ffi_reverse_proxy_60a8_rustbuffer_from_bytes(`bytes`: ForeignBytes,
+    @JvmName("ffi_reverse_proxy_54a6_rustbuffer_from_bytes")
+    actual external fun ffi_reverse_proxy_54a6_rustbuffer_from_bytes(`bytes`: ForeignBytes,
     _uniffi_out_err: RustCallStatus
     ): RustBuffer
 
-    @JvmName("ffi_reverse_proxy_60a8_rustbuffer_free")
-    actual external fun ffi_reverse_proxy_60a8_rustbuffer_free(`buf`: RustBuffer,
+    @JvmName("ffi_reverse_proxy_54a6_rustbuffer_free")
+    actual external fun ffi_reverse_proxy_54a6_rustbuffer_free(`buf`: RustBuffer,
     _uniffi_out_err: RustCallStatus
     ): Unit
 
-    @JvmName("ffi_reverse_proxy_60a8_rustbuffer_reserve")
-    actual external fun ffi_reverse_proxy_60a8_rustbuffer_reserve(`buf`: RustBuffer,`additional`: Int,
+    @JvmName("ffi_reverse_proxy_54a6_rustbuffer_reserve")
+    actual external fun ffi_reverse_proxy_54a6_rustbuffer_reserve(`buf`: RustBuffer,`additional`: Int,
     _uniffi_out_err: RustCallStatus
     ): RustBuffer
 

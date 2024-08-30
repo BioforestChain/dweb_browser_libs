@@ -1,17 +1,11 @@
-use std::sync::Arc;
-use std::time::Duration;
-
-use futures_util::Future;
-use mio::net::{TcpListener, TcpStream};
+use mio::net::TcpStream;
 
 use log::{debug, error};
-use rustls::server::NoClientAuth;
-use std::collections::HashMap;
 use std::io::{self, ErrorKind};
 use std::io::{Read, Write};
 use std::{net, vec};
 
-use rustls::{self, Certificate, PrivateKey};
+use rustls::ServerConnection;
 /// This is a connection which has been accepted by the server,
 /// and is currently being served.
 ///
@@ -23,7 +17,7 @@ pub(crate) struct OpenConnection {
     token: mio::Token,
     closing: bool,
     closed: bool,
-    tls_conn: rustls::ServerConnection,
+    tls_conn: ServerConnection,
     /** 转发的目标 */
     back: TcpStream,
     back_writting_buf: Vec<u8>,
@@ -43,7 +37,7 @@ impl OpenConnection {
         socket: TcpStream,
         token: mio::Token,
         forward: u16,
-        tls_conn: rustls::ServerConnection,
+        tls_conn: ServerConnection,
     ) -> Self {
         let back = open_back(forward);
         Self {

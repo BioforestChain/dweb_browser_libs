@@ -37,26 +37,28 @@ cp ./target/aarch64-apple-ios-sim/release/libreverse_proxy.a ../src/libs/iosSimu
 mkdir -p ../src/libs/iosX64/
 cp ./target/x86_64-apple-ios/release/libreverse_proxy.a ../src/libs/iosX64/
 
-# macos
-echo "cargo building aarch64-apple-darwin..."
-cargo build --target aarch64-apple-darwin --release --quiet
-echo "cargo building x86_64-apple-darwin..."
-cargo build --target x86_64-apple-darwin --release --quiet
+## 桌面端目前不需要构建了
 
-mkdir -p ../src/desktopMain/resources/darwin-aarch64/
-# cp -r ./target/aarch64-apple-darwin/release/libreverse_proxy.a ../src/desktopMain/resources/darwin-aarch64/
-cp -r ./target/aarch64-apple-darwin/release/libreverse_proxy.dylib ../src/desktopMain/resources/darwin-aarch64/libreverse_proxy.dylib
-mkdir -p ../src/desktopMain/resources/darwin-x86-64/
-# cp -r ./target/x86_64-apple-darwin/release/libreverse_proxy.a ../src/desktopMain/resources/darwin-x86-64/
-cp -r ./target/x86_64-apple-darwin/release/libreverse_proxy.dylib ../src/desktopMain/resources/darwin-x86-64/
+# # macos
+# echo "cargo building aarch64-apple-darwin..."
+# cargo build --target aarch64-apple-darwin --release --quiet
+# echo "cargo building x86_64-apple-darwin..."
+# cargo build --target x86_64-apple-darwin --release --quiet
 
-# windows
+# mkdir -p ../src/desktopMain/resources/darwin-aarch64/
+# # cp -r ./target/aarch64-apple-darwin/release/libreverse_proxy.a ../src/desktopMain/resources/darwin-aarch64/
+# cp -r ./target/aarch64-apple-darwin/release/libreverse_proxy.dylib ../src/desktopMain/resources/darwin-aarch64/libreverse_proxy.dylib
+# mkdir -p ../src/desktopMain/resources/darwin-x86-64/
+# # cp -r ./target/x86_64-apple-darwin/release/libreverse_proxy.a ../src/desktopMain/resources/darwin-x86-64/
+# cp -r ./target/x86_64-apple-darwin/release/libreverse_proxy.dylib ../src/desktopMain/resources/darwin-x86-64/
 
-echo "cargo building x86_64-pc-windows-msvc..."
-cargo build --target x86_64-pc-windows-msvc --release --quiet
+# # windows
 
-mkdir -p ../src/desktopMain/resources/win32-x86-64/
-cp -r ./target/x86_64-pc-windows-msvc/release/reverse_proxy.dll ../src/desktopMain/resources/win32-x86-64/
+# echo "cargo building x86_64-pc-windows-msvc..."
+# cargo build --target x86_64-pc-windows-msvc --release --quiet
 
-# jvm
-cp -r ./target/bindings/jvmMain/ ../src/desktopMain
+# mkdir -p ../src/desktopMain/resources/win32-x86-64/
+# cp -r ./target/x86_64-pc-windows-msvc/release/reverse_proxy.dll ../src/desktopMain/resources/win32-x86-64/
+
+# # jvm
+# cp -r ./target/bindings/jvmMain/ ../src/desktopMain

@@ -129,7 +129,7 @@ impl TlsServer {
         F: Future + Send + 'static,
     {
         let addr: net::SocketAddr = format!("0.0.0.0:{}", port).parse().unwrap();
-        info!("reverse_proxy forward {addr}");
+        println!("reverse_proxy forward {addr}");
 
         let config = TlsServer::make_config(privkey, certs);
 
