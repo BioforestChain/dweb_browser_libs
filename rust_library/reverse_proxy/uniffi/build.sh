@@ -38,6 +38,7 @@ mkdir -p ../src/libs/iosX64/
 cp ./target/x86_64-apple-ios/release/libreverse_proxy.a ../src/libs/iosX64/
 
 ## 桌面端目前不需要构建了
+## 另外mio在windows上的支持也有问题。目前桌面端也就macos可以用，因此目前桌面端使用java进行原生实现
 
 # # macos
 # echo "cargo building aarch64-apple-darwin..."
