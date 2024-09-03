@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1"
+    width="934.975830078125" height="1024" viewBox="0 0 934.975830078125 1024">
+    <defs>
+        <filter id="master_svga_90_04879" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB" x="-120"
+            y="-120" width="619.9678649902344" height="376.67909240722656">
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+            <feGaussianBlur stdDeviation="30" result="effect1_foregroundBlur" />
+        </filter>
+    </defs>
+    <g>
+
+        <g filter="url(#master_svga_90_04879)">
+            <path
+                d="M246.02157592773438,863.812059375L410.03657592773436,978.622359375L625.9895759277344,841.943359375L410.03657592773436,913.016459375L246.02157592773438,863.812059375Z"
+                fill="#FEFFE1" fill-opacity="1" />
+        </g>
+    </g>
+</svg>

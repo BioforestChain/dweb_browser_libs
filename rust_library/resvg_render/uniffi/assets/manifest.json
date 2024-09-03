@@ -1,0 +1,42 @@
+{
+    "id": "crash.com.dweb",
+    "server": {
+        "root": "/usr",
+        "entry": "/server/plaoc.server.js"
+    },
+    "minTarget": 3,
+    "maxTarget": 3,
+    "name": "Crash Demo",
+    "short_name": "crash",
+    "description": "This is an crash app.",
+    "logo": "http://172.30.95.7:8000/assets/crash.svg",
+    "bundle_url": "./crash-1.0.0.zip",
+    "bundle_hash": "sha256:0adca552c253dcfab40dce29d63c2eeb37ac36f38af3d93dafd5ed9bbc53da04",
+    "bundle_size": 35946769,
+    "bundle_signature": "",
+    "public_key_url": "",
+    "release_date": "Wed Jun 05 2024 18:38:40 GMT+0800 (中国标准时间)",
+    "change_log": "💥 Crash Resvg!",
+    "images": [],
+    "author": [
+        "gaubee"
+    ],
+    "version": "1.0.0",
+    "categories": [
+        "application"
+    ],
+    "languages": [],
+    "homepage_url": "https://dweb-browser.org/plaoc",
+    "plugins": [],
+    "permissions": [],
+    "dir": "ltr",
+    "lang": "zh-Hans",
+    "icons": [],
+    "screenshots": [],
+    "display": "fullscreen",
+    "orientation": "any",
+    "theme_color": "",
+    "background_color": "",
+    "shortcuts": [],
+    "home": ""
+}
