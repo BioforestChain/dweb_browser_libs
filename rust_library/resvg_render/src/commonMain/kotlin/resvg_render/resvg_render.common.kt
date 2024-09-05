@@ -351,6 +351,7 @@ internal object FfiConverterByteArray: FfiConverterRustBuffer<ByteArray> {
 data class RenderOptions (
     var `width`: kotlin.Float, 
     var `height`: kotlin.Float, 
+    var `layerLimitSize`: kotlin.Float?, 
     var `fitMode`: FitMode
 ) {
     
@@ -361,6 +362,7 @@ object FfiConverterTypeRenderOptions: FfiConverterRustBuffer<RenderOptions> {
         return RenderOptions(
             FfiConverterFloat.read(source),
             FfiConverterFloat.read(source),
+            FfiConverterOptionalFloat.read(source),
             FfiConverterTypeFitMode.read(source),
         )
     }
@@ -368,12 +370,14 @@ object FfiConverterTypeRenderOptions: FfiConverterRustBuffer<RenderOptions> {
     override fun allocationSize(value: RenderOptions) = (
             FfiConverterFloat.allocationSize(value.`width`) +
             FfiConverterFloat.allocationSize(value.`height`) +
+            FfiConverterOptionalFloat.allocationSize(value.`layerLimitSize`) +
             FfiConverterTypeFitMode.allocationSize(value.`fitMode`)
     )
 
     override fun write(value: RenderOptions, buf: Buffer) {
             FfiConverterFloat.write(value.`width`, buf)
             FfiConverterFloat.write(value.`height`, buf)
+            FfiConverterOptionalFloat.write(value.`layerLimitSize`, buf)
             FfiConverterTypeFitMode.write(value.`fitMode`, buf)
     }
 }
@@ -400,6 +404,35 @@ object FfiConverterTypeFitMode: FfiConverterRustBuffer<FitMode> {
 }
 
 
+
+
+
+
+object FfiConverterOptionalFloat: FfiConverterRustBuffer<kotlin.Float?> {
+    override fun read(source: NoCopySource): kotlin.Float? {
+        if (source.readByte().toInt() == 0) {
+            return null
+        }
+        return FfiConverterFloat.read(source)
+    }
+
+    override fun allocationSize(value: kotlin.Float?): kotlin.Int {
+        if (value == null) {
+            return 1
+        } else {
+            return 1 + FfiConverterFloat.allocationSize(value)
+        }
+    }
+
+    override fun write(value: kotlin.Float?, buf: Buffer) {
+        if (value == null) {
+            buf.writeByte(0)
+        } else {
+            buf.writeByte(1)
+            FfiConverterFloat.write(value, buf)
+        }
+    }
+}
 
 
 

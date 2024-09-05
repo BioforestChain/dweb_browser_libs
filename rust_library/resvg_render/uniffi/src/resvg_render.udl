@@ -5,6 +5,7 @@ namespace resvg_render {
 dictionary RenderOptions {
     float width;
     float height;
+    float? layer_limit_size;
     FitMode fit_mode;
 };
 
