@@ -28,6 +28,7 @@ fn main() {
                 width: 996.0,
                 height: 500.0,
                 fit_mode: FitMode::Contain,
+                layer_limit_size: Some(5242880.0),
             }),
         );
         std::fs::write(format!("./output/{name}.contain.png"), png_data).unwrap();
@@ -39,6 +40,7 @@ fn main() {
                 width: 996.0,
                 height: 500.0,
                 fit_mode: FitMode::Fill,
+                layer_limit_size: Some(5242880.0),
             }),
         );
         std::fs::write(format!("./output/{name}.fill.png"), png_data).unwrap();
