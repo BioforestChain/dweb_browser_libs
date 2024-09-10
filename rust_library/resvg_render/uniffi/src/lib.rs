@@ -1,5 +1,3 @@
-use std::vec;
-
 use resvg::{
     render, tiny_skia,
     usvg::{self, Size},
@@ -90,7 +88,7 @@ pub fn svg_to_png(svg_data: Vec<u8>, options: Option<RenderOptions>) -> Vec<u8> 
     }
 
     let mut pixmap = tiny_skia::Pixmap::new(output_width, output_height).unwrap();
-
+    // 拿到边框大小
     let layer_bounding_box = tree.root().abs_layer_bounding_box();
     let layer_bounding_width = layer_bounding_box.width();
     let layer_bounding_height = layer_bounding_box.height();

@@ -57,6 +57,10 @@ rustup target add x86_64-pc-windows-gnu
    linker = "PATH_TO_LLVM_MINGW_UCRT_MACOS_UNIVERSAL/bin/aarch64-w64-mingw32-clang"
    ```
 
+### build dynamic link library
+
+只需要运行每个`uniffi`下的`build-*.sh` 文件即可编译成各个平台的动态链接库。
+
 ### Build Android
 
 ```shell
