@@ -5,8 +5,8 @@
 
 package keychainstore
 
-import kotlinx.coroutines.CancellableContinuation
 import okio.Buffer
+import kotlinx.coroutines.CancellableContinuation
 import kotlin.coroutines.resume
 
 // TODO remove suppress when https://youtrack.jetbrains.com/issue/KT-29819/New-rules-for-expect-actual-declarations-in-MPP is solved

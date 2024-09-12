@@ -78,7 +78,7 @@ public func loadItem(service: String, account: String) -> Data? {
       return result as? Data
     } else {
       // 处理错误
-      print("读取数据失败！")
+      print("读取数据失败！\(status)")
       return nil
     }
   }
@@ -97,7 +97,7 @@ public func deleteItem(service: String, account: String) -> Bool {
 
     if status != errSecSuccess {
       // 处理错误
-      print("删除数据失败！")
+      print("删除数据失败！\(status)")
     }
     return status == errSecSuccess
   }
@@ -127,7 +127,7 @@ public func getAllAccounts(service: String) -> [String] {
       }
     } else {
       // 处理错误
-      print("获取所有账户失败！")
+      print("获取所有账户失败！\(status)")
     }
 
     return accounts
