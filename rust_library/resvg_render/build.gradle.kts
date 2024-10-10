@@ -1,8 +1,12 @@
 plugins {
   id(libs.plugins.kotlinxMultiplatform.get().pluginId)
   id(libs.plugins.androidLibrary.get().pluginId)
+  `publish-plugin`
 }
-
+plugins.withId("publish-plugin") {
+  project.description = "跨平台图片渲染库"
+  project.version = "1.0.0"
+}
 kotlin {
   androidTarget {
     compilations.all {
@@ -28,7 +32,10 @@ kotlin {
     }
     val main by it.compilations.getting
     main.cinterops.create("resvg_render") {
-      includeDirs(project.file("src/nativeInterop/cinterop/headers/resvg_render"), project.file("src/libs/${it.targetName}"))
+      includeDirs(
+        project.file("src/nativeInterop/cinterop/headers/resvg_render"),
+        project.file("src/libs/${it.targetName}")
+      )
     }
   }
 

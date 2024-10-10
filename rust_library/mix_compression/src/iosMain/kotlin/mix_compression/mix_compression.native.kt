@@ -121,12 +121,12 @@ actual val RustBuffer.dataSize: kotlin.Int
     get() = useContents { len }
 
 actual fun RustBuffer.free(): Unit =
-    rustCall { status: RustCallStatus ->
+    rustCall { status ->
         UniFFILib.ffi_mix_compression_rustbuffer_free(this, status)
     }
 
 actual fun allocRustBuffer(buffer: Buffer): RustBuffer =
-    rustCall { status: RustCallStatus ->
+    rustCall { status ->
         val size = buffer.size
         UniFFILib.ffi_mix_compression_rustbuffer_alloc(size.toInt(), status).also {
             it.useContents {

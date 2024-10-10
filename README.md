@@ -97,3 +97,15 @@ cargo build --release --target aarch64-pc-windows-msvc
 ### Build Linux
 
 > Build for you self XD.
+
+## publish maven
+
+### 发布到本地
+
+到 ./gradelew 目录下运行：
+
+```bash
+./gradlew publishToMavenLocal
+```
+
+发布后会在本地的`~/.m2` 生成包。项目使用在`setting.gradle.kts` 设置 `mavenLocal()`就能快速调试。

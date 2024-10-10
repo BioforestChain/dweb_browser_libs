@@ -1,6 +1,11 @@
 plugins {
   id(libs.plugins.kotlinxMultiplatform.get().pluginId)
   id(libs.plugins.androidLibrary.get().pluginId)
+  `publish-plugin`
+}
+plugins.withId("publish-plugin") {
+  project.description = "跨平台压缩解压库"
+  project.version = "1.0.0"
 }
 
 kotlin {
@@ -28,7 +33,10 @@ kotlin {
     }
     val main by it.compilations.getting
     main.cinterops.create("mix_compression") {
-      includeDirs(project.file("src/nativeInterop/cinterop/headers/mix_compression"), project.file("src/libs/${it.targetName}"))
+      includeDirs(
+        project.file("src/nativeInterop/cinterop/headers/mix_compression"),
+        project.file("src/libs/${it.targetName}")
+      )
     }
   }
 

@@ -1,6 +1,12 @@
 plugins {
   id(libs.plugins.kotlinxMultiplatform.get().pluginId)
   id(libs.plugins.androidLibrary.get().pluginId)
+  `publish-plugin`
+}
+
+plugins.withId("publish-plugin") {
+  project.description = "反向代理网络库"
+  project.version = "1.0.0"
 }
 
 kotlin {
@@ -26,7 +32,10 @@ kotlin {
     }
     val main by it.compilations.getting
     main.cinterops.create("reverse_proxy") {
-      includeDirs(project.file("src/nativeInterop/cinterop/headers/reverse_proxy"), project.file("src/libs/${it.targetName}"))
+      includeDirs(
+        project.file("src/nativeInterop/cinterop/headers/reverse_proxy"),
+        project.file("src/libs/${it.targetName}")
+      )
     }
   }
 
@@ -37,6 +46,7 @@ kotlin {
   }
   sourceSets.commonMain.dependencies {
     api(libs.kotlinx.atomicfu)
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.squareup.okio)
     implementation(libs.kotlinx.datetime)
   }
