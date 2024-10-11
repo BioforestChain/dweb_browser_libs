@@ -9,6 +9,7 @@ plugins.withId("publish-plugin") {
 }
 kotlin {
   androidTarget {
+    publishLibraryVariants("release")
     compilations.all {
       kotlinOptions {
         jvmTarget = libs.versions.jvmTarget.get()

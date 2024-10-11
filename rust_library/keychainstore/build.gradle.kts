@@ -4,7 +4,7 @@ plugins {
   `publish-plugin`
 }
 plugins.withId("publish-plugin") {
-  project.description = "跨平台密钥存储模块"
+  project.description = "desktop/ios平台密钥存储模块"
   project.version = "1.0.0"
 }
 
