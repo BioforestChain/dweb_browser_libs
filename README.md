@@ -102,7 +102,7 @@ cargo build --release --target aarch64-pc-windows-msvc
 
 ### 发布到本地
 
-到 ./gradelew 目录下运行：
+到 `rust_library` 目录下运行：
 
 ```bash
 ./gradlew publishToMavenLocal
