@@ -101,9 +101,26 @@ cargo build --release --target aarch64-pc-windows-msvc
 ## publish maven
 
 ### 发布到本地
+1. 生成gpg文件
+2. 取出 private key
+```bash
+gpg --keyring secring.gpg --export-secret-keys > ~/.gnupg/secring.gpg
+```
+3. 需要在`local.properties`文件中配置:
+```
+# gpg生成的keyId为后8位
+signing.keyId=
+# gpg文件路径secring.gpg路径
+signing.secretKeyRingFile=
+# gpg设置的密码
+signing.password=
 
-到 `rust_library` 目录下运行：
+# ossrh http://s01.oss.sonatype.org/ 中的token的username和password
+ossrhUsername=
+ossrhPassword=
+```
 
+4. 到 `rust_library` 目录下运行：
 ```bash
 ./gradlew publishToMavenLocal
 ```
