@@ -5,7 +5,7 @@ plugins {
 }
 plugins.withId("publish-plugin") {
   project.description = "跨平台自定义模块"
-  project.version = "1.0.0"
+  project.version = "1.1.0"
 }
 
 kotlin {

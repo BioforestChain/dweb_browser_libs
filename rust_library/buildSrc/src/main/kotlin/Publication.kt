@@ -9,7 +9,7 @@ fun MavenPublication.configurePom(project: Project) {
     description = project.description
     url =
       "https://github.com/BioforestChain/dweb_browser_libs/tree/main/rust_library/${project.name}"
-    inceptionYear.set("2024")
+    inceptionYear.set("2025")
 
     licenses {
       license {

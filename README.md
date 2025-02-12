@@ -66,10 +66,12 @@ rustup target add x86_64-pc-windows-gnu
 ```shell
 cargo install cbindgen
 cargo install cargo-ndk
-cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build --release
-cargo ndk -t armv7-linux-androideabi -o ../src/androidMain/jniLibs build --release
-cargo ndk -t i686-linux-android -o ../src/androidMain/jniLibs build --release
-cargo ndk -t x86_64-linux-android -o ../src/androidMain/jniLibs build --release
+# 通过 RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" 开启 16kb page size 支持，ndk r27 方式
+# see：https://developer.android.com/guide/practices/page-sizes#compile-r27
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build --release
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t armv7-linux-androideabi -o ../src/androidMain/jniLibs build --release
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t i686-linux-android -o ../src/androidMain/jniLibs build --release
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t x86_64-linux-android -o ../src/androidMain/jniLibs build --release
 ```
 
 ### Build iOS

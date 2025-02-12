@@ -6,7 +6,7 @@ plugins {
 
 plugins.withId("publish-plugin") {
   project.description = "反向代理网络库"
-  project.version = "1.0.0"
+  project.version = "1.1.0"
 }
 
 kotlin {

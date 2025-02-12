@@ -22,16 +22,16 @@ cp -r ./target/x86_64-apple-darwin/release/libresvg_render.dylib ../src/desktopM
 rm -rf ../src/androidMain
 
 echo "cargo building aarch64-linux-android..."
-cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build --release --quiet
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build --release --quiet
 echo "cargo building armv7-linux-androideabi..."
-cargo ndk -t armv7-linux-androideabi -o ../src/androidMain/jniLibs build --release --quiet
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t armv7-linux-androideabi -o ../src/androidMain/jniLibs build --release --quiet
 echo "cargo building i686-linux-android..."
-cargo ndk -t i686-linux-android -o ../src/androidMain/jniLibs build --release --quiet
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t i686-linux-android -o ../src/androidMain/jniLibs build --release --quiet
 echo "cargo building x86_64-linux-android..."
-cargo ndk -t x86_64-linux-android -o ../src/androidMain/jniLibs build --release --quiet
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t x86_64-linux-android -o ../src/androidMain/jniLibs build --release --quiet
 
 # double build，for uniffi_bindgen::generate_external_bindings
-cargo ndk -t x86_64-linux-android -o ../src/androidMain/jniLibs build --release --quiet
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t x86_64-linux-android -o ../src/androidMain/jniLibs build --release --quiet
 
 cp -r ./target/bindings/jvmMain/ ../src/androidMain
 

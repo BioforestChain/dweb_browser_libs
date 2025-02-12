@@ -2,10 +2,10 @@
 rm -rf ../src/androidMain
 
 echo "cargo building aarch64-linux-android..."
-cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build
 
 # double build，for uniffi_bindgen::generate_external_bindings
-cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build --quiet
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build --quiet
 
 cp -r ./target/bindings/jvmMain/ ../src/androidMain
 

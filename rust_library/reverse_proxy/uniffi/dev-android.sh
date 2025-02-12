@@ -1,6 +1,6 @@
 rm -rf ../src/androidMain
 
-cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build
+RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build
 
 cp -r ./target/bindings/jvmMain/ ../src/androidMain
 
