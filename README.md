@@ -110,6 +110,8 @@ gpg --keyring secring.gpg --export-secret-keys > ~/.gnupg/secring.gpg
 ```
 3. 需要在`local.properties`文件中配置:
 ```
+# 发布到 maven 配置
+#####################
 # gpg生成的keyId为后8位
 signing.keyId=
 # gpg文件路径secring.gpg路径
@@ -120,6 +122,16 @@ signing.password=
 # ossrh http://s01.oss.sonatype.org/ 中的token的username和password
 ossrhUsername=
 ossrhPassword=
+####################
+
+# 发布到 GitHub Package 配置
+####################
+# github 用户名
+githubPackagesUsername=
+# github token Personal access tokens (classic)，需要权限 write packages
+# see: https://github.com/settings/tokens
+githubPackagesPassword=
+####################
 ```
 
 4. 到 `rust_library` 目录下运行：
@@ -128,3 +140,11 @@ ossrhPassword=
 ```
 
 发布后会在本地的`~/.m2` 生成包。项目使用在`setting.gradle.kts` 设置 `mavenLocal()`就能快速调试。
+
+```bash
+# 发布到 maven
+./gradlew publish
+
+# 发布到 GitHub Package
+./gradlew publish -PTarget=github
+```
