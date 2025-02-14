@@ -1,9 +1,0 @@
-namespace biometrics {
-    i8 check_support_biometrics();
-    BiometricsResult biometrics_result_content(string reason);
-};
-
-dictionary BiometricsResult {
-    boolean success;
-    string message;
-};
