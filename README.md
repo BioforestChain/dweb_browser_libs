@@ -140,11 +140,20 @@ githubPackagesPassword=
 ```
 
 发布后会在本地的`~/.m2` 生成包。项目使用在`setting.gradle.kts` 设置 `mavenLocal()`就能快速调试。
+```kts
+dependencyResolutionManagement {
+   repositories {
+      ...other MavenArtifactRepositories
+      mavenLocal()
+   }
+}
+```
 
+### 发布到正式环境
 ```bash
 # 发布到 maven
 ./gradlew publish
 
-# 发布到 GitHub Package
+# 发布到 GitHub Packages
 ./gradlew publish -PTarget=github
 ```
