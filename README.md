@@ -150,6 +150,7 @@ dependencyResolutionManagement {
 ```
 
 ### 发布到正式环境
+> 使用mac电脑进行发布，否则会缺失 iOS 和 mac 的包
 ```bash
 # 发布到 maven
 ./gradlew publish

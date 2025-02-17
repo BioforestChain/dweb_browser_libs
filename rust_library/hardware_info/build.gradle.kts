@@ -4,7 +4,7 @@ plugins {
 }
 plugins.withId("publish-plugin") {
   project.description = "桌面端硬件信息模块"
-  project.version = "1.1.1"
+  project.version = "1.1.2"
 }
 kotlin {
   jvm("desktop")
