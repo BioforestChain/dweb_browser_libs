@@ -5,6 +5,7 @@ build/
 .idea/
 local.properties
 *.log
+.kotlin/
 
 # ios
 .DS_Store

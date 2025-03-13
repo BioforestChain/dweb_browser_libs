@@ -25,6 +25,10 @@ dependencyResolutionManagement {
   }
 }
 
+plugins {
+  id("org.gradle.toolchains.foojay-resolver-convention") version ("0.9.0")
+}
+
 //includeBuild("./build-logic")
 
 rootProject.name = "rust-library"
@@ -34,7 +38,7 @@ rootProject.name = "rust-library"
 //include(":biometrics")
 rootDir.listFiles { file -> file.isDirectory }
   ?.forEach { dir ->
-    if (File(dir, "build.gradle.kts").exists()) {
+    if (dir.name == "ziplib" && File(dir, "build.gradle.kts").exists()) {
       include(dir.name)
       project(":${dir.name}").apply {
         name = "lib_${dir.name}"

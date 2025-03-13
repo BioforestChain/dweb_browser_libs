@@ -1,18 +1,20 @@
 [versions]
-agp = "8.3.2"
-kotlin = "1.9.24"
+agp = "8.8.2"
+kotlin = "2.1.10"
 jvmTarget = "17"
 javaVersion = "VERSION_17" # JavaVersion.VERSION_17
-compileSdkVersion = "34" # Int
+compileSdkVersion = "35" # Int
 buildToolsVersion = "29.0.2"
 minSdkVersion = "28" # Int
-targetSdkVersion = "34" # Int
+targetSdkVersion = "35" # Int
 
-kotlinx-coroutines = "1.8.0"
-kotlinx-atomicfu-version = "0.24.0"
-okio-version = "3.9.0"
-kotlinx-datetime-version = "0.6.0"
+kotlinx-coroutines = "1.10.1"
+kotlinx-atomicfu-version = "0.27.0"
+okio-version = "3.10.2"
+kotlinx-datetime-version = "0.6.1"
 java-jna-version = "5.16.0"
+
+gobley-version = "0.1.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -21,9 +23,16 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 squareup-okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio-version" }
 java-jna = { module = "net.java.dev.jna:jna", version.ref = "java-jna-version" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+dev-gobley-rust = { module = "dev.gobley.rust:dev.gobley.rust.gradle.plugin", version.ref = "gobley-version" }
+dev-gobley-cargo = { module = "dev.gobley.cargo:dev.gobley.cargo.gradle.plugin", version.ref = "gobley-version" }
+dev-gobley-uniffi = { module = "dev.gobley.uniffi:dev.gobley.uniffi.gradle.plugin", version.ref = "gobley-version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinxMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+devGobleyRust = { id = "dev.gobley.rust", version.ref = "gobley-version" }
+devGobleyCargo = { id = "dev.gobley.cargo", version.ref = "gobley-version" }
+devGobleyUniffi = { id = "dev.gobley.uniffi", version.ref = "gobley-version" }
+kotlin-atomicfu = { id = "org.jetbrains.kotlin.plugin.atomicfu", version.ref = "kotlin" }

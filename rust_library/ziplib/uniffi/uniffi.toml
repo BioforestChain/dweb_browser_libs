@@ -1,0 +1,2 @@
+package_name = "org.dweb_browser.ziplib"
+cdylib_name = "ziplib"

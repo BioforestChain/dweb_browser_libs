@@ -33,4 +33,4 @@ fn decompress(zip_file_path: String, dest_path: String) -> u64 {
     0
 }
 
-include!(concat!(env!("OUT_DIR"), "/ziplib.uniffi.rs"));
+uniffi::include_scaffolding!("ziplib");

@@ -1,0 +1,18 @@
+[package]
+name = "ziplib"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "ziplib"
+crate-type = ["cdylib", "staticlib"]
+path = "uniffi/src/lib.rs"
+
+[dependencies]
+uniffi = { workspace = true }
+once_cell = { workspace = true }
+thiserror = { workspace = true }
+zip = "2.2.3"
+
+[build-dependencies]
+uniffi = { workspace = true, features = ["build"] }
