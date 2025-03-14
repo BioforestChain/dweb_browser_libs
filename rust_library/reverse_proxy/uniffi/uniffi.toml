@@ -1,2 +1,2 @@
-[bindings.kotlin]
 package_name = "org.dweb_browser.reverse_proxy"
+cdylib_name = "reverse_proxy"

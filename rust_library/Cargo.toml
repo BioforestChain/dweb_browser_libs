@@ -1,6 +1,7 @@
 [workspace]
 members = [
-    "ziplib"
+    "ziplib",
+    "reverse_proxy"
 ]
 resolver = "2"
 

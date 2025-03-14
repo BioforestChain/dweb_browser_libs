@@ -9,7 +9,6 @@ import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
@@ -114,7 +113,7 @@ uniffi {
   generateFromUdl {
     namespace = "ziplib"
     build = RustAndroidTarget.Arm64
-    variant = Variant.Release
+    variant = Variant.Debug
     udlFile = layout.projectDirectory.file("uniffi/ziplib.udl")
   }
 //  formatCode = true

@@ -4,109 +4,291 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// The following structs are used to implement the lowest level
-// of the FFI, and thus useful to multiple uniffied crates.
-// We ensure they are declared exactly once, with a header guard, UNIFFI_SHARED_H.
-#ifdef UNIFFI_SHARED_H
-    // We also try to prevent mixing versions of shared uniffi header structs.
-    // If you add anything to the #else block, you must increment the version suffix in UNIFFI_SHARED_HEADER_V4
-    #ifndef UNIFFI_SHARED_HEADER_V4
-        #error Combining helper code from multiple versions of uniffi is not supported
-    #endif // ndef UNIFFI_SHARED_HEADER_V4
-#else
-#define UNIFFI_SHARED_H
-#define UNIFFI_SHARED_HEADER_V4
-
-// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H`) you *must* ⚠️
-// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
 
 typedef struct RustBuffer
 {
-    int32_t capacity;
-    int32_t len;
+    int64_t capacity;
+    int64_t len;
     uint8_t *_Nullable data;
 } RustBuffer;
+
+typedef struct RustBufferByReference
+{
+    int64_t capacity;
+    int64_t len;
+    uint8_t *_Nullable data;
+} RustBufferByReference;
 
 typedef struct ForeignBytes
 {
     int32_t len;
     const uint8_t *_Nullable data;
 } ForeignBytes;
-typedef struct RustCallStatus {
-    int8_t code;
-    RustBuffer errorBuf;
-} RustCallStatus;
+
+typedef struct UniffiRustCallStatus {
+  int8_t code;
+  RustBuffer errorBuf;
+} UniffiRustCallStatus;
+
+// Public interface members begin here.
 
 
-typedef int32_t (*ForeignCallback)(uint64_t, int32_t, const uint8_t *_Nonnull, int32_t, RustBuffer *_Nonnull);
+// Contains loading, initialization code,
+// and the FFI Function declarations.
 
-typedef void (*UniFfiRustFutureContinuation)(uint64_t, int16_t);
+typedef void (*UniffiRustFutureContinuationCallback)(int64_t, int8_t
+    );
 
-// ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H`) you *must* ⚠️
-// ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
-#endif // def UNIFFI_SHARED_H
+typedef void (*UniffiForeignFutureFree)(int64_t
+    );
 
-void uniffi_reverse_proxy_fn_init_callback_voidcallback(ForeignCallback  _Nonnull callback_stub_, RustCallStatus *_Nonnull out_status);
-void uniffi_reverse_proxy_fn_func_forward(uint16_t new_forward_port_, RustCallStatus *_Nonnull out_status);
-void uniffi_reverse_proxy_fn_func_start(RustBuffer frontend_ssl_pem_, uint16_t backend_port_, uint64_t on_ready_, RustCallStatus *_Nonnull out_status);
-RustBuffer ffi_reverse_proxy_rustbuffer_alloc(int32_t size_, RustCallStatus *_Nonnull out_status);
-RustBuffer ffi_reverse_proxy_rustbuffer_from_bytes(ForeignBytes bytes_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rustbuffer_free(RustBuffer buf_, RustCallStatus *_Nonnull out_status);
-RustBuffer ffi_reverse_proxy_rustbuffer_reserve(RustBuffer buf_, int32_t additional_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_continuation_callback_set(UniFfiRustFutureContinuation _Nonnull callback_);
-void ffi_reverse_proxy_rust_future_poll_u8(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_u8(void* handle_);
-void ffi_reverse_proxy_rust_future_free_u8(void* handle_);
-uint8_t ffi_reverse_proxy_rust_future_complete_u8(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_i8(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_i8(void* handle_);
-void ffi_reverse_proxy_rust_future_free_i8(void* handle_);
-int8_t ffi_reverse_proxy_rust_future_complete_i8(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_u16(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_u16(void* handle_);
-void ffi_reverse_proxy_rust_future_free_u16(void* handle_);
-uint16_t ffi_reverse_proxy_rust_future_complete_u16(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_i16(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_i16(void* handle_);
-void ffi_reverse_proxy_rust_future_free_i16(void* handle_);
-int16_t ffi_reverse_proxy_rust_future_complete_i16(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_u32(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_u32(void* handle_);
-void ffi_reverse_proxy_rust_future_free_u32(void* handle_);
-uint32_t ffi_reverse_proxy_rust_future_complete_u32(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_i32(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_i32(void* handle_);
-void ffi_reverse_proxy_rust_future_free_i32(void* handle_);
-int32_t ffi_reverse_proxy_rust_future_complete_i32(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_u64(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_u64(void* handle_);
-void ffi_reverse_proxy_rust_future_free_u64(void* handle_);
-uint64_t ffi_reverse_proxy_rust_future_complete_u64(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_i64(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_i64(void* handle_);
-void ffi_reverse_proxy_rust_future_free_i64(void* handle_);
-int64_t ffi_reverse_proxy_rust_future_complete_i64(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_f32(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_f32(void* handle_);
-void ffi_reverse_proxy_rust_future_free_f32(void* handle_);
-float ffi_reverse_proxy_rust_future_complete_f32(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_f64(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_f64(void* handle_);
-void ffi_reverse_proxy_rust_future_free_f64(void* handle_);
-double ffi_reverse_proxy_rust_future_complete_f64(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_pointer(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_pointer(void* handle_);
-void ffi_reverse_proxy_rust_future_free_pointer(void* handle_);
-void*_Nonnull ffi_reverse_proxy_rust_future_complete_pointer(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_rust_buffer(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_rust_buffer(void* handle_);
-void ffi_reverse_proxy_rust_future_free_rust_buffer(void* handle_);
-RustBuffer ffi_reverse_proxy_rust_future_complete_rust_buffer(void* handle_, RustCallStatus *_Nonnull out_status);
-void ffi_reverse_proxy_rust_future_poll_void(void* handle_, size_t uniffi_callback_);
-void ffi_reverse_proxy_rust_future_cancel_void(void* handle_);
-void ffi_reverse_proxy_rust_future_free_void(void* handle_);
-void ffi_reverse_proxy_rust_future_complete_void(void* handle_, RustCallStatus *_Nonnull out_status);
-uint16_t uniffi_reverse_proxy_checksum_func_forward(void);
-uint16_t uniffi_reverse_proxy_checksum_func_start(void);
-uint16_t uniffi_reverse_proxy_checksum_method_voidcallback_callback(void);
-uint32_t ffi_reverse_proxy_uniffi_contract_version(void);
+typedef void (*UniffiCallbackInterfaceFree)(int64_t
+    );
+
+typedef struct UniffiForeignFuture {
+    int64_t handle;
+    UniffiForeignFutureFree free;
+} UniffiForeignFuture;
+
+typedef struct UniffiForeignFutureStructU8 {
+    int8_t returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructU8;
+
+typedef void (*UniffiForeignFutureCompleteU8)(int64_t, UniffiForeignFutureStructU8
+    );
+
+typedef struct UniffiForeignFutureStructI8 {
+    int8_t returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructI8;
+
+typedef void (*UniffiForeignFutureCompleteI8)(int64_t, UniffiForeignFutureStructI8
+    );
+
+typedef struct UniffiForeignFutureStructU16 {
+    int16_t returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructU16;
+
+typedef void (*UniffiForeignFutureCompleteU16)(int64_t, UniffiForeignFutureStructU16
+    );
+
+typedef struct UniffiForeignFutureStructI16 {
+    int16_t returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructI16;
+
+typedef void (*UniffiForeignFutureCompleteI16)(int64_t, UniffiForeignFutureStructI16
+    );
+
+typedef struct UniffiForeignFutureStructU32 {
+    int32_t returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructU32;
+
+typedef void (*UniffiForeignFutureCompleteU32)(int64_t, UniffiForeignFutureStructU32
+    );
+
+typedef struct UniffiForeignFutureStructI32 {
+    int32_t returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructI32;
+
+typedef void (*UniffiForeignFutureCompleteI32)(int64_t, UniffiForeignFutureStructI32
+    );
+
+typedef struct UniffiForeignFutureStructU64 {
+    int64_t returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructU64;
+
+typedef void (*UniffiForeignFutureCompleteU64)(int64_t, UniffiForeignFutureStructU64
+    );
+
+typedef struct UniffiForeignFutureStructI64 {
+    int64_t returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructI64;
+
+typedef void (*UniffiForeignFutureCompleteI64)(int64_t, UniffiForeignFutureStructI64
+    );
+
+typedef struct UniffiForeignFutureStructF32 {
+    float returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructF32;
+
+typedef void (*UniffiForeignFutureCompleteF32)(int64_t, UniffiForeignFutureStructF32
+    );
+
+typedef struct UniffiForeignFutureStructF64 {
+    double returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructF64;
+
+typedef void (*UniffiForeignFutureCompleteF64)(int64_t, UniffiForeignFutureStructF64
+    );
+
+typedef struct UniffiForeignFutureStructPointer {
+    void * returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructPointer;
+
+typedef void (*UniffiForeignFutureCompletePointer)(int64_t, UniffiForeignFutureStructPointer
+    );
+
+typedef struct UniffiForeignFutureStructRustBuffer {
+    RustBuffer returnValue;
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructRustBuffer;
+
+typedef void (*UniffiForeignFutureCompleteRustBuffer)(int64_t, UniffiForeignFutureStructRustBuffer
+    );
+
+typedef struct UniffiForeignFutureStructVoid {
+    UniffiRustCallStatus callStatus;
+} UniffiForeignFutureStructVoid;
+
+typedef void (*UniffiForeignFutureCompleteVoid)(int64_t, UniffiForeignFutureStructVoid
+    );
+
+typedef void (*UniffiCallbackInterfaceVoidCallbackMethod0)(int64_t, int16_t, int16_t, void *, 
+        UniffiRustCallStatus *_Nonnull uniffiCallStatus
+    );
+
+typedef struct UniffiVTableCallbackInterfaceVoidCallback {
+    UniffiCallbackInterfaceVoidCallbackMethod0 callback;
+    UniffiCallbackInterfaceFree uniffiFree;
+} UniffiVTableCallbackInterfaceVoidCallback;
+
+void uniffi_reverse_proxy_fn_init_callback_vtable_voidcallback(UniffiVTableCallbackInterfaceVoidCallback * vtable
+);
+void uniffi_reverse_proxy_fn_func_forward(int16_t newForwardPort, UniffiRustCallStatus *_Nonnull out_status
+);
+void uniffi_reverse_proxy_fn_func_start(RustBuffer frontendSslPem, int16_t backendPort, int64_t onReady, UniffiRustCallStatus *_Nonnull out_status
+);
+RustBuffer ffi_reverse_proxy_rustbuffer_alloc(int64_t size, UniffiRustCallStatus *_Nonnull out_status
+);
+RustBuffer ffi_reverse_proxy_rustbuffer_from_bytes(ForeignBytes bytes, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rustbuffer_free(RustBuffer buf, UniffiRustCallStatus *_Nonnull out_status
+);
+RustBuffer ffi_reverse_proxy_rustbuffer_reserve(RustBuffer buf, int64_t additional, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_u8(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_u8(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_u8(int64_t handle
+);
+int8_t ffi_reverse_proxy_rust_future_complete_u8(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_i8(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_i8(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_i8(int64_t handle
+);
+int8_t ffi_reverse_proxy_rust_future_complete_i8(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_u16(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_u16(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_u16(int64_t handle
+);
+int16_t ffi_reverse_proxy_rust_future_complete_u16(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_i16(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_i16(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_i16(int64_t handle
+);
+int16_t ffi_reverse_proxy_rust_future_complete_i16(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_u32(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_u32(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_u32(int64_t handle
+);
+int32_t ffi_reverse_proxy_rust_future_complete_u32(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_i32(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_i32(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_i32(int64_t handle
+);
+int32_t ffi_reverse_proxy_rust_future_complete_i32(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_u64(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_u64(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_u64(int64_t handle
+);
+int64_t ffi_reverse_proxy_rust_future_complete_u64(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_i64(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_i64(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_i64(int64_t handle
+);
+int64_t ffi_reverse_proxy_rust_future_complete_i64(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_f32(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_f32(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_f32(int64_t handle
+);
+float ffi_reverse_proxy_rust_future_complete_f32(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_f64(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_f64(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_f64(int64_t handle
+);
+double ffi_reverse_proxy_rust_future_complete_f64(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_pointer(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_pointer(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_pointer(int64_t handle
+);
+void * ffi_reverse_proxy_rust_future_complete_pointer(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_rust_buffer(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_rust_buffer(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_rust_buffer(int64_t handle
+);
+RustBuffer ffi_reverse_proxy_rust_future_complete_rust_buffer(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+void ffi_reverse_proxy_rust_future_poll_void(int64_t handle, UniffiRustFutureContinuationCallback callback, int64_t callbackData
+);
+void ffi_reverse_proxy_rust_future_cancel_void(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_free_void(int64_t handle
+);
+void ffi_reverse_proxy_rust_future_complete_void(int64_t handle, UniffiRustCallStatus *_Nonnull out_status
+);
+int16_t uniffi_reverse_proxy_checksum_func_forward(void
+    
+);
+int16_t uniffi_reverse_proxy_checksum_func_start(void
+    
+);
+int16_t uniffi_reverse_proxy_checksum_method_voidcallback_callback(void
+    
+);
+int32_t ffi_reverse_proxy_uniffi_contract_version(void
+    
+);

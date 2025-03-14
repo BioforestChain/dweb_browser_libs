@@ -1,0 +1,53 @@
+[package]
+name = "reverse_proxy"
+version = "0.2.0"
+edition = "2021"
+
+# [[bin]]
+# name = "reverse_proxy_server"
+# path = "examples/main.rs"
+
+[lib]
+name = "reverse_proxy"
+crate-type = ["cdylib", "staticlib", "lib"]
+path = "uniffi/src/lib.rs"
+
+[dependencies]
+uniffi = { workspace = true }
+
+# lib deps
+http = "0.2"
+hyper = { version = "0.14.27", features = [
+    "http1",
+    "client",
+    "server",
+    "runtime",
+    "tcp",
+    "stream",
+] }
+hyper-rustls = { version = "0.24" }
+log = "*"
+rustls-native-certs = { version = "0.6", optional = true }
+rustls = { version = "0.21", default-features = false, features = [] }
+tokio = { workspace = true, features = ["full"] }
+tokio-rustls = { version = "0.24", default-features = false }
+webpki-roots = { version = "0.25", optional = true }
+futures-util = { version = "0.3", default-features = false }
+rustls-pemfile = "1.0.3"
+rand = "0.8.5"
+rcgen = "0.11.3"
+mio = "1.0.3"
+
+[target.'cfg(target_os = "android")'.dependencies]
+android_logger = "0.13"
+
+[dev-dependencies]
+docopt = "*"
+serde_derive = "*"
+serde = "*"
+rustls-pki-types = "*"
+env_logger = "*"
+
+[build-dependencies]
+uniffi = { workspace = true, features = ["build"] }
+
