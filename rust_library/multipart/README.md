@@ -1,35 +1,82 @@
-### Prepare Env
+# multipart
+
+| Platform | Supported |
+| -------- | --------- |
+| Linux    | x         |
+| Windows  | ✓         |
+| macOS    | ✓         |
+| Android  | ✓         |
+| iOS      | ✓         |
+
+### rust target add
 
 ```shell
+# iOS
 rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
+
+# android
 rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
-cargo install cbindgen
-cargo install cargo-ndk
+
+# macos
+rustup target add aarch64-apple-darwin x86_64-apple-darwin
+
+# windows 不使用GNU的target是因为在各自平台编译能够使包体积更小
+rustup target add x86_64-pc-windows-msvc aarch64-pc-windows-msvc
+
+# windows GNU 如果想要跨平台编译
+rustup target add aarch64-pc-windows-gnullvm x86_64-pc-windows-gnu 
 ```
 
-### Android & IOS
-
+### cargo build
 ```shell
-./uniffi/build.sh
+cd multipart
+
+# iOS
+../gradlew build-ios
+
+# Android
+../gradlew build-android
+
+# macos
+../gradlew build-macos
+
+# windows
+## x86-64
+../gradlew build-win-x86_64
+## arm64
+../gradlew build-win-arm64
+
+## cross arch GNU
+../gradlew build-win
+```
+or
+```shell
+# macos computer build
+../gradlew macos-cargo-build
+
+# windows computer build
+../gradlew win-cargo-build
+
+# windows cross arch build
+../gradlew win-gnu-cargo-build
 ```
 
-## UNIFFI
+### bindings
+```shell
+cd multipart
+../gradlew prepareKotlinIdeaImport
+```
 
-1. 关于 kmp 的支持
-   目前 uniffi 官方只支持 jvm-koltin 的输出，对于多平台的支持还没做好。
-   官方自己文档也是推荐第三方 https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings 来做支持
-   所以目前还在等官方的支持
+### cleanup
+```shell
+cd multipart
 
-   ```shell
-   cargo run --bin uniffi-bindgen generate src/multipart.udl --language kotlin --out-dir out
-   ```
+# only clean bindings
+../gradlew cleanup-bindings
 
-## 关于开发
+# only clean rust targets
+../gradlew cleanup-targets
 
-1. 开发的时候需要将 cargo.toml 中的 lib 和 bin 注释掉，然后打开第一个 bin 配置
-1. `cargo run --example forward` 可以启动 tls 转发服务，默认端口是 1443(tls-server) -> 8000(your-server)
-   1. `export RUST_LOG=debug` 可以开启调试日子
-1. `deno run -A ./assets/ws.ts` 可以启动一个简易的 http-server，内有 websocket 的支持
-1. `curl --insecure -v http://localhost:8000`
-   1. `-v` 可以看到详细的请求过程，包括 tls 握手
-   1. `--insecure` 可以忽视对于本地自签证书的不信任问题
+# clean all
+../gradlew cleanup-all
+```

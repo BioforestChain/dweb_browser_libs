@@ -38,7 +38,7 @@ rootProject.name = "rust-library"
 //include(":biometrics")
 rootDir.listFiles { file -> file.isDirectory }
   ?.forEach { dir ->
-    if (dir.name == "resvg_render" && File(dir, "build.gradle.kts").exists()) {
+    if (dir.name == "multipart" && File(dir, "build.gradle.kts").exists()) {
       include(dir.name)
       project(":${dir.name}").apply {
         name = "lib_${dir.name}"

@@ -2,7 +2,8 @@
 members = [
     "ziplib",
     "reverse_proxy",
-    "resvg_render"
+    "resvg_render",
+    "multipart"
 ]
 resolver = "2"
 

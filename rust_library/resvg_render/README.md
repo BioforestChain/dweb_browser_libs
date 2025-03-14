@@ -1,4 +1,4 @@
-# ziplib
+# resvg_render
 
 | Platform | Supported |
 | -------- | --------- |
@@ -29,7 +29,7 @@ rustup target add aarch64-pc-windows-gnullvm x86_64-pc-windows-gnu
 
 ### cargo build
 ```shell
-cd ziplib
+cd resvg_render
 
 # iOS
 ../gradlew build-ios
@@ -63,13 +63,13 @@ or
 
 ### bindings
 ```shell
-cd ziplib
+cd resvg_render
 ../gradlew prepareKotlinIdeaImport
 ```
 
 ### cleanup
 ```shell
-cd ziplib
+cd resvg_render
 
 # only clean bindings
 ../gradlew cleanup-bindings
