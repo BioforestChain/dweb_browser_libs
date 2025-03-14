@@ -1,33 +1,61 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class, InternalGobleyGradleApi::class)
+
+import gobley.gradle.GobleyHost
+import gobley.gradle.InternalGobleyGradleApi
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
   id(libs.plugins.kotlinxMultiplatform.get().pluginId)
   `publish-plugin`
+  `build-libs-plugin`
+  alias(libs.plugins.devGobleyRust)
 }
 plugins.withId("publish-plugin") {
   project.description = "桌面端硬件信息模块"
-  project.version = "1.1.2"
+  project.version = "1.2.0"
 }
+
+val isPublish =
+  gradle.startParameter.taskNames.any { it.endsWith("publish") || it.endsWith("publishToMavenLocal") }
+
 kotlin {
   jvm("desktop")
   jvmToolchain {
     languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmTarget.get()))
   }
 
-  applyDefaultHierarchyTemplate()
+  applyDefaultHierarchyTemplate {
+    common {
+      withJvm()
+    }
+  }
 
-  sourceSets.all {
-    languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
-  }
-  sourceSets.commonMain.dependencies {
-    api(libs.kotlinx.atomicfu)
-    implementation(libs.squareup.okio)
-    implementation(libs.kotlinx.datetime)
-  }
-  val desktopMain = sourceSets.getByName("desktopMain")
-  desktopMain.dependencies {
-    api(libs.java.jna)
-  }
-  sourceSets.commonTest.dependencies {
-    kotlin("test")
+  sourceSets {
+    commonMain.dependencies {
+      api(libs.kotlinx.atomicfu)
+      implementation(libs.squareup.okio)
+      implementation(libs.kotlinx.datetime)
+    }
+
+    commonTest.dependencies {
+      kotlin("test")
+    }
+
+    val desktopMain = sourceSets.getByName("desktopMain")
+    desktopMain.dependencies {
+      api(libs.java.jna)
+    }
   }
 }
 
+tasks.register("win-cargo-build") {
+  if (GobleyHost.Arch.Arm64.isCurrent) {
+    dependsOn("build-win-arm64")
+  } else {
+    dependsOn("build-win-x86_64")
+  }
+}
+
+tasks.register("win-gnu-cargo-build") {
+  dependsOn("build-win")
+}

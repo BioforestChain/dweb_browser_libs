@@ -1,2 +1,2 @@
-[bindings.kotlin]
 package_name = "org.dweb_browser.hardware_info"
+cdylib_name = "hardware_info"

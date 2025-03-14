@@ -1,0 +1,22 @@
+[package]
+name = "biometrics"
+version = "0.1.1"
+edition = "2021"
+
+[lib]
+name = "biometrics"
+crate-type = ["cdylib", "staticlib", "lib"]
+path = "uniffi/src/lib.rs"
+
+[dependencies]
+uniffi = { workspace = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+biometrics-macos = { path = "./uniffi/macos-lib" }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+biometrics-win = { path = "./uniffi/windows-lib" }
+
+[build-dependencies]
+uniffi = { workspace = true, features = ["build"] }
+

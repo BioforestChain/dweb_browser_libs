@@ -13,7 +13,7 @@ pub fn check_support_biometrics() -> i8 {
   os::check_support_biometrics()
 }
 
-pub fn biometrics_result_content(reason: String) -> BiometricsResult {
+pub fn biometrics_result_content(reason: &str) -> BiometricsResult {
   let (success, message) = os::biometrics_result_content(reason);
   BiometricsResult {
     success,

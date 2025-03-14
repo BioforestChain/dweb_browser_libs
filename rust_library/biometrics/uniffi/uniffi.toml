@@ -1,2 +1,2 @@
-[bindings.kotlin]
 package_name = "org.dweb_browser.biometrics"
+cdylib_name = "biometrics"

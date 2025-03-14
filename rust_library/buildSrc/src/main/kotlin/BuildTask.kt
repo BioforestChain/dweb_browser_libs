@@ -148,3 +148,22 @@ abstract class RustTargetBuildTask : DefaultTask() {
     }
   }
 }
+
+abstract class GobleyBindingGenerateTask :
+  AbstractExecTask<GobleyBindingGenerateTask>(GobleyBindingGenerateTask::class.java) {
+  @get:Input
+  abstract val projectName: Property<String>
+
+  override fun exec() {
+    val commandLine = mutableListOf<String>(
+      "gobley-uniffi-bindgen",
+      "--out-dir",
+      "build/generated/uniffi",
+      "--crate",
+      projectName.get(),
+      "uniffi/${projectName.get()}.udl"
+    )
+    this.commandLine = commandLine
+    super.exec()
+  }
+}

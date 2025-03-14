@@ -3,7 +3,11 @@ members = [
     "ziplib",
     "reverse_proxy",
     "resvg_render",
-    "multipart"
+    "multipart",
+    "mix_compression",
+    "keychainstore",
+    "hardware_info",
+    "biometrics"
 ]
 resolver = "2"
 

@@ -26,7 +26,7 @@ pub fn check_support_biometrics() -> i8 {
 }
 
 // 参考：https://github.com/bitwarden/clients/blob/d28634b06882feee3cf6bb9b2f1e5e5aea91eac8/apps/desktop/desktop_native/src/biometric/windows.rs#L48
-pub fn biometrics_result_content(reason: String) -> (bool, String) {
+pub fn biometrics_result_content(reason: &str) -> (bool, String) {
 	let interop = factory::<UserConsentVerifier, IUserConsentVerifierInterop>().unwrap();
 
 	// https://learn.microsoft.com/en-us/uwp/api/windows.security.credentials.ui.userconsentverifier.requestverificationasync?view=winrt-22621

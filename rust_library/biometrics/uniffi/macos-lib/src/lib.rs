@@ -92,10 +92,10 @@ pub fn check_support_biometrics(policy: Option<i8>) -> i8 {
     }
 }
 
-pub fn biometrics_result_content(policy: Option<i8>, reason: String) -> (bool, String) {
+pub fn biometrics_result_content(policy: Option<i8>, reason: &str) -> (bool, String) {
     // let context = unsafe { lacontext_new() };
     let la_policy = policy.unwrap_or(LAPolicy::DeviceOwnerAuthentication.into());
-    let localized_reason: SRString = reason.as_str().into();
+    let localized_reason: SRString = reason.into();
     let result_rs = unsafe { lacontext_evaluatePolicy(la_policy.into(), &localized_reason) };
     let result = result_rs.as_str();
     if result == "success" {

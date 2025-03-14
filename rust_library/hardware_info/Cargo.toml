@@ -1,0 +1,19 @@
+[package]
+name = "hardware_info"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "hardware_info"
+crate-type = ["cdylib", "staticlib"]
+path = "uniffi/src/lib.rs"
+
+[dependencies]
+uniffi = { workspace = true }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+hardware_info-win = { path = "./uniffi/windows-lib" }
+
+[build-dependencies]
+uniffi = { workspace = true, features = ["build"] }
+
