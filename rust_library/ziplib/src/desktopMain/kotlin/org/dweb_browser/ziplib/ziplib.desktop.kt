@@ -1249,7 +1249,7 @@ private fun uniffiCheckContractApiVersion(lib: UniffiLib) {
 
 
 private fun uniffiCheckApiChecksums(lib: UniffiLib) {
-    if (lib.uniffi_ziplib_checksum_func_decompress() != 20503.toShort()) {
+    if (lib.uniffi_ziplib_checksum_func_decompress() != 42718.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
 }

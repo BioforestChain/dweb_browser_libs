@@ -2,7 +2,7 @@ use std::fs;
 use std::io;
 use std::path::PathBuf;
 
-fn decompress(zip_file_path: String, dest_path: String) -> u64 {
+fn decompress(zip_file_path: &str, dest_path: &str) -> u64 {
     let fname = std::path::Path::new(&zip_file_path);
     let file = fs::File::open(fname).unwrap();
 

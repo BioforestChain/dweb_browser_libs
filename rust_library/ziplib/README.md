@@ -1,4 +1,13 @@
 # ziplib
+
+| Platform | Supported |
+| -------- | --------- |
+| Linux    | x         |
+| Windows  | ✓         |
+| macOS    | ✓         |
+| Android  | ✓         |
+| iOS      | ✓         |
+
 ### rust target add
 
 ```shell
@@ -70,4 +79,11 @@ cd ziplib
 
 # clean all
 ../gradlew cleanup-all
+```
+
+### usage
+```kotlin
+import org.dweb_browser.ziplib.decompress
+
+decompress(zipFilePath, destPath)
 ```
