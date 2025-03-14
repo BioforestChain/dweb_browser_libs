@@ -1,0 +1,17 @@
+[package]
+name = "resvg_render"
+version = "0.1.1"
+edition = "2021"
+
+[lib]
+name = "resvg_render"
+crate-type = ["lib", "cdylib", "staticlib"]
+path = "uniffi/src/lib.rs"
+
+[dependencies]
+resvg = "0.43.0"
+uniffi = { workspace = true }
+
+[build-dependencies]
+uniffi = { workspace = true, features = ["build"] }
+
