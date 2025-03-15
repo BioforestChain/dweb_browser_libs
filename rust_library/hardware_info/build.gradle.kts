@@ -2,6 +2,9 @@
 
 import gobley.gradle.GobleyHost
 import gobley.gradle.InternalGobleyGradleApi
+import gobley.gradle.cargo.dsl.jvm
+import gobley.gradle.rust.targets.RustWindowsTarget
+import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -9,6 +12,9 @@ plugins {
   `publish-plugin`
   `build-libs-plugin`
   alias(libs.plugins.devGobleyRust)
+  alias(libs.plugins.devGobleyCargo)
+  alias(libs.plugins.devGobleyUniffi)
+  alias(libs.plugins.kotlin.atomicfu)
 }
 plugins.withId("publish-plugin") {
   project.description = "桌面端硬件信息模块"
@@ -44,6 +50,51 @@ kotlin {
     val desktopMain = sourceSets.getByName("desktopMain")
     desktopMain.dependencies {
       api(libs.java.jna)
+    }
+  }
+}
+
+cargo {
+  packageDirectory = layout.projectDirectory.dir("uniffi")
+  jvmVariant = gobley.gradle.Variant.Release
+  nativeVariant = gobley.gradle.Variant.Release
+
+  builds.jvm {
+    embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
+  }
+}
+
+uniffi {
+  generateFromUdl {
+    namespace = "hardware_info"
+    if (GobleyHost.Platform.Windows.isCurrent) {
+      build = RustWindowsTarget.X64
+    }
+    udlFile = layout.projectDirectory.file("uniffi/hardware_info.udl")
+  }
+}
+
+var outputDirectoryPath = ""
+tasks.withType<BuildBindingsTask> {
+  doLast {
+    outputDirectoryPath = outputDirectory.get().asFile.path
+  }
+}
+tasks.named("compileKotlinDesktop") {
+  doFirst {
+    projectDir.resolve("src").deleteRecursively()
+  }
+  doLast {
+    copyDirectoryToTarget(
+      outputDirectoryPath,
+      layout.projectDirectory.dir("src").asFile.path
+    ) { source, target ->
+      if (source.path.contains("commonMain") || source.path.contains("jvmMain")) {
+        source.copyTo(target, true)
+      }
+      if (!source.path.contains("nativeInterop")) {
+        source.delete()
+      }
     }
   }
 }
