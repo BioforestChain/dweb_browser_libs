@@ -103,7 +103,7 @@ fun RustBuffer.setValue(array: RustBufferByValue) {
 internal object RustBufferHelper {
     fun allocValue(size: ULong = 0UL): RustBufferByValue = uniffiRustCall { status ->
         // Note: need to convert the size to a `Long` value to make this work with JVM.
-        UniffiLib.INSTANCE.ffi_uniffi/uniffi.toml_rustbuffer_alloc(size.toLong(), status)
+        UniffiLib.INSTANCE.ffi_hardware_info_rustbuffer_alloc(size.toLong(), status)
     }.also {
         if(it.data == null) {
             throw RuntimeException("RustBuffer.alloc() returned null data pointer (size=${size})")
@@ -111,7 +111,7 @@ internal object RustBufferHelper {
     }
 
     fun free(buf: RustBufferByValue) = uniffiRustCall { status ->
-        UniffiLib.INSTANCE.ffi_uniffi/uniffi.toml_rustbuffer_free(buf, status)
+        UniffiLib.INSTANCE.ffi_hardware_info_rustbuffer_free(buf, status)
     }
 }
 
@@ -989,7 +989,7 @@ private fun findLibraryName(componentName: String): String {
     if (libOverride != null) {
         return libOverride
     }
-    return "uniffi_hardware_info"
+    return "hardware_info"
 }
 
 private inline fun <reified Lib : Library> loadIndirect(
@@ -1013,224 +1013,224 @@ internal interface UniffiLib : Library {
         
     }
 
-    fun uniffi_uniffi/uniffi.toml_fn_func_get_hardware_info(
+    fun uniffi_hardware_info_fn_func_get_hardware_info(
         uniffiCallStatus: UniffiRustCallStatus,
     ): RustBufferByValue
-    fun ffi_uniffi/uniffi.toml_rustbuffer_alloc(
+    fun ffi_hardware_info_rustbuffer_alloc(
         `size`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): RustBufferByValue
-    fun ffi_uniffi/uniffi.toml_rustbuffer_from_bytes(
+    fun ffi_hardware_info_rustbuffer_from_bytes(
         `bytes`: ForeignBytesByValue,
         uniffiCallStatus: UniffiRustCallStatus,
     ): RustBufferByValue
-    fun ffi_uniffi/uniffi.toml_rustbuffer_free(
+    fun ffi_hardware_info_rustbuffer_free(
         `buf`: RustBufferByValue,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rustbuffer_reserve(
+    fun ffi_hardware_info_rustbuffer_reserve(
         `buf`: RustBufferByValue,
         `additional`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): RustBufferByValue
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_u8(
+    fun ffi_hardware_info_rust_future_poll_u8(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_u8(
+    fun ffi_hardware_info_rust_future_cancel_u8(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_u8(
+    fun ffi_hardware_info_rust_future_free_u8(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_u8(
+    fun ffi_hardware_info_rust_future_complete_u8(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Byte
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_i8(
+    fun ffi_hardware_info_rust_future_poll_i8(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_i8(
+    fun ffi_hardware_info_rust_future_cancel_i8(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_i8(
+    fun ffi_hardware_info_rust_future_free_i8(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_i8(
+    fun ffi_hardware_info_rust_future_complete_i8(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Byte
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_u16(
+    fun ffi_hardware_info_rust_future_poll_u16(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_u16(
+    fun ffi_hardware_info_rust_future_cancel_u16(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_u16(
+    fun ffi_hardware_info_rust_future_free_u16(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_u16(
+    fun ffi_hardware_info_rust_future_complete_u16(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Short
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_i16(
+    fun ffi_hardware_info_rust_future_poll_i16(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_i16(
+    fun ffi_hardware_info_rust_future_cancel_i16(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_i16(
+    fun ffi_hardware_info_rust_future_free_i16(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_i16(
+    fun ffi_hardware_info_rust_future_complete_i16(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Short
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_u32(
+    fun ffi_hardware_info_rust_future_poll_u32(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_u32(
+    fun ffi_hardware_info_rust_future_cancel_u32(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_u32(
+    fun ffi_hardware_info_rust_future_free_u32(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_u32(
+    fun ffi_hardware_info_rust_future_complete_u32(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Int
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_i32(
+    fun ffi_hardware_info_rust_future_poll_i32(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_i32(
+    fun ffi_hardware_info_rust_future_cancel_i32(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_i32(
+    fun ffi_hardware_info_rust_future_free_i32(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_i32(
+    fun ffi_hardware_info_rust_future_complete_i32(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Int
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_u64(
+    fun ffi_hardware_info_rust_future_poll_u64(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_u64(
+    fun ffi_hardware_info_rust_future_cancel_u64(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_u64(
+    fun ffi_hardware_info_rust_future_free_u64(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_u64(
+    fun ffi_hardware_info_rust_future_complete_u64(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Long
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_i64(
+    fun ffi_hardware_info_rust_future_poll_i64(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_i64(
+    fun ffi_hardware_info_rust_future_cancel_i64(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_i64(
+    fun ffi_hardware_info_rust_future_free_i64(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_i64(
+    fun ffi_hardware_info_rust_future_complete_i64(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Long
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_f32(
+    fun ffi_hardware_info_rust_future_poll_f32(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_f32(
+    fun ffi_hardware_info_rust_future_cancel_f32(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_f32(
+    fun ffi_hardware_info_rust_future_free_f32(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_f32(
+    fun ffi_hardware_info_rust_future_complete_f32(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Float
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_f64(
+    fun ffi_hardware_info_rust_future_poll_f64(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_f64(
+    fun ffi_hardware_info_rust_future_cancel_f64(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_f64(
+    fun ffi_hardware_info_rust_future_free_f64(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_f64(
+    fun ffi_hardware_info_rust_future_complete_f64(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Double
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_pointer(
+    fun ffi_hardware_info_rust_future_poll_pointer(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_pointer(
+    fun ffi_hardware_info_rust_future_cancel_pointer(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_pointer(
+    fun ffi_hardware_info_rust_future_free_pointer(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_pointer(
+    fun ffi_hardware_info_rust_future_complete_pointer(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Pointer?
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_rust_buffer(
+    fun ffi_hardware_info_rust_future_poll_rust_buffer(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_rust_buffer(
+    fun ffi_hardware_info_rust_future_cancel_rust_buffer(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_rust_buffer(
+    fun ffi_hardware_info_rust_future_free_rust_buffer(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_rust_buffer(
+    fun ffi_hardware_info_rust_future_complete_rust_buffer(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): RustBufferByValue
-    fun ffi_uniffi/uniffi.toml_rust_future_poll_void(
+    fun ffi_hardware_info_rust_future_poll_void(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_cancel_void(
+    fun ffi_hardware_info_rust_future_cancel_void(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_free_void(
+    fun ffi_hardware_info_rust_future_free_void(
         `handle`: Long,
     ): Unit
-    fun ffi_uniffi/uniffi.toml_rust_future_complete_void(
+    fun ffi_hardware_info_rust_future_complete_void(
         `handle`: Long,
         uniffiCallStatus: UniffiRustCallStatus,
     ): Unit
-    fun uniffi_uniffi/uniffi.toml_checksum_func_get_hardware_info(
+    fun uniffi_hardware_info_checksum_func_get_hardware_info(
     ): Short
-    fun ffi_uniffi/uniffi.toml_uniffi_contract_version(
+    fun ffi_hardware_info_uniffi_contract_version(
     ): Int
     
 }
@@ -1239,7 +1239,7 @@ private fun uniffiCheckContractApiVersion(lib: UniffiLib) {
     // Get the bindings contract version from our ComponentInterface
     val bindings_contract_version = 26
     // Get the scaffolding contract version by calling the into the dylib
-    val scaffolding_contract_version = lib.ffi_uniffi/uniffi.toml_uniffi_contract_version()
+    val scaffolding_contract_version = lib.ffi_hardware_info_uniffi_contract_version()
     if (bindings_contract_version != scaffolding_contract_version) {
         throw RuntimeException("UniFFI contract version mismatch: try cleaning and rebuilding your project")
     }
@@ -1247,7 +1247,7 @@ private fun uniffiCheckContractApiVersion(lib: UniffiLib) {
 
 
 private fun uniffiCheckApiChecksums(lib: UniffiLib) {
-    if (lib.uniffi_uniffi/uniffi.toml_checksum_func_get_hardware_info() != 27475.toShort()) {
+    if (lib.uniffi_hardware_info_checksum_func_get_hardware_info() != 10650.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
 }
@@ -1365,7 +1365,7 @@ object FfiConverterOptionalString: FfiConverterRustBuffer<kotlin.String?> {
 
 actual fun `getHardwareInfo`(): WinHardwareInfoData {
     return FfiConverterTypeWinHardwareInfoData.lift(uniffiRustCall { uniffiRustCallStatus ->
-        UniffiLib.INSTANCE.uniffi_uniffi/uniffi.toml_fn_func_get_hardware_info(
+        UniffiLib.INSTANCE.uniffi_hardware_info_fn_func_get_hardware_info(
             uniffiRustCallStatus,
         )
     })

@@ -3,6 +3,7 @@
 import gobley.gradle.GobleyHost
 import gobley.gradle.InternalGobleyGradleApi
 import gobley.gradle.cargo.dsl.jvm
+import gobley.gradle.rust.targets.RustPosixTarget
 import gobley.gradle.rust.targets.RustWindowsTarget
 import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -60,16 +61,16 @@ cargo {
   nativeVariant = gobley.gradle.Variant.Release
 
   builds.jvm {
-    embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
+    embedRustLibrary = false
   }
 }
 
 uniffi {
   generateFromUdl {
     namespace = "hardware_info"
-    if (GobleyHost.Platform.Windows.isCurrent) {
-      build = RustWindowsTarget.X64
-    }
+    build =
+      if (GobleyHost.Platform.MacOS.isCurrent) RustPosixTarget.MinGWX64 else RustWindowsTarget.X64
+
     udlFile = layout.projectDirectory.file("uniffi/hardware_info.udl")
   }
 }

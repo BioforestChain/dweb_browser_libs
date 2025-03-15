@@ -4,10 +4,6 @@
 
 package org.dweb_browser.hardware_info
 
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
-
 // Common helper code.
 //
 // Ideally this would live in a separate .kt file where it can be unittested etc
@@ -20,7 +16,7 @@ import kotlin.contracts.contract
 // compile the Rust component. The easiest way to ensure this is to bundle the Kotlin
 // helpers directly inline like we're doing here.
 
-class InternalException(message: String) : Exception(message)
+class InternalException(message: String) : kotlin.Exception(message)
 
 // Public interface members begin here.
 
@@ -48,10 +44,10 @@ interface Disposable : AutoCloseable {
     }
 }
 
-@OptIn(ExperimentalContracts::class)
+@OptIn(kotlin.contracts.ExperimentalContracts::class)
 inline fun <T : Disposable?, R> T.use(block: (T) -> R): R {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    kotlin.contracts.contract {
+        callsInPlace(block, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
     }
     return try {
         block(this)
@@ -74,11 +70,11 @@ object NoPointer
 
 
 data class WinHardwareInfoData (
-    var `uuid`: String,
-    var `cpuInfo`: String?,
-    var `diskInfo`: String?,
-    var `gpuInfo`: String?,
-    var `memoryInfo`: String?
+    var `uuid`: kotlin.String, 
+    var `cpuInfo`: kotlin.String?, 
+    var `diskInfo`: kotlin.String?, 
+    var `gpuInfo`: kotlin.String?, 
+    var `memoryInfo`: kotlin.String?
 ) {
     companion object
 }
