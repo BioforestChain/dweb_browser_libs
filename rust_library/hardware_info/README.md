@@ -1,34 +1,74 @@
-### Prepare Env
-> MacOS编译Windows平台参考：https://gist.github.com/Mefistophell/9787e1b6d2d9441c16d2ac79d6a505e6
+# hardware_info
+
+| Platform | Supported |
+| -------- | -------- |
+| Linux    | x        |
+| Windows  | ✓        |
+| macOS    | x        |
+| Android  | x        |
+| iOS      | x        |
+
+### rust target add
 
 ```shell
-rustup target add aarch64-apple-darwin x86_64-apple-darwin
-rustup target add x86_64-pc-windows-gnu
+# windows 不使用GNU的target是因为在各自平台编译能够使包体积更小
+rustup target add x86_64-pc-windows-msvc aarch64-pc-windows-msvc
+
+# windows GNU 如果想要跨平台编译
+rustup target add aarch64-pc-windows-gnullvm x86_64-pc-windows-gnu 
 ```
 
-### MacOS & Windows
+### cargo build
+```shell
+cd hardware_info
+
+# windows
+## x86-64
+../gradlew build-win-x86_64
+## arm64
+../gradlew build-win-arm64
+
+## cross arch GNU
+../gradlew build-win
+```
+or
+```shell
+# windows computer build
+../gradlew win-cargo-build
+
+# windows cross arch build
+../gradlew win-gnu-cargo-build
+```
+
+### bindings
+#### if MacOS
+1. install mingw-w64
+```shell
+brew install mingw-w64
+```
+2. config cargo
+```
+# 在 ~/.cargo/config.toml 中添加如下内容：
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+```
 
 ```shell
-./uniffi/build.sh
+cd hardware_info
+
+../gradlew build
 ```
 
-## UNIFFI
+### cleanup
+```shell
+cd hardware_info
 
-1. 关于 kmp 的支持
-   目前 uniffi 官方只支持 jvm-koltin 的输出，对于多平台的支持还没做好。
-   官方自己文档也是推荐第三方 https://gitlab.com/trixnity/uniffi-kotlin-multiplatform-bindings 来做支持
-   所以目前还在等官方的支持
+# only clean bindings
+../gradlew cleanup-bindings
 
-   ```shell
-   cargo run --bin uniffi-bindgen generate src/hardware_info.udl --language kotlin --out-dir out
-   ```
+# only clean rust targets
+../gradlew cleanup-targets
 
-## 关于开发
-
-1. 开发的时候需要将 cargo.toml 中的 lib 和 bin 注释掉，然后打开第一个 bin 配置
-1. `cargo run --example forward` 可以启动 tls 转发服务，默认端口是 1443(tls-server) -> 8000(your-server)
-   1. `export RUST_LOG=debug` 可以开启调试日子
-1. `deno run -A ./assets/ws.ts` 可以启动一个简易的 http-server，内有 websocket 的支持
-1. `curl --insecure -v http://localhost:8000`
-   1. `-v` 可以看到详细的请求过程，包括 tls 握手
-   1. `--insecure` 可以忽视对于本地自签证书的不信任问题
+# clean all
+../gradlew cleanup-all
+```

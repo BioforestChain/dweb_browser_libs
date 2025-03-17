@@ -80,10 +80,3 @@ cd ziplib
 # clean all
 ../gradlew cleanup-all
 ```
-
-### usage
-```kotlin
-import org.dweb_browser.ziplib.decompress
-
-decompress(zipFilePath, destPath)
-```
