@@ -85,9 +85,13 @@ tasks.register("gen-bindings") {
 tasks.named("prepareKotlinIdeaImport") {
   doLast {
     if (!projectDir.resolve("build").resolve("generated").resolve("uniffi").exists()) {
-      val execOperations = serviceOf<ExecOperations>()
+      val osName = System.getProperty("os.name")
       execOperations.exec {
-        commandLine = listOf("../gradlew", "build")
+        commandLine =
+          listOf(
+            if (osName.startsWith("Mac")) rootDir.resolve("gradlew") else rootDir.resolve("gradlew.bat").path,
+            "build"
+          )
       }
     }
   }
