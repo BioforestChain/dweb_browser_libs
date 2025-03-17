@@ -58,7 +58,7 @@ or
 ### bindings
 ```shell
 cd keychainstore
-../gradlew prepareKotlinIdeaImport
+../gradlew gen-bindings
 ```
 
 ### cleanup

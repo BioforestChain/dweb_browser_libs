@@ -64,7 +64,7 @@ or
 ### bindings
 ```shell
 cd ziplib
-../gradlew prepareKotlinIdeaImport
+../gradlew gen-bindings
 ```
 
 ### cleanup

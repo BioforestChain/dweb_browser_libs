@@ -64,7 +64,7 @@ or
 ### bindings
 ```shell
 cd resvg_render
-../gradlew prepareKotlinIdeaImport
+../gradlew gen-bindings
 ```
 
 ### cleanup

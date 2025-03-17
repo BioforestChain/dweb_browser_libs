@@ -64,7 +64,7 @@ or
 ### bindings
 ```shell
 cd mix_compression
-../gradlew prepareKotlinIdeaImport
+../gradlew gen-bindings
 ```
 
 ### cleanup

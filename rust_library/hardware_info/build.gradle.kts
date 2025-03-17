@@ -69,7 +69,12 @@ uniffi {
   generateFromUdl {
     namespace = "hardware_info"
     build =
-      if (GobleyHost.Platform.MacOS.isCurrent) RustPosixTarget.MinGWX64 else RustWindowsTarget.X64
+      if (GobleyHost.Platform.MacOS.isCurrent) RustPosixTarget.MinGWX64 else {
+        when (GobleyHost.Arch.Arm64.isCurrent) {
+          true -> RustWindowsTarget.Arm64
+          else -> RustWindowsTarget.X64
+        }
+      }
 
     udlFile = layout.projectDirectory.file("uniffi/hardware_info.udl")
   }

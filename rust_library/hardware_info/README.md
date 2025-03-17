@@ -56,7 +56,7 @@ linker = "x86_64-w64-mingw32-gcc"
 ```shell
 cd hardware_info
 
-../gradlew build
+../gradlew gen-bindings
 ```
 
 ### cleanup

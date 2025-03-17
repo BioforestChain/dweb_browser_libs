@@ -64,7 +64,7 @@ or
 ### bindings
 ```shell
 cd multipart
-../gradlew prepareKotlinIdeaImport
+../gradlew gen-bindings
 ```
 
 ### cleanup

@@ -40,7 +40,7 @@ or
 ### bindings
 ```shell
 cd reverse_proxy
-../gradlew prepareKotlinIdeaImport
+../gradlew gen-bindings
 ```
 
 ### cleanup

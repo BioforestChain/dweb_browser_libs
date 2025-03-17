@@ -52,7 +52,7 @@ or
 ### bindings
 ```shell
 cd biometrics
-../gradlew build
+../gradlew gen-bindings
 ```
 
 ### cleanup

@@ -75,6 +75,24 @@ tasks.register<RustTargetBuildTask>("build-win") {
   }
 }
 
+tasks.register("gen-bindings") {
+  val task = tasks.findByName("prepareKotlinIdeaImport")
+  if (task != null) {
+    dependsOn(task)
+  }
+}
+
+tasks.named("prepareKotlinIdeaImport") {
+  doLast {
+    if (!projectDir.resolve("build").resolve("generated").resolve("uniffi").exists()) {
+      val execOperations = serviceOf<ExecOperations>()
+      execOperations.exec {
+        commandLine = listOf("../gradlew", "build")
+      }
+    }
+  }
+}
+
 tasks.register("cleanup-bindings") {
   doFirst {
     projectDir.resolve("src").deleteRecursively()
