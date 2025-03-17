@@ -89,8 +89,8 @@ tasks.named("prepareKotlinIdeaImport") {
       execOperations.exec {
         commandLine =
           listOf(
-            if (osName.startsWith("Mac")) rootDir.resolve("gradlew") else rootDir.resolve("gradlew.bat").path,
-            "build"
+            if (osName.startsWith("Mac")) rootDir.resolve("gradlew").path else rootDir.resolve("gradlew.bat").path,
+            ":${project.name}:build"
           )
       }
     }
