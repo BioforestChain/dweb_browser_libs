@@ -4,12 +4,8 @@ import gobley.gradle.GobleyHost
 import gobley.gradle.InternalGobleyGradleApi
 import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
-import gobley.gradle.rust.targets.RustJvmTarget
 import gobley.gradle.uniffi.tasks.BuildBindingsTask
-import org.gradle.kotlin.dsl.support.serviceOf
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
   id(libs.plugins.kotlinxMultiplatform.get().pluginId)
@@ -22,7 +18,7 @@ plugins {
 }
 plugins.withId("publish-plugin") {
   project.description = "desktop/ios平台密钥存储模块"
-  project.version = "1.1.2"
+  project.version = "1.2.0"
 }
 
 val isPublish =
@@ -146,7 +142,7 @@ project.afterEvaluate {
     doLast {
       if (isPublish) {
         projectDir.resolve("build").resolve("generated").resolve("uniffi").listFiles().forEach {
-          if(it.path.contains("Main")) {
+          if (it.path.contains("Main")) {
             it.deleteRecursively()
           }
         }

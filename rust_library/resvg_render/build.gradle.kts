@@ -182,7 +182,7 @@ project.afterEvaluate {
     doLast {
       if (isPublish) {
         projectDir.resolve("build").resolve("generated").resolve("uniffi").listFiles().forEach {
-          if(it.path.contains("Main")) {
+          if (it.path.contains("Main")) {
             it.deleteRecursively()
           }
         }

@@ -40,7 +40,6 @@ abstract class AndroidBuildTask : DefaultTask() {
         it.key in ndkAbis.get()
       }.forEach {
         exec.exec {
-          environment("RUSTFLAGS", "-C link-args=-Wl,-z,max-page-size=16384")
           environment("CARGO_BUILD_TARGET_DIR", File(projectRootDir.get()).resolve("target").path)
           workingDir = File(projectRootDir.get())
           commandLine = getArgs(it.value)

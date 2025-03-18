@@ -9,6 +9,7 @@ fn main() {
 
     // set this to false if you want to use libc++_static.a.
     let use_shared = true;
+    let enable_16kb_page_size = true;
 
     let host = if cfg!(target_os = "windows") {
         "windows-x86_64"
@@ -32,7 +33,7 @@ fn main() {
 
     // `libc++_shared.so` and `libc++_static.a` are in
     // toolchains/llvm/prebuilt/<host>/sysroot/usr/lib/<NDK triplet>.
-    _ = PathBuf::from(android_ndk_root)
+    let sysroot_path = PathBuf::from(android_ndk_root)
         .join("toolchains")
         .join("llvm")
         .join("prebuilt")
@@ -41,6 +42,14 @@ fn main() {
         .join("usr")
         .join("lib")
         .join(ndk_triplet);
+
+    // Optionally print the sysroot path for debugging.
+        println!("Using sysroot path: {:?}", sysroot_path);
+    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
+    if enable_16kb_page_size && target_os == "android" {
+        println!("Enabling 16KB page size...");
+        println!("cargo:rustc-link-arg=-Wl,-z,max-page-size=16384");
+    }
 
     uniffi::generate_scaffolding("uniffi/multipart.udl").unwrap();
 }
