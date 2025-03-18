@@ -33,7 +33,7 @@ fn main() {
 
     // `libc++_shared.so` and `libc++_static.a` are in
     // toolchains/llvm/prebuilt/<host>/sysroot/usr/lib/<NDK triplet>.
-    let sysroot_path = PathBuf::from(android_ndk_root)
+    _ = PathBuf::from(android_ndk_root)
         .join("toolchains")
         .join("llvm")
         .join("prebuilt")
@@ -43,10 +43,7 @@ fn main() {
         .join("lib")
         .join(ndk_triplet);
 
-    // Optionally print the sysroot path for debugging.
-        println!("Using sysroot path: {:?}", sysroot_path);
-    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
-    if enable_16kb_page_size && target_os == "android" {
+    if enable_16kb_page_size && cfg!(target_os = "android") {
         println!("Enabling 16KB page size...");
         println!("cargo:rustc-link-arg=-Wl,-z,max-page-size=16384");
     }

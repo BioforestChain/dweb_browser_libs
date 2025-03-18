@@ -44,8 +44,7 @@ fn main() {
         .join("lib")
         .join(ndk_triplet);
 
-    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
-    if enable_16kb_page_size && target_os == "android"{
+    if enable_16kb_page_size && cfg!(target_os = "android") {
         println!("Enabling 16KB page size...");
         println!("cargo:rustc-link-arg=-Wl,-z,max-page-size=16384");
     }
