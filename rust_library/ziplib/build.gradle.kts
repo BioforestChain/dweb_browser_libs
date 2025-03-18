@@ -160,7 +160,7 @@ tasks.register("macos-cargo-build") {
 }
 
 tasks.register("win-cargo-build") {
-  dependsOn("build-android")
+//  dependsOn("build-android")
   if (GobleyHost.Arch.Arm64.isCurrent) {
     dependsOn("build-win-arm64")
   } else {

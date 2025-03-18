@@ -149,9 +149,9 @@ tasks.register("macos-cargo-build") {
   dependsOn("build-ios")
 }
 
-tasks.register("win-cargo-build") {
-  dependsOn("build-android")
-}
+//tasks.register("win-cargo-build") {
+//  dependsOn("build-android")
+//}
 
 project.afterEvaluate {
   tasks.named("buildBindings") {
