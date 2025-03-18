@@ -36,9 +36,7 @@ abstract class AndroidBuildTask : DefaultTask() {
     val exec = exec.get()
 
     run {
-      ArchAndRustTargetMapping.abisToRustTargetMapping.filter {
-        it.key in ndkAbis.get()
-      }.forEach {
+      ArchAndRustTargetMapping.abisToRustTargetMapping.forEach {
         exec.exec {
           environment("CARGO_BUILD_TARGET_DIR", File(projectRootDir.get()).resolve("target").path)
           workingDir = File(projectRootDir.get())
