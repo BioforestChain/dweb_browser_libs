@@ -117,7 +117,7 @@ uniffi {
   generateFromUdl {
     namespace = "mix_compression"
     build = RustAndroidTarget.Arm64
-    variant = Variant.Debug
+    variant = Variant.Release
     udlFile = layout.projectDirectory.file("uniffi/mix_compression.udl")
   }
 //  formatCode = true

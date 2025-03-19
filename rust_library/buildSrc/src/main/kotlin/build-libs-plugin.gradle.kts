@@ -100,7 +100,12 @@ tasks.named("prepareKotlinIdeaImport") {
 tasks.register("cleanup-bindings") {
   doFirst {
     projectDir.resolve("src").deleteRecursively()
-    projectDir.resolve("build").deleteRecursively()
+//    projectDir.resolve("build").deleteRecursively()
+    projectDir.resolve("build").listFiles().forEach { file ->
+      if (file.name != "bindgen-install") {
+        file.deleteRecursively()
+      }
+    }
   }
 }
 

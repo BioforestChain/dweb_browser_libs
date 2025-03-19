@@ -7,6 +7,7 @@ import gobley.gradle.rust.targets.RustPosixTarget
 import gobley.gradle.rust.targets.RustWindowsTarget
 import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import gobley.gradle.Variant
 
 plugins {
   id(libs.plugins.kotlinxMultiplatform.get().pluginId)
@@ -61,7 +62,7 @@ cargo {
   nativeVariant = gobley.gradle.Variant.Release
 
   builds.jvm {
-    embedRustLibrary = false
+    embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
   }
 }
 
@@ -75,7 +76,7 @@ uniffi {
           else -> RustWindowsTarget.X64
         }
       }
-
+    variant = Variant.Release
     udlFile = layout.projectDirectory.file("uniffi/hardware_info.udl")
   }
 }

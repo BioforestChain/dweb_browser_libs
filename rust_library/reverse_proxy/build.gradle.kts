@@ -102,7 +102,7 @@ uniffi {
   generateFromUdl {
     namespace = "reverse_proxy"
     build = RustAndroidTarget.Arm64
-    variant = Variant.Debug
+    variant = Variant.Release
     udlFile = layout.projectDirectory.file("uniffi/reverse_proxy.udl")
   }
 //  formatCode = true

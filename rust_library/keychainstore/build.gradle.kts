@@ -4,6 +4,8 @@ import gobley.gradle.GobleyHost
 import gobley.gradle.InternalGobleyGradleApi
 import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
+import gobley.gradle.rust.targets.RustPosixTarget
+import gobley.gradle.rust.targets.RustWindowsTarget
 import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
@@ -84,8 +86,18 @@ cargo {
 uniffi {
   generateFromUdl {
     namespace = "keychainstore"
-//    build = RustJvmTarget
-//    variant = Variant.Debug
+    build = if (GobleyHost.Platform.MacOS.isCurrent) {
+      when (GobleyHost.Arch.Arm64.isCurrent) {
+        true -> RustPosixTarget.MacOSArm64
+        else -> RustPosixTarget.MacOSX64
+      }
+    } else {
+      when (GobleyHost.Arch.Arm64.isCurrent) {
+        true -> RustWindowsTarget.Arm64
+        else -> RustWindowsTarget.X64
+      }
+    }
+    variant = Variant.Release
     udlFile = layout.projectDirectory.file("uniffi/keychainstore.udl")
   }
 //  formatCode = true

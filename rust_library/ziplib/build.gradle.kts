@@ -113,7 +113,7 @@ uniffi {
   generateFromUdl {
     namespace = "ziplib"
     build = RustAndroidTarget.Arm64
-    variant = Variant.Debug
+    variant = Variant.Release
     udlFile = layout.projectDirectory.file("uniffi/ziplib.udl")
   }
 //  formatCode = true

@@ -2,6 +2,7 @@
 
 import gobley.gradle.GobleyHost
 import gobley.gradle.InternalGobleyGradleApi
+import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
 import gobley.gradle.rust.targets.RustPosixTarget
 import gobley.gradle.rust.targets.RustWindowsTarget
@@ -79,6 +80,7 @@ uniffi {
         else -> RustWindowsTarget.X64
       }
     }
+    variant = Variant.Release
     udlFile = layout.projectDirectory.file("uniffi/biometrics.udl")
   }
 }

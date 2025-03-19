@@ -116,7 +116,7 @@ uniffi {
   generateFromUdl {
     namespace = "multipart"
     build = RustAndroidTarget.Arm64
-    variant = Variant.Debug
+    variant = Variant.Release
     udlFile = layout.projectDirectory.file("uniffi/multipart.udl")
   }
 //  formatCode = true

@@ -117,7 +117,7 @@ uniffi {
   generateFromUdl {
     namespace = "resvg_render"
     build = RustAndroidTarget.Arm64
-    variant = Variant.Debug
+    variant = Variant.Release
     udlFile = layout.projectDirectory.file("uniffi/resvg_render.udl")
   }
 //  formatCode = true
