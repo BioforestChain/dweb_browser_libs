@@ -2,11 +2,11 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Dweb Browser 跨平台静态库集合，提供多平台原生功能的 Rust 实现与 Kotlin 绑定。
+`Dweb Browser` 跨平台静态库集合，提供多平台原生功能的 `Rust` 实现与 `Kotlin Multiplatform` 绑定。
 
 ## 项目概述
 
-本项目提供了一系列跨平台的 Rust 实现库，通过 [uniffi](https://mozilla.github.io/uniffi-rs/latest/) 技术将原生功能暴露给 Kotlin 等语言使用。主要特点：
+本项目提供了一系列跨平台的 `Rust` 实现库，通过 [uniffi](https://mozilla.github.io/uniffi-rs/latest/) 技术将原生功能暴露给 `Kotlin Multiplatform` 使用。主要特点：
 
 - 跨平台支持：Android、iOS、macOS、Windows 等
 - 高性能：核心功能使用 Rust 实现
@@ -17,14 +17,14 @@ Dweb Browser 跨平台静态库集合，提供多平台原生功能的 Rust 实�
 
 | 模块名称 | 功能描述 | Android | iOS | macOS | Windows | Linux |
 |---------|---------|:-------:|:---:|:-----:|:-------:|:-----:|
-| [biometrics](./rust_library/biometrics/README.md) | 生物识别认证 | ❌ | ❌ | ✅ | ✅ | ❌ |
-| [hardware_info](./rust_library/hardware_info/README.md) | 设备硬件信息 | ❌ | ❌ | ❌ | ✅ | ❌ |
-| [keychainstore](./rust_library/keychainstore/README.md) | 安全密钥存储 | ❌ | ✅ | ✅ | ✅ | ❌ |
-| [mix_compression](./rust_library/mix_compression/README.md) | 数据压缩 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| [multipart](./rust_library/multipart/README.md) | http请求解析multipart | ✅ | ✅ | ✅ | ✅ | ❌ |
-| [resvg_render](./rust_library/resvg_render/README.md) | svg渲染 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| [reverse_proxy](./rust_library/reverse_proxy/README.md) | 反向代理 | ✅ | ✅ | ❌ | ❌ | ❌ |
-| [ziplib](./rust_library/ziplib/README.md) | 解压缩 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| [biometrics](./rust_library/biometrics) | 生物识别认证 | ❌ | ❌ | ✅ | ✅ | ❌ |
+| [hardware_info](./rust_library/hardware_info) | 设备硬件信息 | ❌ | ❌ | ❌ | ✅ | ❌ |
+| [keychainstore](./rust_library/keychainstore) | 安全密钥存储 | ❌ | ✅ | ✅ | ✅ | ❌ |
+| [mix_compression](./rust_library/mix_compression) | 数据压缩 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| [multipart](./rust_library/multipart) | http请求解析multipart | ✅ | ✅ | ✅ | ✅ | ❌ |
+| [resvg_render](./rust_library/resvg_render) | svg渲染 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| [reverse_proxy](./rust_library/reverse_proxy) | 反向代理 | ✅ | ✅ | ❌ | ❌ | ❌ |
+| [ziplib](./rust_library/ziplib) | 解压缩 | ✅ | ✅ | ✅ | ✅ | ❌ |
 | ... | ... | ... | ... | ... | ... | ... |
 
 ## 添加 Rust Target
@@ -45,7 +45,7 @@ rustup target add x86_64-pc-windows-msvc aarch64-pc-windows-msvc
 winget install Microsoft.VisualStudio.BuildTools
 
 # windows on macos/linux
-rustup target add x86_64-pc-windows-gnu
+rustup target add x86_64-pc-windows-gnu aarch64-pc-windows-gnullvm
 
 ```
 
@@ -121,7 +121,8 @@ dependencyResolutionManagement {
 ./gradlew publish -PTarget=github
 ```
 
-## 引用资料
+## 资料
 
+- [Kotlin Multiplatform 文档](https://kotlinlang.org/docs/multiplatform.html)
 - [uniffi 文档](https://mozilla.github.io/uniffi-rs/latest/)
-- [swift-rs 文档](https://docs.rs/crate/swift-rs)
+- [gobley 文档](https://gobley.dev/)
