@@ -1,28 +1,33 @@
-# dweb_browser_libs
+# Dweb Browser 跨平台库
 
-dweb_browser static library reference.
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## 如何创建一个新的绑定
+Dweb Browser 跨平台静态库集合，提供多平台原生功能的 Rust 实现与 Kotlin 绑定。
 
-1. 复制`keychainstore`项目重命名为自己需要创建的绑定。
-2. 删除里面的`build`、`src` 文件夹。
-3. 按需修改 `build-mobile.gradle.kts` 和 `build.gradle.kts` 修改成跟自己项目相关的。
-4. `.def` 文件内容是到`ios` 静态链接库的绑定，如果不是给 `ios`创建绑定可以不管。
-5. 按照自己的要求修改`uniffi` 文件夹里的 rust 代码去实现特定的功能。
-6. `uniffi`文件夹内部的`.sh`、`toml`文件内容同步成自己的项目名。
-7. `uniffi/src` 下的`.udl`文件则是暴露给 kotlin 的调用入口，修改成自己实现的`API`就可以。
-8. 如果在`windows` 平台的代码写完了，可以在`windows-lib/examples`先进行测试，每个平台的绑定测试通过了再进行编译。
-9. 运行`build.sh`可以自动化生成 rust 绑定的 kotlin 代码。
-10. 所有的测试通过并且编译完成之后可以运行`Gradle Sync`,同步完就可以在对应目标引入绑定的项目了`implementation(projects.libKeychainstore)`
+## 项目概述
 
-> 关于更细节的 windows/apple rust 代码的绑定如何实现，可以参考文件夹内其他项目。
+本项目提供了一系列跨平台的 Rust 实现库，通过 [uniffi](https://mozilla.github.io/uniffi-rs/latest/) 技术将原生功能暴露给 Kotlin 等语言使用。主要特点：
 
-> 如果有时候编译不出来，可以修改一下`build.rs`里的内容，让其产生变更在进行编译。
+- 跨平台支持：Android、iOS、macOS、Windows 等
+- 高性能：核心功能使用 Rust 实现
+- 安全性：利用 Rust 的内存安全特性
+- 易集成：提供标准化的 Kotlin 绑定接口
 
-- [uniffi 文档](https://mozilla.github.io/uniffi-rs/latest/)
-- [swift-rs 文档](https://docs.rs/crate/swift-rs)
+## 可用模块
 
-### Add Rust Target
+| 模块名称 | 功能描述 | Android | iOS | macOS | Windows | Linux |
+|---------|---------|:-------:|:---:|:-----:|:-------:|:-----:|
+| [biometrics](./rust_library/biometrics/README.md) | 生物识别认证 | ❌ | ❌ | ✅ | ✅ | ❌ |
+| [hardware_info](./rust_library/hardware_info/README.md) | 设备硬件信息 | ❌ | ❌ | ❌ | ✅ | ❌ |
+| [keychainstore](./rust_library/keychainstore/README.md) | 安全密钥存储 | ❌ | ✅ | ✅ | ✅ | ❌ |
+| [mix_compression](./rust_library/mix_compression/README.md) | 数据压缩 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| [multipart](./rust_library/multipart/README.md) | http请求解析multipart | ✅ | ✅ | ✅ | ✅ | ❌ |
+| [resvg_render](./rust_library/resvg_render/README.md) | svg渲染 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| [reverse_proxy](./rust_library/reverse_proxy/README.md) | 反向代理 | ✅ | ✅ | ❌ | ❌ | ❌ |
+| [ziplib](./rust_library/ziplib/README.md) | 解压缩 | ✅ | ✅ | ✅ | ✅ | ❌ |
+| ... | ... | ... | ... | ... | ... | ... |
+
+## 添加 Rust Target
 
 ```shell
 # android
@@ -57,50 +62,7 @@ rustup target add x86_64-pc-windows-gnu
    linker = "PATH_TO_LLVM_MINGW_UCRT_MACOS_UNIVERSAL/bin/aarch64-w64-mingw32-clang"
    ```
 
-### build dynamic link library
-
-只需要运行每个`uniffi`下的`build-*.sh` 文件即可编译成各个平台的动态链接库。
-
-### Build Android
-
-```shell
-cargo install cbindgen
-cargo install cargo-ndk
-# 通过 RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" 开启 16kb page size 支持，ndk r27 方式
-# see：https://developer.android.com/guide/practices/page-sizes#compile-r27
-RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t aarch64-linux-android -o ../src/androidMain/jniLibs build --release
-RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t armv7-linux-androideabi -o ../src/androidMain/jniLibs build --release
-RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t i686-linux-android -o ../src/androidMain/jniLibs build --release
-RUSTFLAGS="-C link-args=-Wl,-z,max-page-size=16384" cargo ndk -t x86_64-linux-android -o ../src/androidMain/jniLibs build --release
-```
-
-### Build iOS
-
-```shell
-cargo build --release --target aarch64-apple-ios
-cargo build --release --target x86_64-apple-ios
-cargo build --release --target aarch64-apple-ios-sim
-```
-
-### Build MacOS
-
-```shell
-cargo build --release --target aarch64-apple-darwin
-cargo build --release --target x86_64-apple-darwin
-```
-
-### Build Window
-
-```shell
-cargo build --release --target x86_64-pc-windows-msvc
-cargo build --release --target aarch64-pc-windows-msvc
-```
-
-### Build Linux
-
-> Build for you self XD.
-
-## publish maven
+## Publish Maven
 
 ### 发布到本地
 1. 生成gpg文件
@@ -158,3 +120,8 @@ dependencyResolutionManagement {
 # 发布到 GitHub Packages
 ./gradlew publish -PTarget=github
 ```
+
+## 引用资料
+
+- [uniffi 文档](https://mozilla.github.io/uniffi-rs/latest/)
+- [swift-rs 文档](https://docs.rs/crate/swift-rs)
