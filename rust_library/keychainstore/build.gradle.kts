@@ -109,20 +109,13 @@ uniffi {
 //  formatCode = true
 }
 
-var outputDirectoryPath = ""
-tasks.withType<BuildBindingsTask> {
-  doLast {
-    outputDirectoryPath = outputDirectory.get().asFile.path
-  }
-}
-
 tasks.named("compileKotlinDesktop") {
   doFirst {
     projectDir.resolve("src").deleteRecursively()
   }
   doLast {
     copyDirectoryToTarget(
-      outputDirectoryPath,
+      layout.projectDirectory.dir("build").dir("generated").dir("uniffi").asFile.path,
       layout.projectDirectory.dir("src").asFile.path
     ) { source, target ->
       if (!source.path.contains("androidMain")) {

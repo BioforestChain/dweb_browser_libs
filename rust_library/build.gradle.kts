@@ -40,3 +40,50 @@ tasks.register("cleanup-all") {
 
   dependsOn("cleanup-root-target")
 }
+
+if (Platform.isWindows) {
+  tasks.register("win-rust-resources-zip") {
+    subprojects.forEach { subproject ->
+      val projectWinResourcesDir =
+        subproject.projectDir.resolve("src").resolve("desktopMain").resolve("resources")
+      if (projectWinResourcesDir.exists()) {
+        ArchAndRustTargetMapping.winRustTargetToArchMapping.values.forEach { arch ->
+          val winArchResources = projectWinResourcesDir.resolve(arch)
+          if (winArchResources.exists()) {
+            winArchResources.copyRecursively(
+              rootDir.resolve(".kotlin").resolve(arch).resolve(subproject.name).resolve(arch), true
+            )
+          }
+        }
+      }
+    }
+
+    doLast {
+      ArchAndRustTargetMapping.winRustTargetToArchMapping.values.forEach { arch ->
+        val sourceDir = rootDir.resolve(".kotlin").resolve(arch)
+        if (sourceDir.exists()) {
+          createZipFile(sourceDir.path, rootDir.resolve(".kotlin").resolve("$arch.zip").path)
+        }
+      }
+    }
+  }
+}
+
+tasks.register("win-rust-resources-unzip") {
+  ArchAndRustTargetMapping.winRustTargetToArchMapping.values.forEach { arch ->
+    val zipFile = rootDir.resolve(".kotlin").resolve("$arch.zip")
+    if (zipFile.exists()) {
+      val targetDir = rootDir.resolve(".kotlin").resolve(arch)
+      unzipFile(zipFile.path, targetDir.path)
+
+      for (file in targetDir.listFiles() ?: emptyArray()) {
+        if (file.isDirectory) {
+          file.copyRecursively(
+            rootDir.resolve(file.name).resolve("src").resolve("desktopMain").resolve("resources")
+              .resolve(arch), true
+          )
+        }
+      }
+    }
+  }
+}

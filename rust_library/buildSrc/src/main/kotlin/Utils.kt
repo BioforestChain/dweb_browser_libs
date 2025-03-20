@@ -1,4 +1,9 @@
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 object ArchAndRustTargetMapping {
   val iosRustTargetToArchMapping = mutableMapOf(
@@ -72,6 +77,74 @@ fun copyDirectoryToTarget(
   if (source.isDirectory) {
     source.listFiles().forEach { file ->
       copyFileToTarget(file.path, targetPath, hardLinkOrCopyFile)
+    }
+  }
+}
+
+fun createZipFile(sourceDirPath: String, outputZipFilePath: String) {
+  val sourceDir = File(sourceDirPath)
+
+  if (!sourceDir.exists()) {
+    println("win平台rust静态链接库不存在")
+    return
+  }
+
+  FileOutputStream(outputZipFilePath).use { fos ->
+    ZipOutputStream(fos).use { zos ->
+      addFilesToZip(sourceDir, sourceDir, zos)
+    }
+  }
+}
+
+private fun addFilesToZip(rootDir: File, currentDir: File, zos: ZipOutputStream) {
+  for (file in currentDir.listFiles() ?: emptyArray()) {
+    if (file.isDirectory) {
+      // 如果是目录，递归处理
+      addFilesToZip(rootDir, file, zos)
+    } else {
+      // 如果是文件，添加到 ZIP
+      FileInputStream(file).use { fis ->
+        val entryPath = rootDir.toPath().relativize(file.toPath()).toString()
+        zos.putNextEntry(ZipEntry(entryPath))
+        fis.copyTo(zos)
+        zos.closeEntry()
+      }
+    }
+  }
+}
+
+fun unzipFile(zipFilePath: String, outputDirPath: String) {
+  val zipFile = File(zipFilePath)
+  if (!zipFile.exists() || !zipFile.isFile) {
+    println("ZIP file does not exist or is not a file: $zipFilePath")
+    return
+  }
+
+  val outputDir = File(outputDirPath)
+  if (!outputDir.exists()) {
+    outputDir.mkdirs() // 如果目标目录不存在，则创建
+  }
+
+  // 打开 ZIP 文件并逐条解压
+  ZipInputStream(FileInputStream(zipFile)).use { zis ->
+    var entry: ZipEntry?
+    while (zis.nextEntry.also { entry = it } != null) {
+      val entryName = entry!!.name
+      val outputFile = File(outputDir, entryName)
+
+      if (entry!!.isDirectory) {
+        // 如果是目录，创建目录
+        outputFile.mkdirs()
+      } else {
+        // 如果是文件，创建父目录并写入文件内容
+        outputFile.parentFile.mkdirs()
+        FileOutputStream(outputFile).use { fos ->
+          zis.copyTo(fos)
+        }
+      }
+
+      // 关闭当前条目
+      zis.closeEntry()
     }
   }
 }

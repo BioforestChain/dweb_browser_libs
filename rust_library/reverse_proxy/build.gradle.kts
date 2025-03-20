@@ -108,17 +108,10 @@ uniffi {
 //  formatCode = true
 }
 
-var outputDirectoryPath = ""
-tasks.withType<BuildBindingsTask> {
-  doLast {
-    outputDirectoryPath = outputDirectory.get().asFile.path
-  }
-}
-
 tasks.named("prepareKotlinIdeaImport") {
   doLast {
     copyDirectoryToTarget(
-      outputDirectoryPath,
+      layout.projectDirectory.dir("build").dir("generated").dir("uniffi").asFile.path,
       layout.projectDirectory.dir("src").asFile.path
     ) { source, target ->
       if (!source.path.contains("jvmMain")) {
