@@ -5,6 +5,7 @@ import gobley.gradle.InternalGobleyGradleApi
 import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
 import gobley.gradle.rust.targets.RustAndroidTarget
+import gobley.gradle.rust.targets.RustPosixTarget
 import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -105,7 +106,13 @@ cargo {
   nativeVariant = Variant.Release
 
   builds.jvm {
-    embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
+    embedRustLibrary = if (GobleyHost.Platform.MacOS.isCurrent) {
+      (rustTarget == RustPosixTarget.MacOSArm64 || rustTarget == RustPosixTarget.MacOSX64)
+    } else if (GobleyHost.Platform.Windows.isCurrent) {
+      (rustTarget == GobleyHost.current.rustTarget)
+    } else {
+      false
+    }
   }
 }
 
@@ -156,16 +163,6 @@ tasks.register<AndroidBuildTask>("build-android") {
 tasks.register("macos-cargo-build") {
   dependsOn("build-android")
   dependsOn("build-ios")
-  dependsOn("build-macos")
-}
-
-tasks.register("win-cargo-build") {
-//  dependsOn("build-android")
-  if (GobleyHost.Arch.Arm64.isCurrent) {
-    dependsOn("build-win-arm64")
-  } else {
-    dependsOn("build-win-x86_64")
-  }
 }
 
 tasks.register("win-gnu-cargo-build") {

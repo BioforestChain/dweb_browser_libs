@@ -2,12 +2,12 @@
 
 import gobley.gradle.GobleyHost
 import gobley.gradle.InternalGobleyGradleApi
+import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
 import gobley.gradle.rust.targets.RustPosixTarget
 import gobley.gradle.rust.targets.RustWindowsTarget
 import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import gobley.gradle.Variant
 
 plugins {
   id(libs.plugins.kotlinxMultiplatform.get().pluginId)
@@ -58,11 +58,12 @@ kotlin {
 
 cargo {
   packageDirectory = layout.projectDirectory.dir("uniffi")
-  jvmVariant = gobley.gradle.Variant.Release
-  nativeVariant = gobley.gradle.Variant.Release
+  jvmVariant = Variant.Release
+  nativeVariant = Variant.Release
 
   builds.jvm {
-    embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
+    embedRustLibrary =
+      if (GobleyHost.Platform.Windows.isCurrent) (rustTarget == GobleyHost.current.rustTarget) else false
   }
 }
 
@@ -103,14 +104,6 @@ tasks.named("compileKotlinDesktop") {
         source.delete()
       }
     }
-  }
-}
-
-tasks.register("win-cargo-build") {
-  if (GobleyHost.Arch.Arm64.isCurrent) {
-    dependsOn("build-win-arm64")
-  } else {
-    dependsOn("build-win-x86_64")
   }
 }
 

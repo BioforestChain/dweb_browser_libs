@@ -79,7 +79,13 @@ cargo {
   nativeVariant = Variant.Release
 
   builds.jvm {
-    embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
+    embedRustLibrary = if (GobleyHost.Platform.MacOS.isCurrent) {
+      (rustTarget == RustPosixTarget.MacOSArm64 || rustTarget == RustPosixTarget.MacOSX64)
+    } else if (GobleyHost.Platform.Windows.isCurrent) {
+      (rustTarget == GobleyHost.current.rustTarget)
+    } else {
+      false
+    }
   }
 }
 
@@ -134,15 +140,6 @@ tasks.named("prepareKotlinIdeaImport") {
 
 tasks.register("macos-cargo-build") {
   dependsOn("build-ios")
-  dependsOn("build-macos")
-}
-
-tasks.register("win-cargo-build") {
-  if (GobleyHost.Arch.Arm64.isCurrent) {
-    dependsOn("build-win-arm64")
-  } else {
-    dependsOn("build-win-x86_64")
-  }
 }
 
 tasks.register("win-gnu-cargo-build") {

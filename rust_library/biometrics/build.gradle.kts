@@ -58,11 +58,17 @@ kotlin {
 
 cargo {
   packageDirectory = layout.projectDirectory.dir("uniffi")
-  jvmVariant = gobley.gradle.Variant.Release
-  nativeVariant = gobley.gradle.Variant.Release
+  jvmVariant = Variant.Release
+  nativeVariant = Variant.Release
 
   builds.jvm {
-    embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
+    embedRustLibrary = if (GobleyHost.Platform.MacOS.isCurrent) {
+      (rustTarget == RustPosixTarget.MacOSArm64 || rustTarget == RustPosixTarget.MacOSX64)
+    } else if (GobleyHost.Platform.Windows.isCurrent) {
+      (rustTarget == GobleyHost.current.rustTarget)
+    } else {
+      false
+    }
   }
 }
 
@@ -108,10 +114,6 @@ tasks.named("compileKotlinDesktop") {
       }
     }
   }
-}
-
-tasks.register("macos-cargo-build") {
-  dependsOn("build-macos")
 }
 
 tasks.register("win-cargo-build") {
