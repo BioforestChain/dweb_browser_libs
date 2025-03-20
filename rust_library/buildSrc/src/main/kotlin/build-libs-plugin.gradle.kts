@@ -16,27 +16,29 @@ tasks.register<RustTargetBuildTask>("build-ios") {
 }
 
 tasks.register("rust-resources-copy") {
-  val parentDir = projectDir.resolve("build").resolve("intermediates").resolve("rust")
-  if (parentDir.exists()) {
-    parentDir.listFiles()!!.forEach { rustTarget ->
-      if (rustTarget.name in ArchAndRustTargetMapping.androidRustTargetToArchMapping.keys) {
-        val arch = ArchAndRustTargetMapping.androidRustTargetToArchMapping[rustTarget.name]!!
-        val source = parentDir.resolve(rustTarget.name).resolve("release").resolve(arch)
-        val target =
-          projectDir.resolve("src").resolve("androidMain").resolve("jniLibs").resolve(arch)
-        source.copyRecursively(target, true)
-      } else if (rustTarget.name in ArchAndRustTargetMapping.macRustTargetToArchMapping.keys) {
-        val arch = ArchAndRustTargetMapping.macRustTargetToArchMapping[rustTarget.name]!!
-        val source = parentDir.resolve(rustTarget.name).resolve("release").resolve(arch)
-        val target =
-          projectDir.resolve("src").resolve("desktopMain").resolve("resources").resolve(arch)
-        source.copyRecursively(target, true)
-      } else if (rustTarget.name in ArchAndRustTargetMapping.winRustTargetToArchMapping.keys) {
-        val arch = ArchAndRustTargetMapping.winRustTargetToArchMapping[rustTarget.name]!!
-        val source = parentDir.resolve(rustTarget.name).resolve("release").resolve(arch)
-        val target =
-          projectDir.resolve("src").resolve("desktopMain").resolve("resources").resolve(arch)
-        source.copyRecursively(target, true)
+  doLast {
+    val parentDir = projectDir.resolve("build").resolve("intermediates").resolve("rust")
+    if (parentDir.exists()) {
+      parentDir.listFiles()!!.forEach { rustTarget ->
+        if (rustTarget.name in ArchAndRustTargetMapping.androidRustTargetToArchMapping.keys) {
+          val arch = ArchAndRustTargetMapping.androidRustTargetToArchMapping[rustTarget.name]!!
+          val source = parentDir.resolve(rustTarget.name).resolve("release").resolve(arch)
+          val target =
+            projectDir.resolve("src").resolve("androidMain").resolve("jniLibs").resolve(arch)
+          source.copyRecursively(target, true)
+        } else if (rustTarget.name in ArchAndRustTargetMapping.macRustTargetToArchMapping.keys) {
+          val arch = ArchAndRustTargetMapping.macRustTargetToArchMapping[rustTarget.name]!!
+          val source = parentDir.resolve(rustTarget.name).resolve("release").resolve(arch)
+          val target =
+            projectDir.resolve("src").resolve("desktopMain").resolve("resources").resolve(arch)
+          source.copyRecursively(target, true)
+        } else if (rustTarget.name in ArchAndRustTargetMapping.winRustTargetToArchMapping.keys) {
+          val arch = ArchAndRustTargetMapping.winRustTargetToArchMapping[rustTarget.name]!!
+          val source = parentDir.resolve(rustTarget.name).resolve("release").resolve(arch)
+          val target =
+            projectDir.resolve("src").resolve("desktopMain").resolve("resources").resolve(arch)
+          source.copyRecursively(target, true)
+        }
       }
     }
   }
@@ -56,26 +58,17 @@ tasks.register<RustTargetBuildTask>("build-win") {
 }
 
 tasks.register("gen-bindings") {
-  val task = tasks.findByName("prepareKotlinIdeaImport")
-  if (task != null) {
-    dependsOn(task)
-  }
-}
-
-tasks.named("prepareKotlinIdeaImport") {
   doFirst {
     projectDir.resolve("src").deleteRecursively()
   }
   doLast {
-    if (!projectDir.resolve("build").resolve("generated").resolve("uniffi").exists()) {
-      val osName = System.getProperty("os.name")
-      execOperations.exec {
-        commandLine =
-          listOf(
-            if (osName.startsWith("Mac")) rootDir.resolve("gradlew").path else rootDir.resolve("gradlew.bat").path,
-            ":${project.name}:build"
-          )
-      }
+    val osName = System.getProperty("os.name")
+    execOperations.exec {
+      commandLine =
+        listOf(
+          if (osName.startsWith("Mac")) rootDir.resolve("gradlew").path else rootDir.resolve("gradlew.bat").path,
+          ":${project.name}:build"
+        )
     }
   }
 }

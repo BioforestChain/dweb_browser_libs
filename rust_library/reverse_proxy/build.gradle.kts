@@ -116,6 +116,9 @@ tasks.withType<BuildBindingsTask> {
 }
 
 tasks.named("prepareKotlinIdeaImport") {
+  doFirst {
+    projectDir.resolve("src").deleteRecursively()
+  }
   doLast {
     copyDirectoryToTarget(
       outputDirectoryPath,
@@ -147,6 +150,14 @@ tasks.register<AndroidBuildTask>("build-android") {
 tasks.register("macos-rust-process") {
   dependsOn("build-ios")
   finalizedBy("rust-resources-copy")
+}
+
+tasks.named("gen-bindings") {
+  if (GobleyHost.Platform.MacOS.isCurrent) {
+    finalizedBy("macos-rust-process")
+  } else {
+    finalizedBy("rust-resources-copy")
+  }
 }
 
 project.afterEvaluate {

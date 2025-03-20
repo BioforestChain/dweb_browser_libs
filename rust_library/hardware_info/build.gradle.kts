@@ -109,4 +109,9 @@ tasks.named("compileKotlinDesktop") {
 
 tasks.register("win-gnu-cargo-build") {
   dependsOn("build-win")
+  finalizedBy("rust-resources-copy")
+}
+
+tasks.named("gen-bindings") {
+  finalizedBy("rust-resources-copy")
 }

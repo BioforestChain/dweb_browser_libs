@@ -136,7 +136,10 @@ tasks.withType<BuildBindingsTask> {
   }
 }
 
-tasks.named("prepareKotlinIdeaImport") {
+tasks.named("compileKotlinDesktop") {
+  doFirst {
+    projectDir.resolve("src").deleteRecursively()
+  }
   doLast {
     copyDirectoryToTarget(
       outputDirectoryPath,
@@ -170,6 +173,15 @@ tasks.register("macos-rust-process") {
 
 tasks.register("win-gnu-cargo-build") {
   dependsOn("build-win")
+  finalizedBy("rust-resources-copy")
+}
+
+tasks.named("gen-bindings") {
+  if (GobleyHost.Platform.MacOS.isCurrent) {
+    finalizedBy("macos-rust-process")
+  } else {
+    finalizedBy("rust-resources-copy")
+  }
 }
 
 project.afterEvaluate {
