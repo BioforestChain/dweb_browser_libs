@@ -16,33 +16,18 @@ abstract class AndroidBuildTask : DefaultTask() {
   @get:Input
   abstract val projectRootDir: Property<String>
 
-  private fun getArgs(target: String): List<String> {
-    val homeDirectory = File(
-      System.getenv(
-        when (Platform.isWindows) {
-          true -> "USERPROFILE"
-          else -> "HOME"
-        }
-      )!!
+  private fun getArgs(target: String) = mutableListOf("cargo", "ndk").apply {
+    addAll(
+      listOf(
+        "-t",
+        target,
+        "-o",
+        "src/androidMain/jniLibs",
+        "build",
+        "--release",
+        "--quiet",
+      )
     )
-
-    return when (Platform.isWindows) {
-      true -> mutableListOf(homeDirectory.resolve(".cargo/bin/cargo.exe").path, "ndk")
-      else -> mutableListOf("cargo", "ndk")
-    }
-      .apply {
-        addAll(
-          listOf(
-            "-t",
-            target,
-            "-o",
-            "src/androidMain/jniLibs",
-            "build",
-            "--release",
-            "--quiet",
-          )
-        )
-      }
   }
 
   @TaskAction
@@ -77,32 +62,16 @@ abstract class RustTargetBuildTask : DefaultTask() {
   @get:Input
   abstract val copyTo: Property<(String, String) -> Unit>
 
-  private fun getArgs(target: String): List<String> {
-    val homeDirectory = File(
-      System.getenv(
-        when (Platform.isWindows) {
-          true -> "USERPROFILE"
-          else -> "HOME"
-        }
-      )!!
-    )
-
-    return mutableListOf(
-      when (Platform.isWindows) {
-        true -> homeDirectory.resolve(".cargo/bin/cargo.exe").path
-        else -> "cargo"
-      }
-    ).apply {
-      addAll(
-        listOf(
-          "build",
-          "--target",
-          target,
-          "--release",
-          "--quiet",
-        )
+  private fun getArgs(target: String) = mutableListOf("cargo").apply {
+    addAll(
+      listOf(
+        "build",
+        "--target",
+        target,
+        "--release",
+        "--quiet",
       )
-    }
+    )
   }
 
   @get:Input

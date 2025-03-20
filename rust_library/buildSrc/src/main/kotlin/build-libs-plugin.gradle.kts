@@ -15,50 +15,30 @@ tasks.register<RustTargetBuildTask>("build-ios") {
   }
 }
 
-tasks.register<RustTargetBuildTask>("build-macos") {
-  exec.set(execOperations)
-  projectRootDir.set(projectDir.path)
-  rustTargets.set(ArchAndRustTargetMapping.macRustTargetToArchMapping.keys)
-  platform.set("macos")
-  copyTo.set { source, target ->
-    File(source).copyTo(File(target), overwrite = true)
-  }
-  doLast {
-    this@register.runAllCopyTasks()
-  }
-}
-
-tasks.register<RustTargetBuildTask>("build-win-x86_64") {
-  exec.set(execOperations)
-  projectRootDir.set(projectDir.path)
-  rustTargets.set(ArchAndRustTargetMapping.winRustTargetToArchMapping.keys.filter {
-    it.contains("x86") && it.contains(
-      "msvc"
-    )
-  })
-  platform.set("win")
-  copyTo.set { source, target ->
-    File(source).copyTo(File(target), overwrite = true)
-  }
-  doLast {
-    this@register.runAllCopyTasks()
-  }
-}
-
-tasks.register<RustTargetBuildTask>("build-win-arm64") {
-  exec.set(execOperations)
-  projectRootDir.set(projectDir.path)
-  rustTargets.set(ArchAndRustTargetMapping.winRustTargetToArchMapping.keys.filter {
-    it.contains("aarch64") && it.contains(
-      "msvc"
-    )
-  })
-  platform.set("win")
-  copyTo.set { source, target ->
-    File(source).copyTo(File(target), overwrite = true)
-  }
-  doLast {
-    this@register.runAllCopyTasks()
+tasks.register("rust-resources-copy") {
+  val parentDir = projectDir.resolve("build").resolve("intermediates").resolve("rust")
+  if (parentDir.exists()) {
+    parentDir.listFiles()!!.forEach { rustTarget ->
+      if (rustTarget.name in ArchAndRustTargetMapping.androidRustTargetToArchMapping.keys) {
+        val arch = ArchAndRustTargetMapping.androidRustTargetToArchMapping[rustTarget.name]!!
+        val source = parentDir.resolve(rustTarget.name).resolve("release").resolve(arch)
+        val target =
+          projectDir.resolve("src").resolve("androidMain").resolve("jniLibs").resolve(arch)
+        source.copyRecursively(target, true)
+      } else if (rustTarget.name in ArchAndRustTargetMapping.macRustTargetToArchMapping.keys) {
+        val arch = ArchAndRustTargetMapping.macRustTargetToArchMapping[rustTarget.name]!!
+        val source = parentDir.resolve(rustTarget.name).resolve("release").resolve(arch)
+        val target =
+          projectDir.resolve("src").resolve("desktopMain").resolve("resources").resolve(arch)
+        source.copyRecursively(target, true)
+      } else if (rustTarget.name in ArchAndRustTargetMapping.winRustTargetToArchMapping.keys) {
+        val arch = ArchAndRustTargetMapping.winRustTargetToArchMapping[rustTarget.name]!!
+        val source = parentDir.resolve(rustTarget.name).resolve("release").resolve(arch)
+        val target =
+          projectDir.resolve("src").resolve("desktopMain").resolve("resources").resolve(arch)
+        source.copyRecursively(target, true)
+      }
+    }
   }
 }
 
@@ -83,6 +63,9 @@ tasks.register("gen-bindings") {
 }
 
 tasks.named("prepareKotlinIdeaImport") {
+  doFirst {
+    projectDir.resolve("src").deleteRecursively()
+  }
   doLast {
     if (!projectDir.resolve("build").resolve("generated").resolve("uniffi").exists()) {
       val osName = System.getProperty("os.name")

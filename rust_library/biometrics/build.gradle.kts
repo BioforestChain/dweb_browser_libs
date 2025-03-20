@@ -116,12 +116,8 @@ tasks.named("compileKotlinDesktop") {
   }
 }
 
-tasks.register("win-cargo-build") {
-  if (GobleyHost.Arch.Arm64.isCurrent) {
-    dependsOn("build-win-arm64")
-  } else {
-    dependsOn("build-win-x86_64")
-  }
+tasks.register("macos-rust-process") {
+  dependsOn("rust-resources-copy")
 }
 
 tasks.register("win-gnu-cargo-build") {

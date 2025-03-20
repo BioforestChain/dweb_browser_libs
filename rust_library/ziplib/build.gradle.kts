@@ -160,13 +160,12 @@ tasks.register<AndroidBuildTask>("build-android") {
   projectRootDir.set(projectDir.path)
 }
 
-tasks.register("macos-cargo-build") {
-  dependsOn("build-android")
+tasks.register("macos-rust-process") {
   dependsOn("build-ios")
+  finalizedBy("rust-resources-copy")
 }
 
 tasks.register("win-gnu-cargo-build") {
-  dependsOn("build-android")
   dependsOn("build-win")
 }
 

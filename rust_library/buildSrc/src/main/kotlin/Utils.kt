@@ -14,6 +14,13 @@ object ArchAndRustTargetMapping {
       "x86_64" to "x86_64-linux-android"
     )
 
+  val androidRustTargetToArchMapping = mutableMapOf(
+    "armv7-linux-androideabi" to "armeabi-v7a",
+    "aarch64-linux-android" to "arm64-v8a",
+    "i686-linux-android" to "x86",
+    "x86_64-linux-android" to "x86_64"
+  )
+
   val winRustTargetToArchMapping = mutableMapOf(
     "aarch64-pc-windows-msvc" to "win32-aarch64",
     "x86_64-pc-windows-msvc" to "win32-x86-64",

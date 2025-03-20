@@ -138,8 +138,9 @@ tasks.named("prepareKotlinIdeaImport") {
   }
 }
 
-tasks.register("macos-cargo-build") {
+tasks.register("macos-rust-process") {
   dependsOn("build-ios")
+  finalizedBy("rust-resources-copy")
 }
 
 tasks.register("win-gnu-cargo-build") {
