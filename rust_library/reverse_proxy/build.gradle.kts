@@ -116,9 +116,6 @@ tasks.withType<BuildBindingsTask> {
 }
 
 tasks.named("prepareKotlinIdeaImport") {
-  doFirst {
-    projectDir.resolve("src").deleteRecursively()
-  }
   doLast {
     copyDirectoryToTarget(
       outputDirectoryPath,
@@ -149,6 +146,7 @@ tasks.register<AndroidBuildTask>("build-android") {
 
 tasks.register("macos-rust-process") {
   dependsOn("build-ios")
+  dependsOn("prepareKotlinIdeaImport")
   finalizedBy("rust-resources-copy")
 }
 
