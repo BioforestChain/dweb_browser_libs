@@ -6,7 +6,6 @@ import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
 import gobley.gradle.rust.targets.RustPosixTarget
 import gobley.gradle.rust.targets.RustWindowsTarget
-import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -22,9 +21,6 @@ plugins.withId("publish-plugin") {
   project.description = "桌面端硬件信息模块"
   project.version = "1.2.0"
 }
-
-val isPublish =
-  gradle.startParameter.taskNames.any { it.endsWith("publish") || it.endsWith("publishToMavenLocal") }
 
 kotlin {
   jvm("desktop")
@@ -84,7 +80,9 @@ uniffi {
 
 tasks.named("compileKotlinDesktop") {
   doFirst {
-    projectDir.resolve("src").deleteRecursively()
+    if (!project.isPublish) {
+      projectDir.resolve("src").deleteRecursively()
+    }
   }
   doLast {
     copyDirectoryToTarget(

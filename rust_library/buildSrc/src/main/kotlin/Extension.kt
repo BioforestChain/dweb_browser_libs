@@ -28,3 +28,7 @@ fun Properties.copyTo(outProperties: MutableMap<String, Any>) {
     }
   }
 }
+
+val Project.isPublish: Boolean
+  get() = gradle.startParameter.taskNames.any { it.endsWith("publish") || it.endsWith("publishToMavenLocal") }
+

@@ -4,7 +4,6 @@ import gobley.gradle.GobleyHost
 import gobley.gradle.InternalGobleyGradleApi
 import gobley.gradle.Variant
 import gobley.gradle.rust.targets.RustAndroidTarget
-import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -25,9 +24,6 @@ plugins.withId("publish-plugin") {
   project.description = "反向代理网络库"
   project.version = "1.2.0"
 }
-
-val isPublish =
-  gradle.startParameter.taskNames.any { it.endsWith("publish") || it.endsWith("publishToMavenLocal") }
 
 kotlin {
   androidTarget {
@@ -154,7 +150,7 @@ tasks.named("gen-bindings") {
 project.afterEvaluate {
   tasks.named("buildBindings") {
     doLast {
-      if (isPublish) {
+      if (project.isPublish) {
         projectDir.resolve("build").resolve("generated").resolve("uniffi").listFiles().forEach {
           if (it.path.contains("Main")) {
             it.deleteRecursively()

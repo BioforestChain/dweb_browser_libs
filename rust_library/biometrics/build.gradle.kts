@@ -6,7 +6,6 @@ import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
 import gobley.gradle.rust.targets.RustPosixTarget
 import gobley.gradle.rust.targets.RustWindowsTarget
-import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -93,7 +92,9 @@ uniffi {
 
 tasks.named("compileKotlinDesktop") {
   doFirst {
-    projectDir.resolve("src").deleteRecursively()
+    if (!project.isPublish) {
+      projectDir.resolve("src").deleteRecursively()
+    }
   }
   doLast {
     copyDirectoryToTarget(

@@ -85,6 +85,11 @@ tasks.register("win-rust-resources-unzip") {
           )
         }
       }
+
+      val unzipDir = rootDir.resolve(".kotlin").resolve(arch)
+      if(unzipDir.exists()) {
+        unzipDir.deleteRecursively()
+      }
     }
   }
 }

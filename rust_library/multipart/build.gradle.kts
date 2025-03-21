@@ -6,7 +6,6 @@ import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
 import gobley.gradle.rust.targets.RustAndroidTarget
 import gobley.gradle.rust.targets.RustPosixTarget
-import gobley.gradle.uniffi.tasks.BuildBindingsTask
 import org.gradle.kotlin.dsl.support.serviceOf
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -26,10 +25,6 @@ plugins.withId("publish-plugin") {
   project.description = "跨平台自定义模块"
   project.version = "1.2.0"
 }
-
-val isPublish =
-  gradle.startParameter.taskNames.any { it.endsWith("publish") || it.endsWith("publishToMavenLocal") }
-
 
 kotlin {
   androidTarget {
@@ -131,7 +126,9 @@ uniffi {
 
 tasks.named("compileKotlinDesktop") {
   doFirst {
-    projectDir.resolve("src").deleteRecursively()
+    if (!project.isPublish) {
+      projectDir.resolve("src").deleteRecursively()
+    }
   }
   doLast {
     copyDirectoryToTarget(
@@ -180,7 +177,7 @@ tasks.named("gen-bindings") {
 project.afterEvaluate {
   tasks.named("buildBindings") {
     doLast {
-      if (isPublish) {
+      if (project.isPublish) {
         projectDir.resolve("build").resolve("generated").resolve("uniffi").listFiles().forEach {
           if (it.path.contains("Main")) {
             it.deleteRecursively()
