@@ -82,6 +82,15 @@ tasks.named("compileKotlinDesktop") {
   doFirst {
     if (!project.isPublish) {
       projectDir.resolve("src").deleteRecursively()
+    } else {
+      val srcDir = projectDir.resolve("src")
+      if (srcDir.exists() && srcDir.isDirectory) {
+        srcDir.listFiles().forEach { file ->
+          if (file.name.contains("Main") && file.resolve("kotlin").exists()) {
+            file.resolve("kotlin").deleteRecursively()
+          }
+        }
+      }
     }
   }
   doLast {

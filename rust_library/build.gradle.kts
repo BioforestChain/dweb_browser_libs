@@ -80,14 +80,14 @@ tasks.register("win-rust-resources-unzip") {
       for (file in targetDir.listFiles() ?: emptyArray()) {
         if (file.isDirectory) {
           file.copyRecursively(
-            rootDir.resolve(file.name).resolve("src").resolve("desktopMain").resolve("resources")
-              .resolve(arch), true
+            rootDir.resolve(file.name).resolve("src").resolve("desktopMain")
+              .resolve("resources"), true
           )
         }
       }
 
       val unzipDir = rootDir.resolve(".kotlin").resolve(arch)
-      if(unzipDir.exists()) {
+      if (unzipDir.exists()) {
         unzipDir.deleteRecursively()
       }
     }
