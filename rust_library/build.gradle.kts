@@ -51,7 +51,8 @@ if (Platform.isWindows) {
           val winArchResources = projectWinResourcesDir.resolve(arch)
           if (winArchResources.exists()) {
             winArchResources.copyRecursively(
-              rootDir.resolve(".kotlin").resolve(arch).resolve(subproject.name).resolve(arch), true
+              rootDir.resolve(".kotlin").resolve(arch).resolve(subproject.name.replace("lib_", ""))
+                .resolve(arch), true
             )
           }
         }
@@ -74,7 +75,7 @@ tasks.register("win-rust-resources-unzip") {
     val zipFile = rootDir.resolve(".kotlin").resolve("$arch.zip")
     if (zipFile.exists()) {
       val targetDir = rootDir.resolve(".kotlin").resolve(arch)
-      unzipFile(zipFile.path, targetDir.path)
+      unzip(zipFile, targetDir)
 
       for (file in targetDir.listFiles() ?: emptyArray()) {
         if (file.isDirectory) {

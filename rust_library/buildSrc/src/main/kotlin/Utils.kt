@@ -1,3 +1,4 @@
+import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -99,12 +100,21 @@ fun createZipFile(sourceDirPath: String, outputZipFilePath: String) {
 private fun addFilesToZip(rootDir: File, currentDir: File, zos: ZipOutputStream) {
   for (file in currentDir.listFiles() ?: emptyArray()) {
     if (file.isDirectory) {
+      // 强制添加目录条目
+      val entryPath = rootDir.toPath()
+        .relativize(file.toPath())
+        .toString().replace(File.separator, "/") + "/" // 追加斜杠
+      zos.putNextEntry(ZipEntry(entryPath))
+      zos.closeEntry()
       // 如果是目录，递归处理
       addFilesToZip(rootDir, file, zos)
     } else {
+      // 统一文件路径分隔符为Unix格式
+      val entryPath = rootDir.toPath()
+        .relativize(file.toPath())
+        .toString().replace(File.separator, "/")
       // 如果是文件，添加到 ZIP
       FileInputStream(file).use { fis ->
-        val entryPath = rootDir.toPath().relativize(file.toPath()).toString()
         zos.putNextEntry(ZipEntry(entryPath))
         fis.copyTo(zos)
         zos.closeEntry()
@@ -113,38 +123,47 @@ private fun addFilesToZip(rootDir: File, currentDir: File, zos: ZipOutputStream)
   }
 }
 
-fun unzipFile(zipFilePath: String, outputDirPath: String) {
-  val zipFile = File(zipFilePath)
-  if (!zipFile.exists() || !zipFile.isFile) {
-    println("ZIP file does not exist or is not a file: $zipFilePath")
-    return
+// see: https://github.com/DaemonicLabs/Voodoo/blob/8e4a0643edf10d39335ea084d00d036606901fd4/util/src/main/kotlin/voodoo/util/UnzipUtility.kt#L34
+// 添加跨平台处理解压处理
+fun unzip(zipFile: File, destDir: File) {
+  require(zipFile.exists()) { "$zipFile does not exist" }
+  require(zipFile.isFile) { "$zipFile not not a file" }
+  val destDir = destDir.absoluteFile
+  if (!destDir.exists()) {
+    destDir.mkdir()
   }
 
-  val outputDir = File(outputDirPath)
-  if (!outputDir.exists()) {
-    outputDir.mkdirs() // 如果目标目录不存在，则创建
-  }
-
-  // 打开 ZIP 文件并逐条解压
-  ZipInputStream(FileInputStream(zipFile)).use { zis ->
-    var entry: ZipEntry?
-    while (zis.nextEntry.also { entry = it } != null) {
-      val entryName = entry!!.name
-      val outputFile = File(outputDir, entryName)
-
-      if (entry!!.isDirectory) {
-        // 如果是目录，创建目录
-        outputFile.mkdirs()
-      } else {
-        // 如果是文件，创建父目录并写入文件内容
-        outputFile.parentFile.mkdirs()
-        FileOutputStream(outputFile).use { fos ->
-          zis.copyTo(fos)
-        }
-      }
-
-      // 关闭当前条目
-      zis.closeEntry()
+  val zipIn = ZipInputStream(FileInputStream(zipFile))
+  var entry: ZipEntry? = zipIn.nextEntry
+  // iterates over entries in the zip file
+  while (entry != null) {
+    // 统一转换为平台路径分隔符
+//    val entryName = entry.name.replace("/", File.separator)
+    val entryName = entry.name.replace("/", File.separator)
+    val filePath = destDir.resolve(entryName).path
+    if (!entry.isDirectory) {
+      // if the entry is a file, extracts it
+      File(filePath).parentFile.mkdirs()
+      extractFile(zipIn, filePath)
+    } else {
+      // if the entry is a directory, make the directory
+      val dir = File(filePath)
+      dir.mkdir()
     }
+    zipIn.closeEntry()
+    entry = zipIn.nextEntry
   }
+  zipIn.close()
+}
+
+private fun extractFile(zipIn: ZipInputStream, filePath: String) {
+  val bos = BufferedOutputStream(FileOutputStream(filePath))
+  val bytesIn = ByteArray(4096)
+  var read: Int
+  while (true) {
+    read = zipIn.read(bytesIn)
+    if (read < 0) break
+    bos.write(bytesIn, 0, read)
+  }
+  bos.close()
 }
