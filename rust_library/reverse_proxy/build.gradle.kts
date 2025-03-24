@@ -22,7 +22,7 @@ plugins {
 
 plugins.withId("publish-plugin") {
   project.description = "反向代理网络库"
-  project.version = "1.2.0"
+  project.version = "1.2.1"
 }
 
 kotlin {

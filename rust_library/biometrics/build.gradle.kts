@@ -20,7 +20,7 @@ plugins {
 
 plugins.withId("publish-plugin") {
   project.description = "桌面端生物识别模块"
-  project.version = "1.2.0"
+  project.version = "1.2.1"
 }
 
 kotlin {

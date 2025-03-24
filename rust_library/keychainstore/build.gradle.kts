@@ -19,7 +19,7 @@ plugins {
 }
 plugins.withId("publish-plugin") {
   project.description = "desktop/ios平台密钥存储模块"
-  project.version = "1.2.0"
+  project.version = "1.2.1"
 }
 
 kotlin {

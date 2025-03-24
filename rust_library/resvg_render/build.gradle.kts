@@ -23,7 +23,7 @@ plugins {
 }
 plugins.withId("publish-plugin") {
   project.description = "跨平台图片渲染库"
-  project.version = "1.2.0"
+  project.version = "1.2.1"
 }
 
 kotlin {

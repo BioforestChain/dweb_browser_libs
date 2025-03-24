@@ -23,7 +23,7 @@ plugins {
 }
 plugins.withId("publish-plugin") {
   project.description = "跨平台zip打包模块"
-  project.version = "1.2.0"
+  project.version = "1.2.1"
 }
 
 kotlin {

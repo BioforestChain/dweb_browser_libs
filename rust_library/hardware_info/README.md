@@ -18,28 +18,6 @@ rustup target add x86_64-pc-windows-msvc aarch64-pc-windows-msvc
 rustup target add aarch64-pc-windows-gnullvm x86_64-pc-windows-gnu 
 ```
 
-### cargo build
-```shell
-cd hardware_info
-
-# windows
-## x86-64
-../gradlew build-win-x86_64
-## arm64
-../gradlew build-win-arm64
-
-## cross arch GNU
-../gradlew build-win
-```
-or
-```shell
-# windows computer build
-../gradlew win-cargo-build
-
-# windows cross arch build
-../gradlew win-gnu-cargo-build
-```
-
 ### bindings
 #### if MacOS
 1. install mingw-w64
